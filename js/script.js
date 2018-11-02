@@ -1,5 +1,6 @@
 
-let votePercentageChart = new VotePercentageChart();
+//Create instances of objects here
+let map = new Map();
 
 let tileChart = new TileChart();
 
@@ -28,28 +29,9 @@ d3.csv("data/yearwiseWinner.csv").then(electionWinners => {
     syncData(startYear);
 });
 
-//sync function called by clicking on a year circle from the year-chart
-function syncData(yearSelected){
-    //clear brush selection
-    electoralVoteChart.clearBrush();
-    shiftChart.clearText();
+//syncData is the focal point for all interactions and updates
+function syncData(primary, secondary, selectedYears){
 
-    //load data for the specific year selected
-    let fileString = "data/Year_Timeline_" + yearSelected + ".csv";
-    d3.csv(fileString).then(csvData => {
 
-        //update all charts
-        electoralVoteChart.update(csvData, colorScale);
-        votePercentageChart.update(csvData);
-        tileChart.update(csvData,colorScale);
-
-    });
 }
 
-function updateYears(years){
-    shiftChart.update(null, years);
-}
-
-function updateStates(states){
-    shiftChart.update(states);
-}
