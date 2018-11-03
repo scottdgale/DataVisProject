@@ -13,6 +13,30 @@ h1 {
     padding: 0px;
     margin-left: 20px;
 }
+
+.half_view {
+    display: inline-block;
+    width: 48%;
+    position: relative;
+    padding-right: 2%
+}
+
+.three_quarter_view {
+    display: inline-block;
+    width: 80%;
+    position: relative;
+}
+
+.fullView {
+    display: inline-block;
+    width: 100%;
+}
+
+
+/*----Old styling from previous projects------------------*/
+/*----Everything above this line is being used in our project*/
+
+
 .info{
     margin-left: 20px;
 }
@@ -53,31 +77,6 @@ h1 {
     stroke-width: 4;
 }
 
-.content {
-    display: inline-block;
-    width: 80%;
-    position: relative;
-}
-
-.sub_content1 {
-    display: inline-block;
-    width: 45%;
-    position: relative;
-    padding-right: 2%
-}
-.sub_content2 {
-    display: inline-block;
-    width: 34%;
-    position: relative;
-    padding-right: 2%
-}
-
-.tile_view{
-    display: inline-block;
-    width: 80%;
-    position: relative;
-}
-
 .sideBar {
     display: inline-block;
     width: 16%;
@@ -92,10 +91,6 @@ h1 {
     stroke: #eee;
 }
 
-.fullView{
-    display: inline-block;
-    width: 100%;
-}
 
 .yearChart{
     stroke: #FFF;
@@ -156,6 +151,7 @@ h2{
     border-radius: 10px;
     pointer-events: none;
 }
+
 .tooltip-title{
     font-size:18px;
     font-family: "Arial Black";
