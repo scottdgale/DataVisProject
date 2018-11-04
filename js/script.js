@@ -12,9 +12,12 @@ let balanceDouble = new Balance_Double();
 
 let selected_years = [2000, 2005];
 
-let primary = "United States";
+//Change to use country "id" . . .
+let primary = "USA";
 
-let secondary = "China";
+let secondary = "CHN";
+
+let gdpDataSet = null;
 
 //UPDATE WITH DIFFERENT COLORS - Domain definition for global color scale
 let domain = [-60, -50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50, 60];
@@ -25,8 +28,7 @@ let colorScale = d3.scaleQuantile()
     .domain(domain)
     .range(range);
 
-//load the initial data configuration and call sync data
-loadData();
+//SyncData with initial dataset - All objects will call syncData for interaction
 syncData(primary, secondary, selected_years);
 
 
@@ -39,36 +41,37 @@ function syncData(priCountry, secCountry, years){
     selected_years = years;
 
     let data = loadData();
-    map.update(data);
-    balanceSingle.update(data);
-    topTraders.update(data);
-    balanceDouble.update(data);
-    globalBalance.update(data);
+    map.update(data, primary, secondary, selected_years);
+    balanceSingle.update(data, primary, secondary, selected_years);
+    topTraders.update(data, primary, secondary, selected_years);
+    balanceDouble.update(data, primary, secondary, selected_years);
+    globalBalance.update(data, primary, secondary, selected_years);
 }
 
 //Load data for two selected countries and a selected year range
 //return
 function loadData (){
+
     //National
     let nationalArray = [];
-    for (let i = selected_years[0]; i<(range+1); i++){
-        d3.csv("data/National_" + i + ".csv").then(nationalData => {
+    for (let i = selected_years[0]; i<(selected_years[1]); i++){
+        d3.csv("data/National/National_" + i + ".csv").then(nationalData => {
             nationalArray.push(nationalData);
         });
     }
 
     //Dyadic
     let dyadicArray = [];
-    for (let i = selected_years[0]; i<(range+1); i++){
-        d3.csv("data/Dyadic_" + i + ".csv").then(dyadicData => {
+    for (let i = selected_years[0]; i<(selected_years[1]); i++){
+        d3.csv("data/Dyadic/Dyadic_" + i + ".csv").then(dyadicData => {
             dyadicArray.push(dyadicData);
         });
     }
 
-    //GDP
-    let gdpDataset;
-    d3.csv("data/gdp.csv").then(gdpData => {
-        gdpDataset = gdpData;
+    let g = [];
+    d3.csv("data/gdp.csv").then(gdpData=>{
+        g.push(gdpData)
     });
+    return [nationalArray, dyadicArray, g]
 }
 
