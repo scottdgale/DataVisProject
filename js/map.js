@@ -55,7 +55,7 @@ class Map {
             //append the graticule
             let graticule = d3.geoGraticule();
             map.append('path').datum(graticule).attr('class', "graticule").attr('d', path).attr('fill', 'none');
-            map.append('path').datum(graticule.outline).attr('class', "graticule-outline").attr('d', path).attr('fill', 'none')
+            map.append('path').datum(graticule.outline).attr('class', "graticule-outline").attr('d', path).attr('fill', 'none').style('stroke', '#C7C7C7')
 
             //add countrys to map
             let countries = map.selectAll('path')
@@ -66,8 +66,8 @@ class Map {
                                 .attr('d', path)
                                 .attr('id', (d) => d.id)
                                 .classed('countries', true)
-                                .style('fill', 'white')
-                                .style('stroke', 'black')
+                                .style('fill', '#CDCDCD')
+                                .style('stroke', 'white')
                                 /** The click even updates all of the other views */
                                 .on("click",function(d){
                                     console.log("Hi ya! I'm " + d.id)    
@@ -118,7 +118,7 @@ class Map {
             }
 
     updateHighlights() {
-            d3.selectAll('.countries').style('fill', 'white')
+            d3.selectAll('.countries').style('fill', '#CDCDCD')
             d3.select("#" + this.primary).style('fill', 'blue')
             d3.select("#" + this.secondary).style('fill', 'red')
     }

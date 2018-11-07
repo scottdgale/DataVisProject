@@ -53,7 +53,7 @@ h3{
     pointer-events: none;
 }
 .graticule-outline{
-    stroke: black;
+    stroke:white;
     stroke-width: 1.0px;
 }
 
