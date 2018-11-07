@@ -13,7 +13,7 @@ class Map {
         console.log(divMap);
         this.svgBounds = divMap.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
-        this.svgHeight = 700;
+        this.svgHeight = 500;
         this.mapData;
         this.syncData = syncData;
         this.primary;
@@ -30,8 +30,6 @@ class Map {
           let that = this;
           this.primary = pri;
           this.secondary = sec;
-          console.log("Primary " + this.primary)
-          console.log("Secondary " + this.secondary)
 
            let city =  cityData.filter(d =>{
                 if(d.id === pri || d.id === sec){
@@ -45,7 +43,7 @@ class Map {
             
             //set up projection
             let projection = d3.geoRobinson()
-                            .scale(200)
+                            .scale(150)
                             .translate([this.svgWidth / 2, this.svgHeight / 2])
                     
             let path = d3.geoPath()
