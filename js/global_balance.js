@@ -22,7 +22,8 @@ class Global_Balance {
     }
 
     update(data, pri, sec, years) {
-
+        console.log("global_balance PRI: " + pri)
+        console.log("global_balance SEC: " + sec)
 
     }
 

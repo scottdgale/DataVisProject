@@ -1,6 +1,9 @@
+loadMapData().then(data =>{
 
+let mapData = data[0];
+let cityData = data[1]
 //Create instances of objects here
-let map = new Map();
+let map = new Map(syncData);
 
 let balanceSingle = new Balance_Single();
 
@@ -32,8 +35,6 @@ let colorScale = d3.scaleQuantile()
 syncData(primary, secondary, selected_years);
 
 
-
-
 //syncData is the focal point for all interactions and updates
 function syncData(priCountry, secCountry, years){
     primary = priCountry;
@@ -41,16 +42,18 @@ function syncData(priCountry, secCountry, years){
     selected_years = years;
 
     let data = loadData();
-    map.update(data, primary, secondary, selected_years);
+    map.update(data, primary, secondary, selected_years, mapData, cityData);
     balanceSingle.update(data, primary, secondary, selected_years);
     topTraders.update(data, primary, secondary, selected_years);
     balanceDouble.update(data, primary, secondary, selected_years);
     globalBalance.update(data, primary, secondary, selected_years);
 }
 
+
+
 //Load data for two selected countries and a selected year range
 //return
-function loadData (){
+ function loadData (){
 
     //National
     let nationalArray = [];
@@ -72,6 +75,24 @@ function loadData (){
     d3.csv("data/gdp.csv").then(gdpData=>{
         g.push(gdpData)
     });
-    return [nationalArray, dyadicArray, g]
+
+    let cities = [];
+    d3.csv('Data/capital_cities.csv').then(capitalCityData =>{
+        cities.push(capitalCityData);
+
+    })
+
+    return [nationalArray, dyadicArray, g, cities]
 }
+});
+
+async function loadMapData(){
+    let mapData = await d3.json('Data/world.json')
+    let cityData = await d3.csv('Data/capital_cities.csv')
+    let arr = []
+    arr.push(mapData);
+    arr.push(cityData)
+    return arr;
+
+};
 

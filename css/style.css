@@ -45,6 +45,18 @@ h3{
     width: 100%;
 }
 
+.graticule {
+    fill: none;
+    stroke: #777;
+    stroke-width: .5px;
+    stroke-opacity: .2;
+    pointer-events: none;
+}
+.graticule-outline{
+    stroke: black;
+    stroke-width: 1.0px;
+}
+
 
 /*----Old styling from previous projects------------------*/
 /*----Everything above this line is being used in our project*/

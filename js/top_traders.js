@@ -20,7 +20,8 @@ class Top_Traders {
     }
 
     update(data, pri, sec, years) {
-
+        console.log("top_traders PRI: " + pri)
+        console.log("top_traders SEC: " + sec)
 
     }
 
