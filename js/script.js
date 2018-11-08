@@ -83,14 +83,15 @@ function loadDataDyadic (year) {
     }
 }
 
-    let cities = [];
-    d3.csv('Data/capital_cities.csv').then(capitalCityData =>{
-        cities.push(capitalCityData);
-
-    })
+let cities = [];
+d3.csv('Data/capital_cities.csv').then(capitalCityData =>{
+    cities.push(capitalCityData);
+});
 
     return [nationalArray, dyadicArray, g, cities];
 
+
+});
 
 async function loadMapData(){
     let mapData = await d3.json('Data/world.json');
