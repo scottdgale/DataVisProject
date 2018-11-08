@@ -2,6 +2,9 @@ loadMapData().then(data =>{
 
 let mapData = data[0];
 let cityData = data[1];
+
+console.log(mapData)
+
 //Create instances of objects here
 let map = new Map(syncData);
 
@@ -42,11 +45,11 @@ function syncData(priCountry, secCountry, years){
     selected_years = years;
 
 
-    loadDataDyadic();
+    let dataDyadic = loadDataDyadic();
     loadDataNational();  //load gdp occurs in loadDataNational
 
     //Call update for all views - ONLY pass the data you need to increase system performance
-    map.update(dataDyadic, primary, secondary, selected_years);
+    map.update(dataDyadic, primary, secondary, selected_years, mapData, cityData);
 }
 
 
@@ -81,6 +84,7 @@ function loadDataDyadic (year) {
             }
         });
     }
+    return dyadicArray;
 }
 
     let cities = [];
@@ -90,7 +94,7 @@ function loadDataDyadic (year) {
     })
 
     return [nationalArray, dyadicArray, g, cities];
-
+});
 
 async function loadMapData(){
     let mapData = await d3.json('Data/world.json');
