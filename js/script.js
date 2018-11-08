@@ -49,7 +49,7 @@ function syncData(priCountry, secCountry, years){
     loadDataNational();  //load gdp occurs in loadDataNational
 
     //Call update for all views - ONLY pass the data you need to increase system performance
-    map.update(dataDyadic, primary, secondary, selected_years, mapData, cityData);
+    //map.update(dataDyadic, primary, secondary, selected_years, mapData, cityData);
 }
 
 
@@ -81,6 +81,7 @@ function loadDataDyadic (year) {
                 topTraders.update(dyadicArray, primary, secondary, selected_years);
                 balanceSingle.update(dyadicArray, primary, secondary, selected_years);
                 balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
+                map.update(dyadicArray, primary, secondary, selected_years, mapData, cityData);
             }
         });
     }
