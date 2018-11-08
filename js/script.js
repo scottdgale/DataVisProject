@@ -1,6 +1,9 @@
+loadMapData().then(data =>{
 
+let mapData = data[0];
+let cityData = data[1];
 //Create instances of objects here
-let map = new Map();
+let map = new Map(syncData);
 
 let balanceSingle = new Balance_Single();
 
@@ -32,20 +35,20 @@ let colorScale = d3.scaleQuantile()
 syncData(primary, secondary, selected_years);
 
 
-
-
 //syncData is the focal point for all interactions and updates
 function syncData(priCountry, secCountry, years){
     primary = priCountry;
     secondary = secCountry;
     selected_years = years;
 
-    let dataDyadic = loadDataDyadic();
-    let dataNational = loadDataNational();  //load gdp occurs in loadDataNational
+
+    loadDataDyadic();
+    loadDataNational();  //load gdp occurs in loadDataNational
 
     //Call update for all views - ONLY pass the data you need to increase system performance
     map.update(dataDyadic, primary, secondary, selected_years);
 }
+
 
 //National
 function loadDataNational () {
@@ -66,17 +69,35 @@ function loadDataNational () {
 //Dyadic
 function loadDataDyadic (year) {
     let dyadicArray = [];
-    let count = selected_years[1]-selected_years[0];
+    let count = selected_years[1] - selected_years[0];
     for (let year = selected_years[0]; year <= selected_years[1]; year++) {
         d3.csv("data/Dyadic/Dyadic_" + year + ".csv").then(d => {
             dyadicArray.push(d);
             //Once all years are loaded - call the appropriate .update functions.
-            if(!count--){
+            if (!count--) {
                 topTraders.update(dyadicArray, primary, secondary, selected_years);
                 balanceSingle.update(dyadicArray, primary, secondary, selected_years);
                 balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
             }
         });
     }
+}
+
+    let cities = [];
+    d3.csv('Data/capital_cities.csv').then(capitalCityData =>{
+        cities.push(capitalCityData);
+
+    })
+
+    return [nationalArray, dyadicArray, g, cities];
+
+
+async function loadMapData(){
+    let mapData = await d3.json('Data/world.json');
+    let cityData = await d3.csv('Data/capital_cities.csv');
+    let arr = [];
+    arr.push(mapData);
+    arr.push(cityData);
+    return arr;
 }
 
