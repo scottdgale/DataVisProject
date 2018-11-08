@@ -21,7 +21,7 @@ class Balance_Double {
 
     }
 
-    update(data, pri, sec, years) {
+    update(data, gdp, pri, sec, years) {
         console.log(data);
         console.log("Balance_double PRI: " + pri);
         console.log("Balance_double SEC: " + sec);
