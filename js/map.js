@@ -28,8 +28,17 @@ class Map {
     update(data, pri, sec, years, mapData, cityData) {
 
           let that = this;
+
           this.primary = pri;
           this.secondary = sec;
+
+          console.log(data[0])
+          console.log(cityData[0])
+
+          //Need a list of 'Top Partners' of primary country in order to draw links
+          //Top partners can be identified as those that have either export or imported the most over
+          //the year range
+          //Then we can filter out the cities that belong in that list
 
            let city =  cityData.filter(d =>{
                 if(d.id === pri || d.id === sec){
@@ -89,7 +98,7 @@ class Map {
 
             this.updateHighlights()
                                 
-            
+            console.log(data)
             map.selectAll("circle").remove();
                
             //Below is TEST code to show capitals of primary and secondary selections
@@ -114,13 +123,26 @@ class Map {
                                 .style("opacity", 0.8)
             let capitalsMerge = capitalsEnter.merge(capitals)
 
+//Testing line connections
+            let dataArr = [];
 
+            for(let i = 0; i < city.length; i++){
+                dataArr.push(projection([city[i].longitude, city[i].latitude]))
+            }
+            
+            console.log(dataArr)
+            let lineGenerator = d3.line()
+            let pathString = lineGenerator(dataArr);
+
+            map.append('path')
+                .attr('d', pathString)
+                .attr('class', 'line')
             }
 
     updateHighlights() {
             d3.selectAll('.countries').style('fill', '#CDCDCD')
-            d3.select("#" + this.primary).style('fill', 'blue')
-            d3.select("#" + this.secondary).style('fill', 'red')
+            d3.select("#" + this.primary).style('fill', '#99b3e6')
+            d3.select("#" + this.secondary).style('fill', '#ff99cc')
     }
 
 }
