@@ -10,14 +10,14 @@ let globalBalance = new Global_Balance();
 
 let balanceDouble = new Balance_Double();
 
-let selected_years = [2000, 2005];
+let selected_years = ["2000", "2005"];
 
 //Change to use country "id" . . .
 let primary = "USA";
 
 let secondary = "CHN";
 
-let gdpDataSet = null;
+let gdpDataSet = d3.csv("data/gdp.csv");
 
 //UPDATE WITH DIFFERENT COLORS - Domain definition for global color scale
 let domain = [-60, -50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50, 60];
@@ -40,38 +40,43 @@ function syncData(priCountry, secCountry, years){
     secondary = secCountry;
     selected_years = years;
 
-    let data = loadData();
-    map.update(data, primary, secondary, selected_years);
-    balanceSingle.update(data, primary, secondary, selected_years);
-    topTraders.update(data, primary, secondary, selected_years);
-    balanceDouble.update(data, primary, secondary, selected_years);
-    globalBalance.update(data, primary, secondary, selected_years);
+    let dataDyadic = loadDataDyadic();
+    let dataNational = loadDataNational();  //load gdp occurs in loadDataNational
+
+    //Call update for all views - ONLY pass the data you need to increase system performance
+    map.update(dataDyadic, primary, secondary, selected_years);
 }
 
-//Load data for two selected countries and a selected year range
-//return
-function loadData (){
-
-    //National
+//National
+function loadDataNational () {
     let nationalArray = [];
-    for (let i = selected_years[0]; i<(selected_years[1]); i++){
-        d3.csv("data/National/National_" + i + ".csv").then(nationalData => {
+    let count = selected_years[1]-selected_years[0];
+    for (let year = selected_years[0]; year <= (selected_years[1]); year++) {
+        d3.csv("data/National/National_" + year + ".csv").then(nationalData => {
             nationalArray.push(nationalData);
+            if(!count--) {
+                d3.csv("data/gdp.csv").then(gdpData => {
+                    globalBalance.update(nationalArray, gdpData, secondary, selected_years);
+                });
+            }
         });
     }
+}
 
-    //Dyadic
+//Dyadic
+function loadDataDyadic (year) {
     let dyadicArray = [];
-    for (let i = selected_years[0]; i<(selected_years[1]); i++){
-        d3.csv("data/Dyadic/Dyadic_" + i + ".csv").then(dyadicData => {
-            dyadicArray.push(dyadicData);
+    let count = selected_years[1]-selected_years[0];
+    for (let year = selected_years[0]; year <= selected_years[1]; year++) {
+        d3.csv("data/Dyadic/Dyadic_" + year + ".csv").then(d => {
+            dyadicArray.push(d);
+            //Once all years are loaded - call the appropriate .update functions.
+            if(!count--){
+                topTraders.update(dyadicArray, primary, secondary, selected_years);
+                balanceSingle.update(dyadicArray, primary, secondary, selected_years);
+                balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
+            }
         });
     }
-
-    let g = [];
-    d3.csv("data/gdp.csv").then(gdpData=>{
-        g.push(gdpData)
-    });
-    return [nationalArray, dyadicArray, g]
 }
 

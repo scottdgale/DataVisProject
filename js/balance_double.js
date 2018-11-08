@@ -22,7 +22,7 @@ class Balance_Double {
     }
 
     update(data, pri, sec, years) {
-
+        console.log(data);
 
     }
 

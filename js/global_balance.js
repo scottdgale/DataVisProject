@@ -21,7 +21,8 @@ class Global_Balance {
 
     }
 
-    update(data, pri, sec, years) {
+    update(data, gdp, pri, sec, years) {
+        console.log(data);
 
 
     }

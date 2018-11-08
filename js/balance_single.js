@@ -23,7 +23,7 @@ class Balance_Single {
     }
 
     update(data, pri, sec, years) {
-        console.log (years);
+        console.log (data);
 
     }
 
