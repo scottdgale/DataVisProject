@@ -62,7 +62,7 @@ function loadDataNational () {
             nationalArray.push(nationalData);
             if(!count--) {
                 d3.csv("data/gdp.csv").then(gdpData => {
-                    globalBalance.update(nationalArray, gdpData, secondary, selected_years);
+                    globalBalance.update(nationalArray, gdpData, primary, secondary, selected_years);
                 });
             }
         });
@@ -87,13 +87,6 @@ function loadDataDyadic (year) {
     return dyadicArray;
 }
 
-    let cities = [];
-    d3.csv('Data/capital_cities.csv').then(capitalCityData =>{
-        cities.push(capitalCityData);
-
-    })
-
-    return [nationalArray, dyadicArray, g, cities];
 });
 
 async function loadMapData(){

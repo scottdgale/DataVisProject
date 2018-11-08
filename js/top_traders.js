@@ -21,6 +21,8 @@ class Top_Traders {
 
     update(data, pri, sec, years) {
         console.log(data);
+        console.log('Top traders pri: ' + pri)
+        console.log('Top traders sec: ' + sec)
 
     }
 
