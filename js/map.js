@@ -31,9 +31,19 @@ class Map {
         this.primary = pri;
         this.secondary = sec;
 
-        let exportPartners = data.exportPartners;
-        let importPartners = data.importPartners;
-        let totalTradePartners = data.totalTradePartners;
+
+        console.log(data.exportPartners);
+        console.log(data.importPartners);
+        console.log(data.totalTradePartners);
+
+        let exportPartners1 = data.exportPartners.splice(0,20);
+        let importPartners1 = data.importPartners.splice(0,20);
+        let totalTradePartners1 = data.totalTradePartners.splice(0,20);
+
+        console.log(exportPartners1);
+        console.log(importPartners1);
+
+
 
 
         //Now I have two lists --- one of top export partners and one of top import partners

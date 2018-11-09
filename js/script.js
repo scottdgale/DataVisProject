@@ -65,8 +65,8 @@ function loadDataDyadic (year) {
                 //Organize Data - Insert function call here //
                 let newDyadicArray = organizeData(dyadicArray, primary);
                 topTraders.update(newDyadicArray, primary, secondary, selected_years);
-                balanceSingle.update(dyadicArray, primary, secondary, selected_years);
-                balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
+                //balanceSingle.update(dyadicArray, primary, secondary, selected_years);
+                //balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
                 map.update(newDyadicArray, primary, secondary, selected_years, mapData, cityData);
             }
         });
@@ -156,9 +156,14 @@ function organizeData(data, pri){
         }
     );
     totalTradePartners.sort((a, b) =>{
-            return b.values[0].value['TotalMeanTrade'] - a.values[0].value['TotalTrade'];
+            return b.values[0].value['TotalMeanTrade'] - a.values[0].value['TotalMeanTrade'];
         }
     );
+
+    console.log(exportPartners);
+    console.log(importPartners);
+    console.log(totalTradePartners);
+
     return {exportPartners, importPartners, totalTradePartners};
 }
 
