@@ -3,7 +3,7 @@ loadMapData().then(data => {
     let mapData = data[0];
     let cityData = data[1];
 
-    console.log(mapData);
+    //console.log(mapData);
 
     //Create instances of objects here
     let map = new Map(syncData);
@@ -42,7 +42,6 @@ loadMapData().then(data => {
     //SyncData with initial dataset - All objects will call syncData for interaction
     syncData(primary, secondary, selected_years);
 
-});
 
 //syncData is the focal point for all interactions and updates
 function syncData(priCountry, secCountry, years) {
@@ -64,10 +63,11 @@ function loadDataDyadic (year) {
             //Once all years are loaded - call the appropriate .update functions.
             if (!count--) {
                 //Organize Data - Insert function call here //
-                topTraders.update(dyadicArray, primary, secondary, selected_years);
+                let newDyadicArray = organizeData(dyadicArray, primary);
+                topTraders.update(newDyadicArray, primary, secondary, selected_years);
                 balanceSingle.update(dyadicArray, primary, secondary, selected_years);
                 balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
-                map.update(dyadicArray, primary, secondary, selected_years, mapData, cityData);
+                map.update(newDyadicArray, primary, secondary, selected_years, mapData, cityData);
             }
         });
     }
@@ -82,12 +82,14 @@ function loadDataNational() {
             nationalArray.push(nationalData);
             if (!count--) {
                 d3.csv("data/gdp.csv").then(gdpData => {
-                    globalBalance.update(nationalArray, gdpData, primary, secondary, selected_years);
+                      globalBalance.update(nationalArray, gdpData, primary, secondary, selected_years);
                 });
             }
         });
     }
 }
+
+}); //Closes loadMapData() at the top of the file
 
 async function loadMapData() {
     let mapData = await d3.json('Data/world.json');
@@ -96,6 +98,68 @@ async function loadMapData() {
     arr.push(mapData);
     arr.push(cityData);
     return arr;
+}
+
+function organizeData(data, pri){
+    let filteredForPrimary = [];
+    //filter each year for primary country and put in a new array
+    for(let j = 0; j < data.length; j++){
+        let temp = data[j].filter(d=>{
+            for(let k = 0; k < data[j].length; k++){
+                if(d.id1 === pri || d.id2 === pri){
+                    return d;
+                }
+            }
+        });
+        filteredForPrimary = filteredForPrimary.concat(temp)
+    }
+
+    let partners = d3.nest()
+        .key(function(d){
+            return d.id1 === pri ? d.id2 : d.id1;
+        })
+        .entries(filteredForPrimary);
+
+    //console.log("All Partners:");
+    //console.log(partners);
+
+    let dataSumsByPartner = d3.nest()
+        .key(function(d){
+            return d.id1 === pri ? d.id2 : d.id1;
+        })
+        .key(function(d){
+            return d.id1 === pri ? d.importer2 : d.importer1;
+        })
+        .rollup(function(v){
+            return {
+                MeanExports: d3.mean(v, function(d){ return d.id1 === pri? d.flow2 : d.flow1}),
+                MeanImports: d3.mean(v, function(d){ return d.id1 === pri? d.flow1 : d.flow2}),
+                TotalMeanTrade: d3.mean(v, function(d){ return +d.flow1 + +d.flow2})
+            }
+        })
+        .entries(filteredForPrimary);
+
+    console.log(dataSumsByPartner);
+
+    let exportPartners = dataSumsByPartner.slice();
+    let importPartners = dataSumsByPartner.slice();
+    let totalTradePartners = dataSumsByPartner.slice();
+
+
+    //Sort -- Descending order export, import, totalTrade partners
+    exportPartners.sort((a, b) =>{
+            return b.values[0].value['MeanExports'] - a.values[0].value['MeanExports'];
+        }
+    );
+    importPartners.sort((a, b) =>{
+            return b.values[0].value['MeanImports'] - a.values[0].value['MeanImports'];
+        }
+    );
+    totalTradePartners.sort((a, b) =>{
+            return b.values[0].value['TotalMeanTrade'] - a.values[0].value['TotalTrade'];
+        }
+    );
+    return {exportPartners, importPartners, totalTradePartners};
 }
 
 

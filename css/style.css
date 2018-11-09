@@ -29,17 +29,24 @@ h3{
     font-size: 18px;
 }
 
+.right_quarter {
+    display: inline-block;
+    width: 25%;
+    float:right;
+}
+
 .half_view {
     display: inline-block;
     width: 45%;
     position: relative;
-    padding-right: 2%
+    padding-right: 2%;
 }
 
 .three_quarter_view {
     display: inline-block;
-    width: 80%;
+    width: 70%;
     position: relative;
+    padding-right: 2%;
 }
 
 .full_view {
@@ -109,11 +116,6 @@ h3{
     stroke-width: 4;
 }
 
-.sideBar {
-    display: inline-block;
-    width: 16%;
-    float:right;
-}
 
 .electoralVotes{
     stroke: #eee;

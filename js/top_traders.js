@@ -11,7 +11,7 @@ class Top_Traders {
         this.flow1 = true; //true indicates the primary country is associated with (flow1=import)
         this.margin = {top: 20, right: 20, bottom: 20, left: 50, spacing: 57};
 
-        let divTopTraders = d3.select("#top_traders").classed("half_view", true);
+        let divTopTraders = d3.select("#top_traders").classed("right_quarter", true);
         this.svgBounds = divTopTraders.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
         this.svgHeight = 200;
@@ -28,6 +28,18 @@ class Top_Traders {
         console.log('Top traders pri: ' + pri);
         console.log('Top traders sec: ' + sec);
 
+        let topExporters = data.exportPartners.splice(0,20);
+        let topImporters = data.importPartners.splice(0,20);
+
+        console.log(topExporters);
+        console.log(topImporters);
+
+    }
+
+}
+
+
+    /*//OLD CODE - DO NOT DELETE // BREAK IN CASE OF EMERGENCY
         let dataImport = [];
         let dataExport = [];
         for (let index =0; index<data.length; index++){
@@ -41,9 +53,6 @@ class Top_Traders {
         //console.log(this.totalImports);
         //console.log(this.totalExports);
 
-
-    }
-
     average (sortedArray){
         console.log(sortedArray);
         let newAverage = [];
@@ -54,9 +63,10 @@ class Top_Traders {
             sortedArray.forEach((year)=>{
                 if (this.flow1){
                     year.forEach((country)=>{
-                        if (pivot===country.id2);
+                        if (pivot===country.id2) {
                             //console.log (pivot + " " + country.id2 + " " + country.flow2);
                             //sum the values for the same country and store in the newAverage array
+                        }
 
                     })
 
@@ -66,7 +76,6 @@ class Top_Traders {
         }
 
     }
-
 
     sortSingleYearImport(data, pri, index){
         let singleYear = [];
@@ -133,3 +142,4 @@ class Top_Traders {
         return singleYear;
     }
 }
+*/
