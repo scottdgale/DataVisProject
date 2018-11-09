@@ -39,22 +39,7 @@ class Map {
         let importPartners = data.importPartners.slice();
         let totalTradePartners = data.totalTradePartners.slice();
 
-        // let exportPartners = data.exportPartners.splice(0,20);
-        // let importPartners = data.importPartners.splice(0,20);
-        // let totalTradePartners = data.totalTradePartners.splice(0,20);
-
-        // console.log(exportPartners);
-        // console.log(importPartners);
-
-        //Now I have two lists --- one of top export partners and one of top import partners
-        //Create links to top 5 importers and top 5 exporters
-
-        let topExport = exportPartners.slice(0,5);
-        let topImport =  importPartners.slice(0,5);
         let topTotalTrade = totalTradePartners.slice(0,10);
-
-        // console.log(topExport);
-        // console.log(topImport);
 
         let priLatLon = cityData.filter(d=> {
             if(d.id === pri){
@@ -68,52 +53,22 @@ class Map {
             }
         })
 
-        // let city = [];
-        // let temp;
-        //  for(let i = 0; i < 10; i++){
-        //      temp =  cityData.filter(d =>{
-        //          if(d.id === topTotalTrade[i].key){
-        //              return d
-        //          }
-             
-        //      })
-        //      city = city.concat(temp)
-        //  }
-
-    
-
+        //filter the city data based on top 10 traders
            let city = [];
            let temp;
-            for(let i = 0; i < 5; i++){
+            for(let i = 0; i < 10; i++){
                 temp =  cityData.filter(d =>{
-                    if(d.id === topExport[i].key){
-                        return d
-                    }
-                    if(d.id === topImport[i].key){
-                        return d
+                    if(d.id === topTotalTrade[i].key){
+                        return d;
                     }
                 
                 })
                 city = city.concat(temp)
             }
+    
+    
 
-            let unique = [...new Set(city)]; 
-      
-
-
-
-          //Need a list of 'Top Partners' of primary country in order to draw links
-          //Top partners can be identified as those that have either exported or imported the most over
-          //the year range
-          //Then we can filter out the cities that belong in that list
-
-        //    let city =  cityData.filter(d =>{
-        //         if(d.id === pri || d.id === sec){
-        //             return d;
-        //         }
-        //     })
-        //     console.log(city)
-
+        /** Draw the map and append circles and lines to indicate trade relationships */
             //get geojson from topojson
             let geojson = topojson.feature(mapData, mapData.objects.countries);
             
@@ -146,10 +101,8 @@ class Map {
                                 .style('stroke', 'white')
                                 /** The click even updates all of the other views */
                                 .on("click",function(d){
-                                    console.log("Hi ya! I'm " + d.id)    
                                     //if sec is the clicked country, toggle current pri and sec
-                                    //if a new country is clicked, set previous sec to pri and set new country to sec.
-                                 
+                                    //if a new country is clicked, set previous sec to pri and set new country to sec.    
                                     let temp = that.primary
                                     that.primary = that.secondary;
                                     that.secondary = that.secondary === d.id ? temp : d.id;
@@ -164,20 +117,15 @@ class Map {
             countries = enter.merge(countries)
 
             this.updateHighlights()
-                                
-         //   console.log(data)
+   
+            //Draws circles on the captial cities of the top 10 traders of the primary country                    
             map.selectAll("circle").remove();
-               
-            //Below is TEST code to show capitals of primary and secondary selections
-            //Add capital markers to map - first to see if they show up - next to identify primary and secondary
-            //Later on, these circles will be used to draw arcs
             let capitals = map.selectAll("circle")
-                                .data(unique)
+                                .data(city)
             let capitalsExit =  capitals.exit().remove()
             let capitalsEnter = capitals.enter()
                                 .append("circle")
                                 .attr("cx", function (d) {
-          //                          console.log(d)
                                     return projection([d.longitude, d.latitude])[0];
                                 })
                                 .attr("cy", function (d) {
@@ -190,23 +138,23 @@ class Map {
                                 .style("opacity", 0.8)
             let capitalsMerge = capitalsEnter.merge(capitals)
 
-            //Testing line connections
-            //I need a line from PRI to every other data point in cities
 
+            //Draws a line from the primary country to each of the top ten trade partners
+
+            //create an array to hold the lat/long of each city + the primary country's city
              let dataArr = [];
              dataArr.push( projection([priLatLon[0].longitude, priLatLon[0].latitude])); //first element is primary
 
-            for(let i = 0; i < unique.length; i++){
+            for(let i = 0; i < city.length; i++){
                 dataArr.push(
-                        projection([unique[i].longitude, unique[i].latitude])
+                        projection([city[i].longitude, city[i].latitude])
                     )
             }
         
+            //Use a lineGenerator to create pathStrings from the primary country to it's trade partners 
             let lineGenerator = d3.line()
-
             let pathArr = [];
             let d = [];
-            
 
             for(let i = 1 ; i < dataArr.length; i++){
                 d.push(dataArr[0])
@@ -214,16 +162,16 @@ class Map {
                 pathArr.push(lineGenerator(d))
                 d.splice(d.length)            
             }
-
+            //append paths from pri to partners
             for(let i = 0; i < pathArr.length; i++){
                 let pathString = pathArr[i];
-
                 map.append('path')
                     .attr('d', pathString)
                     .attr('class', 'line')
                 }
             }
 
+    //Temporary highlighting function that allows us to see the difference between pri and sec
     updateHighlights() {
             d3.selectAll('.countries').style('fill', '#CDCDCD')
             d3.select("#" + this.primary).style('fill', '#99b3e6')
