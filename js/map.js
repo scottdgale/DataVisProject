@@ -6,7 +6,7 @@ class Map {
      */
     
 
-    constructor(syncData) {
+    constructor(syncData, mapData, cityData) {
         this.margin = {top: 20, right: 20, bottom: 20, left: 50, spacing: 50};
 
         let divMap = d3.select("#map").classed("three_quarter_view", true);
@@ -14,7 +14,8 @@ class Map {
         this.svgBounds = divMap.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
         this.svgHeight = 500;
-        this.mapData;
+        this.mapData = mapData;
+        this.cityData = cityData;
         this.syncData = syncData;
         this.primary;
         this.secondary;
@@ -25,9 +26,11 @@ class Map {
             .attr("width", this.svgWidth);
     }
 
-    update(data, pri, sec, years, mapData, cityData) {
+    update(data, pri, sec, years) {
 
         let that = this;
+        let cityData = this.cityData
+        let mapData = this.mapData
         this.primary = pri;
         this.secondary = sec;
 
@@ -43,9 +46,6 @@ class Map {
         // console.log(exportPartners);
         // console.log(importPartners);
 
-
-
-
         //Now I have two lists --- one of top export partners and one of top import partners
         //Create links to top 5 importers and top 5 exporters
 
@@ -53,8 +53,8 @@ class Map {
         let topImport =  importPartners.slice(0,5);
         let topTotalTrade = totalTradePartners.slice(0,10);
 
-        console.log(topExport);
-        console.log(topImport);
+        // console.log(topExport);
+        // console.log(topImport);
 
         let priLatLon = cityData.filter(d=> {
             if(d.id === pri){

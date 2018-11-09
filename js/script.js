@@ -6,7 +6,7 @@ loadMapData().then(data => {
     //console.log(mapData);
 
     //Create instances of objects here
-    let map = new Map(syncData);
+    let map = new Map(syncData, mapData, cityData);
 
     let balanceSingle = new Balance_Single();
 
@@ -67,7 +67,7 @@ function loadDataDyadic (year) {
                 topTraders.update(newDyadicArray, primary, secondary, selected_years);
                 balanceSingle.update(dyadicArray, primary, secondary, selected_years);
                 balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
-                map.update(newDyadicArray, primary, secondary, selected_years, mapData, cityData);
+                map.update(newDyadicArray, primary, secondary, selected_years);
             }
         });
     }
@@ -114,14 +114,13 @@ function organizeData(data, pri){
         filteredForPrimary = filteredForPrimary.concat(temp)
     }
 
-    let partners = d3.nest()
-        .key(function(d){
-            return d.id1 === pri ? d.id2 : d.id1;
-        })
-        .entries(filteredForPrimary);
+    /** This is good to see what's happening with the data --- but remove while not testing to improve performance */
+    // let partners = d3.nest()
+    //     .key(function(d){
+    //         return d.id1 === pri ? d.id2 : d.id1;
+    //     })
+    //     .entries(filteredForPrimary);
 
-    //console.log("All Partners:");
-    //console.log(partners);
 
     let dataSumsByPartner = d3.nest()
         .key(function(d){

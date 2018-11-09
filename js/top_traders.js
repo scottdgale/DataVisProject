@@ -67,8 +67,8 @@ class Top_Traders {
         let topExporters = exportPartners.splice(0,20);
         let topImporters = importPartners.splice(0,20);
 
-        console.log(topExporters);
-        console.log(topImporters);
+        // console.log(topExporters);
+        // console.log(topImporters);
 
 
         //Get the maximum values for exports and imports
