@@ -1,5 +1,3 @@
-
-
 body {
     font-family: Lato;
     padding:20px;
@@ -44,7 +42,7 @@ h3{
 
 .three_quarter_view {
     display: inline-block;
-    width: 70%;
+    width: 73%;
     position: relative;
     padding-right: 2%;
 }
@@ -69,6 +67,29 @@ h3{
 .line{
     stroke: #777;
     stroke-width: 1.5px;
+}
+
+.imports {
+    fill: purple;
+    color: purple;
+    text-anchor: start;
+}
+
+.exports {
+    fill: lightblue;
+    color: lightblue;
+    text-anchor: start;
+}
+
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.axis-label {
+    font-size: 20px;
+
 }
 
 

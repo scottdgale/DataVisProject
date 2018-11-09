@@ -139,7 +139,7 @@ function organizeData(data, pri){
         })
         .entries(filteredForPrimary);
 
-    console.log(dataSumsByPartner);
+    //console.log(dataSumsByPartner);
 
     let exportPartners = dataSumsByPartner.slice();
     let importPartners = dataSumsByPartner.slice();
