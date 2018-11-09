@@ -3,7 +3,7 @@ loadMapData().then(data =>{
 let mapData = data[0];
 let cityData = data[1];
 
-console.log(mapData)
+console.log(mapData);
 
 //Create instances of objects here
 let map = new Map(syncData);
@@ -87,6 +87,13 @@ function loadDataDyadic (year) {
     }
     return dyadicArray;
 }
+
+
+let cities = [];
+d3.csv('Data/capital_cities.csv').then(capitalCityData =>{
+    cities.push(capitalCityData);
+});
+
 
 });
 
