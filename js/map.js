@@ -41,6 +41,8 @@ class Map {
 
         let topTotalTrade = totalTradePartners.slice(0,10);
 
+        console.log(topTotalTrade)
+
         let priLatLon = cityData.filter(d=> {
             if(d.id === pri){
                 return d;
