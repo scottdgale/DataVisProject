@@ -23,10 +23,10 @@ class Balance_Single {
     }
 
     update(data, pri, sec, years) {
-        console.log (data);
+        // console.log (data);
 
-        console.log("Balance_single PRI: " + pri)
-        console.log("Balance_single SEC: " + sec)
+        // console.log("Balance_single PRI: " + pri)
+        // console.log("Balance_single SEC: " + sec)
 
     }
 

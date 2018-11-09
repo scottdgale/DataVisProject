@@ -32,9 +32,7 @@ class Map {
           this.primary = pri;
           this.secondary = sec;
 
-        //   console.log(data)
-        //   console.log(cityData[0])
-
+ /********************************************************************************************************************************************************* */     
         //Maybe do this in script so we can pass it to 'top traders' ??
           let filteredForPrimary = [];
 
@@ -43,7 +41,6 @@ class Map {
               let temp = data[j].filter(d=>{
                 for(let k = 0; k < data[j].length; k++){
                     if(d.id1 === pri || d.id2 === pri){
-                      //  console.log(d)
                         return d;
                     }
                 }
@@ -51,52 +48,71 @@ class Map {
               filteredForPrimary = filteredForPrimary.concat(temp)       
           }
 
-    
-          //console.log(filteredForPrimary)
-
-        //   let dataByOtherCountry = d3.nest()
-        //                               .key(function(d){ return d.id2})
-        //                               .entries(filteredForPrimary)
-         // console.log(dataByOtherCountry)
+          let partners = d3.nest()
+                    .key(function(d){   
+                        return d.id1 === pri ? d.id2 : d.id1;
+                    })
+                    .entries(filteredForPrimary)
+          
+          console.log("All Partners:")
+          console.log(partners);
 
           let dataSumsByPartner = d3.nest()
-                                    .key(function(d){ return d.id2})
+                                    .key(function(d){   
+                                        return d.id1 === pri ? d.id2 : d.id1;
+                                    })
                                     .rollup(function(v){
                                         return {
-                                            SumExports: d3.sum(v, function(d){ return d.flow2}),
-                                            SumImports: d3.sum(v, function(d){ return d.flow1})
-
+                                            //Country Name?
+                                            MeanExports: d3.mean(v, function(d){ return d.id1 === pri? d.flow2 : d.flow1}),
+                                            MeanImports: d3.mean(v, function(d){ return d.id1 === pri? d.flow1 : d.flow2}),
+                                            TotalMeanTrade: d3.mean(v, function(d){ return +d.flow1 + +d.flow2})
                                         }
 
                                     })
                                     .entries(filteredForPrimary)
 
-         //   console.log(dataSumsByPartner)
+            console.log(dataSumsByPartner)
+
             let exportPartners = dataSumsByPartner.slice();
             let importPartners = dataSumsByPartner.slice();
+            let totalTradePartners = dataSumsByPartner.slice();
 
    
 
             //Sort -- so I get my top importers and top exporters
             exportPartners.sort((a, b) =>{
-                        return b.value['SumExports'] - a.value['SumExports'];
+                        return b.value['MeanExports'] - a.value['MeanExports'];
                      }
                       
             );
 
             importPartners.sort((a, b) =>{
-                return b.value['SumImports'] - a.value['SumImports'];
+                return b.value['MeanImports'] - a.value['MeanImports'];
              }
               
             );
 
-            //Now I have two lists --- one of top export partners and one of top import partners
-            //Create links to top 5 importers and top 5 exporters
-         //   console.log(exportPartners);
-         //   console.log(importPartners);
+            
+            totalTradePartners.sort((a, b) =>{
+                return b.value['TotalMeanTrade'] - a.value['TotalTrade'];
+             }
+              
+            );
+            console.log("Top Export Partners:")
+            console.log(exportPartners)
+            console.log("Top Import Partners:")
+            console.log(importPartners)
+            console.log("Top Total Trade Partners:")
+            console.log(totalTradePartners)
+/************************************************************************************************************************************************** */
+
+           //Now I have two lists --- one of top export partners and one of top import partners
+           //Create links to top 5 importers and top 5 exporters
 
            let topExport = exportPartners.slice(0,5);
            let topImport =  importPartners.slice(0,5)
+           let topTotalTrade = totalTradePartners.slice(0,10)
 
          //  console.log(topExport);
          //  console.log(topImport);
@@ -106,6 +122,26 @@ class Map {
                    return d;
                }
            })
+
+           let secLatLon = cityData.filter(d=> {
+            if(d.id === sec){
+                return d;
+            }
+        })
+
+        // let city = [];
+        // let temp;
+        //  for(let i = 0; i < 10; i++){
+        //      temp =  cityData.filter(d =>{
+        //          if(d.id === topTotalTrade[i].key){
+        //              return d
+        //          }
+             
+        //      })
+        //      city = city.concat(temp)
+        //  }
+
+    
 
            let city = [];
            let temp;
@@ -123,8 +159,7 @@ class Map {
             }
 
             let unique = [...new Set(city)]; 
-         //   console.log(unique)
-         //   console.log(city)
+      
 
 
 
@@ -216,10 +251,8 @@ class Map {
                                 .style("opacity", 0.8)
             let capitalsMerge = capitalsEnter.merge(capitals)
 
-//Testing line connections
-
+            //Testing line connections
             //I need a line from PRI to every other data point in cities
-
 
              let dataArr = [];
              dataArr.push( projection([priLatLon[0].longitude, priLatLon[0].latitude])); //first element is primary
