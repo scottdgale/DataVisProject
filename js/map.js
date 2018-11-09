@@ -10,7 +10,7 @@ class Map {
         this.margin = {top: 20, right: 20, bottom: 20, left: 50, spacing: 50};
 
         let divMap = d3.select("#map").classed("full_view", true);
-        console.log(divMap);
+    //    console.log(divMap);
         this.svgBounds = divMap.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
         this.svgHeight = 500;
@@ -32,20 +32,148 @@ class Map {
           this.primary = pri;
           this.secondary = sec;
 
-          console.log(data[0])
-          console.log(cityData[0])
+ /********************************************************************************************************************************************************* */     
+        //Maybe do this in script so we can pass it to 'top traders' ??
+          let filteredForPrimary = [];
+
+          //filter each year for primary country and put in a new array
+          for(let j = 0; j < data.length; j++){
+              let temp = data[j].filter(d=>{
+                for(let k = 0; k < data[j].length; k++){
+                    if(d.id1 === pri || d.id2 === pri){
+                        return d;
+                    }
+                }
+              })
+              filteredForPrimary = filteredForPrimary.concat(temp)       
+          }
+
+          let partners = d3.nest()
+                    .key(function(d){   
+                        return d.id1 === pri ? d.id2 : d.id1;
+                    })
+                    .entries(filteredForPrimary)
+          
+          console.log("All Partners:")
+          console.log(partners);
+
+          let dataSumsByPartner = d3.nest()
+                                    .key(function(d){   
+                                        return d.id1 === pri ? d.id2 : d.id1;
+                                    })
+                                    .rollup(function(v){
+                                        return {
+                                            //Country Name?
+                                            MeanExports: d3.mean(v, function(d){ return d.id1 === pri? d.flow2 : d.flow1}),
+                                            MeanImports: d3.mean(v, function(d){ return d.id1 === pri? d.flow1 : d.flow2}),
+                                            TotalMeanTrade: d3.mean(v, function(d){ return +d.flow1 + +d.flow2})
+                                        }
+
+                                    })
+                                    .entries(filteredForPrimary)
+
+            console.log(dataSumsByPartner)
+
+            let exportPartners = dataSumsByPartner.slice();
+            let importPartners = dataSumsByPartner.slice();
+            let totalTradePartners = dataSumsByPartner.slice();
+
+   
+
+            //Sort -- so I get my top importers and top exporters
+            exportPartners.sort((a, b) =>{
+                        return b.value['MeanExports'] - a.value['MeanExports'];
+                     }
+                      
+            );
+
+            importPartners.sort((a, b) =>{
+                return b.value['MeanImports'] - a.value['MeanImports'];
+             }
+              
+            );
+
+            
+            totalTradePartners.sort((a, b) =>{
+                return b.value['TotalMeanTrade'] - a.value['TotalTrade'];
+             }
+              
+            );
+            console.log("Top Export Partners:")
+            console.log(exportPartners)
+            console.log("Top Import Partners:")
+            console.log(importPartners)
+            console.log("Top Total Trade Partners:")
+            console.log(totalTradePartners)
+/************************************************************************************************************************************************** */
+
+           //Now I have two lists --- one of top export partners and one of top import partners
+           //Create links to top 5 importers and top 5 exporters
+
+           let topExport = exportPartners.slice(0,5);
+           let topImport =  importPartners.slice(0,5)
+           let topTotalTrade = totalTradePartners.slice(0,10)
+
+         //  console.log(topExport);
+         //  console.log(topImport);
+
+           let priLatLon = cityData.filter(d=> {
+               if(d.id === pri){
+                   return d;
+               }
+           })
+
+           let secLatLon = cityData.filter(d=> {
+            if(d.id === sec){
+                return d;
+            }
+        })
+
+        // let city = [];
+        // let temp;
+        //  for(let i = 0; i < 10; i++){
+        //      temp =  cityData.filter(d =>{
+        //          if(d.id === topTotalTrade[i].key){
+        //              return d
+        //          }
+             
+        //      })
+        //      city = city.concat(temp)
+        //  }
+
+    
+
+           let city = [];
+           let temp;
+            for(let i = 0; i < 5; i++){
+                temp =  cityData.filter(d =>{
+                    if(d.id === topExport[i].key){
+                        return d
+                    }
+                    if(d.id === topImport[i].key){
+                        return d
+                    }
+                
+                })
+                city = city.concat(temp)
+            }
+
+            let unique = [...new Set(city)]; 
+      
+
+
 
           //Need a list of 'Top Partners' of primary country in order to draw links
-          //Top partners can be identified as those that have either export or imported the most over
+          //Top partners can be identified as those that have either exported or imported the most over
           //the year range
           //Then we can filter out the cities that belong in that list
 
-           let city =  cityData.filter(d =>{
-                if(d.id === pri || d.id === sec){
-                    return d;
-                }
-            })
-            console.log(city)
+        //    let city =  cityData.filter(d =>{
+        //         if(d.id === pri || d.id === sec){
+        //             return d;
+        //         }
+        //     })
+        //     console.log(city)
 
             //get geojson from topojson
             let geojson = topojson.feature(mapData, mapData.objects.countries);
@@ -98,45 +226,63 @@ class Map {
 
             this.updateHighlights()
                                 
-            console.log(data)
+         //   console.log(data)
             map.selectAll("circle").remove();
                
             //Below is TEST code to show capitals of primary and secondary selections
             //Add capital markers to map - first to see if they show up - next to identify primary and secondary
             //Later on, these circles will be used to draw arcs
             let capitals = map.selectAll("circle")
-                                .data(city)
+                                .data(unique)
             let capitalsExit =  capitals.exit().remove()
             let capitalsEnter = capitals.enter()
                                 .append("circle")
                                 .attr("cx", function (d) {
-                                    console.log(d)
+          //                          console.log(d)
                                     return projection([d.longitude, d.latitude])[0];
                                 })
                                 .attr("cy", function (d) {
                                     return projection([d.longitude, d.latitude])[1];
                                 })
                                 .attr("r", function (d) {
-                                    return 5;
+                                    return 3;
                                 })
-                                .style("fill", "steelblue")
+                                .style("fill", "#777")
                                 .style("opacity", 0.8)
             let capitalsMerge = capitalsEnter.merge(capitals)
 
-//Testing line connections
-            let dataArr = [];
+            //Testing line connections
+            //I need a line from PRI to every other data point in cities
 
-            for(let i = 0; i < city.length; i++){
-                dataArr.push(projection([city[i].longitude, city[i].latitude]))
+             let dataArr = [];
+             dataArr.push( projection([priLatLon[0].longitude, priLatLon[0].latitude])); //first element is primary
+
+            for(let i = 0; i < unique.length; i++){
+                dataArr.push(
+                        projection([unique[i].longitude, unique[i].latitude])
+                    )
             }
-            
-            console.log(dataArr)
+        
             let lineGenerator = d3.line()
-            let pathString = lineGenerator(dataArr);
 
-            map.append('path')
-                .attr('d', pathString)
-                .attr('class', 'line')
+            let pathArr = [];
+            let d = [];
+            
+
+            for(let i = 1 ; i < dataArr.length; i++){
+                d.push(dataArr[0])
+                d.push(dataArr[i])
+                pathArr.push(lineGenerator(d))
+                d.splice(d.length)            
+            }
+
+            for(let i = 0; i < pathArr.length; i++){
+                let pathString = pathArr[i];
+
+                map.append('path')
+                    .attr('d', pathString)
+                    .attr('class', 'line')
+                }
             }
 
     updateHighlights() {

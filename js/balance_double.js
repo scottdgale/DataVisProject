@@ -22,9 +22,9 @@ class Balance_Double {
     }
 
     update(data, gdp, pri, sec, years) {
-        console.log(data);
-        console.log("Balance_double PRI: " + pri);
-        console.log("Balance_double SEC: " + sec);
+        // console.log(data);
+        // console.log("Balance_double PRI: " + pri);
+        // console.log("Balance_double SEC: " + sec);
     }
 
 }

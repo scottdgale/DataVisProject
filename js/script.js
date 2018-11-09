@@ -34,66 +34,60 @@ loadMapData().then(data => {
         .domain(domain)
         .range(range);
 
-    //SyncData with initial dataset - All objects will call syncData for interaction
-    syncData(primary, secondary, selected_years);
-
-
-    //syncData is the focal point for all interactions and updates
-    function syncData(priCountry, secCountry, years) {
-        primary = priCountry;
-        secondary = secCountry;
-        selected_years = years;
-
-
-        let dataDyadic = loadDataDyadic();
-        loadDataNational();  //load gdp occurs in loadDataNational
-
-        //Call update for all views - ONLY pass the data you need to increase system performance
-        map.update(dataDyadic, primary, secondary, selected_years, mapData, cityData);
-    }
-
-
-    //National
-    function loadDataNational() {
-        let nationalArray = [];
-        let count = selected_years[1] - selected_years[0];
-        for (let year = selected_years[0]; year <= (selected_years[1]); year++) {
-            d3.csv("data/National/National_" + year + ".csv").then(nationalData => {
-                nationalArray.push(nationalData);
-                if (!count--) {
-                    d3.csv("data/gdp.csv").then(gdpData => {
-                        globalBalance.update(nationalArray, gdpData, primary, secondary, selected_years);
-                    });
-                }
-            });
-        }
-    }
-
-    //Dyadic
-    function loadDataDyadic(year) {
-        let dyadicArray = [];
-        let count = selected_years[1] - selected_years[0];
-        for (let year = selected_years[0]; year <= selected_years[1]; year++) {
-            d3.csv("data/Dyadic/Dyadic_" + year + ".csv").then(d => {
-                dyadicArray.push(d);
-                //Once all years are loaded - call the appropriate .update functions.
-                if (!count--) {
-                    topTraders.update(dyadicArray, primary, secondary, selected_years);
-                    balanceSingle.update(dyadicArray, primary, secondary, selected_years);
-                    balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
-                }
-            });
-        }
-        return dyadicArray;
-    }
-
-
     let cities = [];
     d3.csv('Data/capital_cities.csv').then(capitalCityData => {
         cities.push(capitalCityData);
     });
 
+    //SyncData with initial dataset - All objects will call syncData for interaction
+    syncData(primary, secondary, selected_years);
+
 });
+
+//syncData is the focal point for all interactions and updates
+function syncData(priCountry, secCountry, years) {
+    primary = priCountry;
+    secondary = secCountry;
+    selected_years = years;
+
+    loadDataDyadic();
+    loadDataNational();  //load gdp occurs in loadDataNational
+}
+
+//Dyadic
+function loadDataDyadic (year) {
+    let dyadicArray = [];
+    let count = selected_years[1] - selected_years[0];
+    for (let year = selected_years[0]; year <= selected_years[1]; year++) {
+        d3.csv("data/Dyadic/Dyadic_" + year + ".csv").then(d => {
+            dyadicArray.push(d);
+            //Once all years are loaded - call the appropriate .update functions.
+            if (!count--) {
+                //Organize Data - Insert function call here //
+                topTraders.update(dyadicArray, primary, secondary, selected_years);
+                balanceSingle.update(dyadicArray, primary, secondary, selected_years);
+                balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
+                map.update(dyadicArray, primary, secondary, selected_years, mapData, cityData);
+            }
+        });
+    }
+}
+
+//National
+function loadDataNational() {
+    let nationalArray = [];
+    let count = selected_years[1] - selected_years[0];
+    for (let year = selected_years[0]; year <= (selected_years[1]); year++) {
+        d3.csv("data/National/National_" + year + ".csv").then(nationalData => {
+            nationalArray.push(nationalData);
+            if (!count--) {
+                d3.csv("data/gdp.csv").then(gdpData => {
+                    globalBalance.update(nationalArray, gdpData, primary, secondary, selected_years);
+                });
+            }
+        });
+    }
+}
 
 async function loadMapData() {
     let mapData = await d3.json('Data/world.json');
