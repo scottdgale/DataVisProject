@@ -31,17 +31,17 @@ class Map {
         this.primary = pri;
         this.secondary = sec;
 
+        //deep copy
+        let exportPartners = data.exportPartners.slice();
+        let importPartners = data.importPartners.slice();
+        let totalTradePartners = data.totalTradePartners.slice();
 
-        console.log(data.exportPartners);
-        console.log(data.importPartners);
-        console.log(data.totalTradePartners);
+        // let exportPartners = data.exportPartners.splice(0,20);
+        // let importPartners = data.importPartners.splice(0,20);
+        // let totalTradePartners = data.totalTradePartners.splice(0,20);
 
-        let exportPartners1 = data.exportPartners.splice(0,20);
-        let importPartners1 = data.importPartners.splice(0,20);
-        let totalTradePartners1 = data.totalTradePartners.splice(0,20);
-
-        console.log(exportPartners1);
-        console.log(importPartners1);
+        // console.log(exportPartners);
+        // console.log(importPartners);
 
 
 
