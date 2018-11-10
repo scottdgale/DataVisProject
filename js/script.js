@@ -50,7 +50,7 @@ function syncData(priCountry, secCountry, years) {
     selected_years = years;
 
     loadDataDyadic();
-    loadDataNational();  //load gdp occurs in loadDataNational
+    loadDataNational();
 }
 
 //Dyadic
@@ -63,7 +63,11 @@ function loadDataDyadic (year) {
             //Once all years are loaded - call the appropriate .update functions.
             if (!count--) {
                 //Organize Data - Insert function call here //
-                let newDyadicArray = organizeData(dyadicArray, primary);
+                //let newDyadicArray = organizeData(dyadicArray, primary);
+
+                let hopeThisWorks = new DataProcess();
+                let newDyadicArray = hopeThisWorks.processData(dyadicArray,primary);
+                console.log(newDyadicArray);    //This is the new data -
                 topTraders.update(newDyadicArray, primary, secondary, selected_years);
                 balanceSingle.update(dyadicArray, primary, secondary, selected_years);
                 balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
@@ -81,9 +85,8 @@ function loadDataNational() {
         d3.csv("data/National/National_" + year + ".csv").then(nationalData => {
             nationalArray.push(nationalData);
             if (!count--) {
-                d3.csv("data/gdp.csv").then(gdpData => {
-                      globalBalance.update(nationalArray, gdpData, primary, secondary, selected_years);
-                });
+                //d3.csv("data/gdp.csv").then(gdpData => {
+                globalBalance.update(nationalArray, gdpDataSet, primary, secondary, selected_years);
             }
         });
     }
@@ -165,6 +168,193 @@ function organizeData(data, pri){
 
     return {exportPartners, importPartners, totalTradePartners};
 }
+
+
+class DataProcess {
+
+    constructor() {
+        this.totalImports = 0;
+        this.totalExports = 0;
+        this.isFlow1 = false;
+    }
+
+
+    processData(data, pri) {
+        let dataImport = [];
+        let dataExport = [];
+        let numYears = data.length;
+        for (let index = 0; index < data.length; index++) {
+            dataImport.push(this.sortSingleYearImport(data, pri, index).splice(0, 50));
+            dataExport.push(this.sortSingleYearExport(data, pri, index).splice(0, 50));
+        }
+
+        let newDataImport = this.average(dataImport, pri);
+        let newDataExport = this.average(dataExport, pri);
+        let dataTotal = this.getTotal(newDataImport, newDataExport, pri, numYears);
+        console.log(newDataImport);
+        console.log(newDataExport);
+
+        return {
+            Imports: newDataImport,
+            Exports: newDataExport,
+            Total: dataTotal
+        };
+    }
+
+    getTotal(importData, exportData, pri, years){
+
+        let tempTotal=0;
+        let total = [];
+        for (let f=0; f<importData.length; f++) {
+            for (let g = 0; g < exportData.length; g++) {
+                if (importData[f].SecondaryId === exportData[g].SecondaryId) {
+                    tempTotal += importData[f].Total + exportData[g].Total;
+                }
+            }
+            total.push({
+                PrimaryId: importData[0].PrimaryId,
+                PrimaryName: importData[0].PrimaryName,
+                SecondaryId: importData[f].SecondaryId,
+                SecondaryName: importData[f].SecondaryName,
+                Total: parseFloat(tempTotal).toFixed(),
+                Average: parseFloat(tempTotal / years).toFixed(2),
+                Total_Global_Imports: parseFloat(this.totalImports).toFixed(2),
+                Total_Global_Exports: parseFloat(this.totalExports).toFixed(2)
+            });
+            tempTotal = 0;
+        }
+        total.sort(function(a,b){return b-a});
+        //let spliceTotal = total.splice(0,10);
+        //console.log(spliceTotal);
+        return total.splice(0,10);
+    }
+
+    average(sortedArray, pri) {
+        console.log(sortedArray);
+        let average = [];
+        let temp=0;
+        let numYears = sortedArray.length;
+        let numCountries = sortedArray[0].length;
+        let secondaryCountry;
+        let averageData = sortedArray;
+
+        for (let c = 0; c < numCountries; c++) {
+            //use the elements in the most recent year as the pivot id
+            let pivot = this.isFlow1 ? averageData[numYears - 1][c].id2 : averageData[0][c].id1;
+            let pivotName = this.isFlow1? averageData[numYears - 1][c].importer2 : averageData[0][c].importer1;
+            let priName = this.isFlow1? averageData[numYears - 1][c].importer1 : averageData[0][c].importer2;
+            //Cycle through each year and find the pivot country in that year
+            for (let d=0; d<numYears; d++){
+                if (this.isFlow1) {
+                    //Cycle through each country in this specific year and find the pivot country
+                    for (let e = 0; e < numCountries; e++) {
+                        if (pivot === averageData[d][e].id2) {
+                            //console.log(pivot + " " + sortedArray[d][e].id2 + " " + sortedArray[d][e].flow2);
+                            //sum the values for the same country and store in the newAverage array
+                            temp += parseFloat(averageData[d][e].flow2);
+                        }
+                    }
+                }
+                else{
+                    //Cycle through each country in this specific year and find the pivot country
+                    for (let e = 0; e < numCountries; e++) {
+                        if (pivot === averageData[d][e].id1) {
+                            //console.log(pivot + " " + sortedArray[d][e].id2 + " " + sortedArray[d][e].flow2);
+                            //sum the values for the same country and store in the newAverage array
+                            temp += parseFloat(averageData[d][e].flow1);
+                        }
+                    }
+                }
+            }
+            //Average the data, push data to average array, reset temp
+            average.push({
+                PrimaryId: pri,
+                PrimaryName: priName,
+                SecondaryId: pivot,
+                SecondaryName: pivotName,
+                Total: temp,
+                Average: parseFloat(temp/numYears).toFixed(2),
+                Total_Global_Imports: parseFloat(this.totalImports).toFixed(2),
+                Total_Global_Exports: parseFloat(this.totalExports).toFixed(2)
+            });
+            temp = 0;
+        }
+        //Sort the new array based off calculated average
+        average.sort(function(a,b){
+            return b.Average - a.Average;
+        });
+        console.log(average);
+        return average;
+    }
+
+
+    sortSingleYearImport(data, pri, index) {
+        let singleYear = [];
+        let localFlow;
+        //index represents the year
+        for (let a = 0; a < data[index].length; a++) {
+            if (data[index][a].id1 === pri) {
+                singleYear.push(data[index][a]);
+                localFlow = this.isFlow1 = true;
+                //Eliminate any missing data and sum the total imports
+                if (!(data[index][a].flow1 === "-9")) {
+                    this.totalImports += parseFloat(data[index][a].flow1);
+                }
+            }
+            else if (data[index][a].id2 === pri) {
+                singleYear.push(data[index][a]);
+                localFlow = this.isFlow1 = false;
+                //Eliminate any missing data and sum the total imports
+                if (!data[index][a].flow2 === "-9") {
+                    this.totalImports += parseFloat(data[index][a].flow2);
+                }
+            }
+        }
+        //sort data based on imports / exports
+        singleYear.sort(function (a, b) {
+            if (localFlow) {
+                return b.flow1 - a.flow1;
+            }
+            else
+                return b.flow2 - a.flow2;
+        });
+        return singleYear;
+    }
+
+
+    sortSingleYearExport(data, pri, index) {
+        let singleYear = [];
+        let localFlow;
+        for (let a = 0; a < data[index].length; a++) {
+            if (data[index][a].id1 === pri) {
+                singleYear.push(data[index][a]);
+                localFlow = this.flow1 = true;
+                //Eliminate any missing data and sum the total exports
+                if (!(data[index][a].flow2 === "-9")) {
+                    this.totalExports += parseFloat(data[index][a].flow2);
+                }
+            }
+            else if (data[index][a].id2 === pri) {
+                singleYear.push(data[index][a]);
+                localFlow = this.flow1 = true;
+                //Eliminate any missing data and sum the total exports
+                if (!(data[index][a].flow1 === "-9")) {
+                    this.totalExports += parseFloat(data[index][a].flow1);
+                }
+            }
+        }
+        //sort data based on imports / exports
+        singleYear.sort(function (a, b) {
+            if (localFlow) {
+                return b.flow2 - a.flow2;
+            }
+            else
+                return b.flow1 - a.flow1;
+        });
+        return singleYear;
+    }
+
+}   //close DataProcess class
 
 
 

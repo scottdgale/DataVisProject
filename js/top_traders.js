@@ -59,16 +59,15 @@ class Top_Traders {
         let yOffset = 28;
         let xOffset = 110;
 
-        //Deep copy using slice() -- prevents mutation
-        let exportPartners = data.exportPartners.slice();
-        let importPartners = data.importPartners.slice();
-        let totalTradePartners = data.totalTradePartners.slice();
+        // //Deep copy using slice() -- prevents mutation
+        // let exportPartners = data.exportPartners.slice();
+        // let importPartners = data.importPartners.slice();
+        // let totalTradePartners = data.totalTradePartners.slice();
+        //
+        // let topExporters = exportPartners.splice(0,20);
+        // let topImporters = importPartners.splice(0,20);
+        console.log(data);
 
-        let topExporters = exportPartners.splice(0,20);
-        let topImporters = importPartners.splice(0,20);
-
-        // console.log(topExporters);
-        // console.log(topImporters);
 
 
         //Get the maximum values for exports and imports
