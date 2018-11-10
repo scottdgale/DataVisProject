@@ -20,37 +20,71 @@ class Map {
         this.secondary;
         this.colorScale;
 
+        divMap.append('svg')
+              .attr('id', 'svg_label')
+              .attr('height', 50)
+              .attr('width', this.svgWidth)
+              .append('text')
+              .attr('class', 'primaryLabel')
+              .style('font-size', '20px')
+        d3.select("#svg_label")
+            .append('text')
+            .attr('class', 'secondaryLabel')
+            .style('font-size', '20px')
+
+
         divMap.append("svg")
             .attr("id", "svg_map")
             .attr("height", this.svgHeight)
             .attr("width", this.svgWidth);
     }
 
-    update(data, pri, sec, years) {
 
-        console.log(data)
+    update(data, pri, sec, years) {
 
         let that = this;
         let cityData = this.cityData
         let mapData = this.mapData
         this.primary = pri;
         this.secondary = sec;
+        let primaryName;
+        let secondaryName;
+
+  
 
         //deep copy
         let exportPartners = data.Exports.slice();
         let importPartners = data.Imports.slice();
         let totalTradePartners = data.Total.slice();
 
+
+
+        //coloring for map set up
         let maxTrade = totalTradePartners[0].Total
         let minTrade = totalTradePartners[9].Total
-
         this.colorScale = d3.scaleQuantize().domain([minTrade, maxTrade]).range(['#d4d4e8','#bebedc', '#a9a9d1','#9393c5','#7e7eba','#6868ae',"#5252a3",'#3d3d97'])
 
+        //Using City Data to get primary and secondary information
         let priLatLon = cityData.filter(d=> {
             if(d.id === pri){
                 return d;
             }
         })
+        let secondary = cityData.filter(d=> {
+            if(d.id === sec){
+                return d
+            }
+        })
+        let primary = cityData.filter(d=> {
+            if(d.id === pri){
+                return d
+            }
+        })
+        
+
+        
+        primaryName = primary[0].country;
+        secondaryName = secondary[0].country
 
         //filter the city data based on top 10 traders
            let city = [];
@@ -66,6 +100,17 @@ class Map {
             }
 
             console.log(city)
+
+                  //Labels
+            let label =  d3.select("#svg_label")
+            label.select('.primaryLabel')
+                    .attr('x', 20)
+                    .attr('y', 20)
+                    .text("Primary Country: " + primaryName)
+            label.select('.secondaryLabel')
+                    .attr('x', 20)
+                    .attr('y', 40)
+                    .text("Secondary Country: " + secondaryName)
 
         /** Draw the map and append circles and lines to indicate trade relationships */
             //get geojson from topojson
@@ -168,13 +213,6 @@ class Map {
                     .attr('d', pathString)
                     .attr('class', 'line')
                 }
-
-            //Append text box for primary and secondary
-            map
-            .append('div').classed("label",true)
-            .append('text').classed("label",true)
-            .text("Primary Country: " + pri)
-
             }
 
     //Temporary highlighting function that allows us to see the difference between pri and sec
