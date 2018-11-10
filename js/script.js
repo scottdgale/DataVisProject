@@ -68,7 +68,7 @@ function loadDataDyadic (year) {
                 let hopeThisWorks = new DataProcess();
                 let newDyadicArray = hopeThisWorks.processData(dyadicArray,primary);
 
-                //console.log(newDyadicArray);
+                console.log(newDyadicArray);
 
                 topTraders.update(newDyadicArray, primary, secondary, selected_years);
 
@@ -133,8 +133,8 @@ class DataProcess {
         let avgDataImport = this.average(dataImport, true);
         let avgDataExport = this.average(dataExport, false);
 
-        console.log(avgDataImport);
-        console.log(avgDataExport);
+        //console.log(avgDataImport);
+        //console.log(avgDataExport);
 
         let dataTotal = this.getTotal(avgDataImport, avgDataExport, pri, numYears);
 
@@ -210,8 +210,10 @@ class DataProcess {
             });
             tempTotal = 0;
         }
-        total.sort(function(a,b){return b.Total -a.Total});
-        return total;
+        total.sort(function(a,b){
+            return b.Total - a.Total
+        });
+        return total.splice(0,10);
     }
 
     average(data, isImport) {
@@ -221,7 +223,7 @@ class DataProcess {
         let numYears = avgData.length;
         let numCountries = avgData[0].length;
 
-        //console.log(averageData);
+        console.log(avgData);
 
         for (let country = 0; country < numCountries; country++) {
 
@@ -261,9 +263,9 @@ class DataProcess {
         console.log(average);
 
         //Sort the new array based off calculated average
-        average.sort(function(a,b){
-            return b.Average - a.Average;
-        });
+        //average.sort(function(a,b){
+            //return b.Average - a.Average;
+        //});
 
         //console.log(average);
 
