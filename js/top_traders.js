@@ -8,7 +8,7 @@ class Top_Traders {
 
         this.totalExports = 0.0;
         this.totalImports = 0.0;
-        this.flow1 = true; //true indicates the primary country is associated with (flow1=import)
+        this.isFlow1 = true; //true indicates the primary country is associated with (flow1=import)
         this.margin = {top: 20, right: 20, bottom: 20, left: 50, spacing: 57};
 
         let divTopTraders = d3.select("#top_traders").classed("right_quarter", true);

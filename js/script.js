@@ -67,7 +67,6 @@ function loadDataDyadic (year) {
 
                 let hopeThisWorks = new DataProcess();
                 let newDyadicArray = hopeThisWorks.processData(dyadicArray,primary);
-                console.log(newDyadicArray);    //This is the new data -
                 topTraders.update(newDyadicArray, primary, secondary, selected_years);
                 balanceSingle.update(dyadicArray, primary, secondary, selected_years);
                 balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
@@ -188,11 +187,10 @@ class DataProcess {
             dataExport.push(this.sortSingleYearExport(data, pri, index).splice(0, 50));
         }
 
-        let newDataImport = this.average(dataImport, pri);
-        let newDataExport = this.average(dataExport, pri);
+        //The last parameter of average takes a boolean that indicates whether this is an import or export
+        let newDataImport = this.average(dataImport, pri, true);
+        let newDataExport = this.average(dataExport, pri, false);
         let dataTotal = this.getTotal(newDataImport, newDataExport, pri, numYears);
-        console.log(newDataImport);
-        console.log(newDataExport);
 
         return {
             Imports: newDataImport,
@@ -224,18 +222,14 @@ class DataProcess {
             tempTotal = 0;
         }
         total.sort(function(a,b){return b-a});
-        //let spliceTotal = total.splice(0,10);
-        //console.log(spliceTotal);
         return total.splice(0,10);
     }
 
-    average(sortedArray, pri) {
-        console.log(sortedArray);
+    average(sortedArray, pri, isImport) {
         let average = [];
         let temp=0;
         let numYears = sortedArray.length;
         let numCountries = sortedArray[0].length;
-        let secondaryCountry;
         let averageData = sortedArray;
 
         for (let c = 0; c < numCountries; c++) {
@@ -245,7 +239,7 @@ class DataProcess {
             let priName = this.isFlow1? averageData[numYears - 1][c].importer1 : averageData[0][c].importer2;
             //Cycle through each year and find the pivot country in that year
             for (let d=0; d<numYears; d++){
-                if (this.isFlow1) {
+                if (isImport) {
                     //Cycle through each country in this specific year and find the pivot country
                     for (let e = 0; e < numCountries; e++) {
                         if (pivot === averageData[d][e].id2) {
@@ -258,7 +252,7 @@ class DataProcess {
                 else{
                     //Cycle through each country in this specific year and find the pivot country
                     for (let e = 0; e < numCountries; e++) {
-                        if (pivot === averageData[d][e].id1) {
+                        if (pivot === averageData[d][e].id2) {
                             //console.log(pivot + " " + sortedArray[d][e].id2 + " " + sortedArray[d][e].flow2);
                             //sum the values for the same country and store in the newAverage array
                             temp += parseFloat(averageData[d][e].flow1);
@@ -283,7 +277,6 @@ class DataProcess {
         average.sort(function(a,b){
             return b.Average - a.Average;
         });
-        console.log(average);
         return average;
     }
 
@@ -328,7 +321,7 @@ class DataProcess {
         for (let a = 0; a < data[index].length; a++) {
             if (data[index][a].id1 === pri) {
                 singleYear.push(data[index][a]);
-                localFlow = this.flow1 = true;
+                localFlow = this.isFlow1 = true;
                 //Eliminate any missing data and sum the total exports
                 if (!(data[index][a].flow2 === "-9")) {
                     this.totalExports += parseFloat(data[index][a].flow2);
@@ -336,7 +329,7 @@ class DataProcess {
             }
             else if (data[index][a].id2 === pri) {
                 singleYear.push(data[index][a]);
-                localFlow = this.flow1 = true;
+                localFlow = this.isFlow1 = true;
                 //Eliminate any missing data and sum the total exports
                 if (!(data[index][a].flow1 === "-9")) {
                     this.totalExports += parseFloat(data[index][a].flow1);
