@@ -53,8 +53,11 @@ class Top_Traders {
     }
 
     update(data, pri, sec, years) {
+        /**
+         * Scott - I did a slice on the inner arrays of data and it seems to work (see below:)
+         */
 
-        let topData = data.slice;
+        // let topData = data.slice();
         let rectHeight = 20;
         let yScaler = 21;
         let yOffset = 28;
@@ -62,12 +65,12 @@ class Top_Traders {
         let convert = 1000;
 
         // //Deep copy using slice() -- prevents mutation
-        // let exportPartners = data.exportPartners.slice();
-        // let importPartners = data.importPartners.slice();
+        let exportPartners = data.Exports.slice();
+        let importPartners = data.Imports.slice();
         // let totalTradePartners = data.totalTradePartners.slice();
         //
-        let topExporters = topData.Exports.splice(0,20);
-        let topImporters = topData.Imports.splice(0,20);
+        let topExporters = exportPartners.splice(0,20);
+        let topImporters = importPartners.splice(0,20);
         //console.log(topExporters);
         //console.log(topImporters);
 

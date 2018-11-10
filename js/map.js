@@ -20,9 +20,6 @@ class Map {
         this.secondary;
         this.colorScale;
 
-   
-
-
         divMap.append("svg")
             .attr("id", "svg_map")
             .attr("height", this.svgHeight)
@@ -44,13 +41,10 @@ class Map {
         let importPartners = data.Imports.slice();
         let totalTradePartners = data.Total.slice();
 
-        console.log(totalTradePartners)
-
         let maxTrade = totalTradePartners[0].Total
         let minTrade = totalTradePartners[9].Total
-        this.colorScale = d3.scaleLinear().domain([minTrade, maxTrade]).range(['#C4C4E4',"#3c3ca7"])
 
-
+        this.colorScale = d3.scaleQuantize().domain([minTrade, maxTrade]).range(['#d4d4e8','#bebedc', '#a9a9d1','#9393c5','#7e7eba','#6868ae',"#5252a3",'#3d3d97'])
 
         let priLatLon = cityData.filter(d=> {
             if(d.id === pri){
@@ -102,10 +96,10 @@ class Map {
                                 .attr('d', path)
                                 .attr('id', (d) => d.id)
                                 .classed('countries', true)
-                                /** The click even updates all of the other views */
                                 .on('mouseover', function(d) {
                                     d3.select(this).append("title").text(d.id);
                                 })
+                                /** The click even updates all of the other views */
                                 .on("click",function(d){
                                     //if sec is the clicked country, toggle current pri and sec
                                     //if a new country is clicked, set previous sec to pri and set new country to sec.    
@@ -186,10 +180,8 @@ class Map {
     //Temporary highlighting function that allows us to see the difference between pri and sec
     updateHighlights() {
             d3.selectAll('.countries').style('fill', '#E0E0E0')
-            d3.select("#" + this.primary).style('stroke-width', '1.5')
-            d3.select("#" + this.secondary).style('stroke-width', '1.5')
-            // d3.select("#" + this.primary).style('fill', '#99b3e6').style('stroke-width', '3')
-            // d3.select("#" + this.secondary).style('fill', '#ff99cc').style('stroke-width', '3')
+            d3.select("#" + this.primary).style('stroke-width', '3')
+            d3.select("#" + this.secondary).style('stroke-width', '3')
     }
 
     countryColoring(topTraders){
