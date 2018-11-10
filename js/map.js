@@ -10,7 +10,6 @@ class Map {
         this.margin = {top: 20, right: 20, bottom: 20, left: 50, spacing: 50};
 
         let divMap = d3.select("#map").classed("three_quarter_view", true);
-    //    console.log(divMap);
         this.svgBounds = divMap.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
         this.svgHeight = 500;
@@ -19,6 +18,10 @@ class Map {
         this.syncData = syncData;
         this.primary;
         this.secondary;
+        this.colorScale;
+
+   
+
 
         divMap.append("svg")
             .attr("id", "svg_map")
@@ -28,6 +31,8 @@ class Map {
 
     update(data, pri, sec, years) {
 
+        console.log(data)
+
         let that = this;
         let cityData = this.cityData
         let mapData = this.mapData
@@ -35,22 +40,19 @@ class Map {
         this.secondary = sec;
 
         //deep copy
-        let exportPartners = data.exportPartners.slice();
-        let importPartners = data.importPartners.slice();
-        let totalTradePartners = data.totalTradePartners.slice();
+        let exportPartners = data.Exports.slice();
+        let importPartners = data.Imports.slice();
+        let totalTradePartners = data.Total.slice();
 
-        let topTotalTrade = totalTradePartners.slice(0,10);
+        console.log(totalTradePartners)
 
-        console.log(topTotalTrade)
+        let maxTrade = totalTradePartners[0].Total
+        let minTrade = totalTradePartners[9].Total
+        this.colorScale = d3.scaleLinear().domain([minTrade, maxTrade]).range(['#C4C4E4',"#3c3ca7"])
+
 
         let priLatLon = cityData.filter(d=> {
             if(d.id === pri){
-                return d;
-            }
-        })
-
-        let secLatLon = cityData.filter(d=> {
-            if(d.id === sec){
                 return d;
             }
         })
@@ -60,15 +62,15 @@ class Map {
            let temp;
             for(let i = 0; i < 10; i++){
                 temp =  cityData.filter(d =>{
-                    if(d.id === topTotalTrade[i].key){
+                    if(d.id === totalTradePartners[i].SecondaryId){ //all except for secondary
                         return d;
                     }
                 
                 })
                 city = city.concat(temp)
             }
-    
-    
+
+            console.log(city)
 
         /** Draw the map and append circles and lines to indicate trade relationships */
             //get geojson from topojson
@@ -99,9 +101,10 @@ class Map {
                                 .attr('d', path)
                                 .attr('id', (d) => d.id)
                                 .classed('countries', true)
-                                .style('fill', '#CDCDCD')
-                                .style('stroke', 'white')
                                 /** The click even updates all of the other views */
+                                .on('mouseover', function(d) {
+                                    d3.select(this).append("title").text(d.id);
+                                })
                                 .on("click",function(d){
                                     //if sec is the clicked country, toggle current pri and sec
                                     //if a new country is clicked, set previous sec to pri and set new country to sec.    
@@ -119,6 +122,7 @@ class Map {
             countries = enter.merge(countries)
 
             this.updateHighlights()
+            this.countryColoring(totalTradePartners)
    
             //Draws circles on the captial cities of the top 10 traders of the primary country                    
             map.selectAll("circle").remove();
@@ -148,9 +152,7 @@ class Map {
              dataArr.push( projection([priLatLon[0].longitude, priLatLon[0].latitude])); //first element is primary
 
             for(let i = 0; i < city.length; i++){
-                dataArr.push(
-                        projection([city[i].longitude, city[i].latitude])
-                    )
+                dataArr.push(projection([city[i].longitude, city[i].latitude]))
             }
         
             //Use a lineGenerator to create pathStrings from the primary country to it's trade partners 
@@ -171,13 +173,30 @@ class Map {
                     .attr('d', pathString)
                     .attr('class', 'line')
                 }
+
+            //Append text box for primary and secondary
+            map
+            .append('div').classed("label",true)
+            .append('text').classed("label",true)
+            .text("Primary Country: " + pri)
+
             }
 
     //Temporary highlighting function that allows us to see the difference between pri and sec
     updateHighlights() {
-            d3.selectAll('.countries').style('fill', '#CDCDCD')
-            d3.select("#" + this.primary).style('fill', '#99b3e6')
-            d3.select("#" + this.secondary).style('fill', '#ff99cc')
+            d3.selectAll('.countries').style('fill', '#E0E0E0')
+            d3.select("#" + this.primary).style('stroke-width', '1.5')
+            d3.select("#" + this.secondary).style('stroke-width', '1.5')
+            // d3.select("#" + this.primary).style('fill', '#99b3e6').style('stroke-width', '3')
+            // d3.select("#" + this.secondary).style('fill', '#ff99cc').style('stroke-width', '3')
+    }
+
+    countryColoring(topTraders){
+        let that = this;
+        topTraders.forEach(element => {
+            d3.select('#' + element.SecondaryId).style('fill', that.colorScale(element.Total))
+          });
+
     }
 
 }

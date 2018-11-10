@@ -67,7 +67,7 @@ function loadDataDyadic (year) {
 
                 let hopeThisWorks = new DataProcess();
                 let newDyadicArray = hopeThisWorks.processData(dyadicArray,primary);
-                topTraders.update(newDyadicArray, primary, secondary, selected_years);
+                //topTraders.update(newDyadicArray, primary, secondary, selected_years);
                 balanceSingle.update(dyadicArray, primary, secondary, selected_years);
                 balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
                 map.update(newDyadicArray, primary, secondary, selected_years);

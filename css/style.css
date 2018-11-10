@@ -52,6 +52,12 @@ h3{
     width: 100%;
 }
 
+.countries {
+    fill: #CDCDCD;
+    stroke: white;
+}
+
+
 .graticule {
     fill: none;
     stroke: #777;
@@ -68,6 +74,11 @@ h3{
     stroke: #777;
     stroke-width: 1.5px;
 }
+
+/* .priToSecLine {
+    stroke: #777;
+    stroke-width: 4px;
+} */
 
 .imports {
     fill: purple;
