@@ -35,13 +35,11 @@ class Map {
         this.secondary = sec;
 
         //deep copy
-        let exportPartners = data.exportPartners.slice();
-        let importPartners = data.importPartners.slice();
-        let totalTradePartners = data.totalTradePartners.slice();
+        let exportPartners = data.Exports;
+        let importPartners = data.Imports;
+        let topTotalTrade = data.Total;
 
-        let topTotalTrade = totalTradePartners.slice(0,10);
 
-        console.log(topTotalTrade)
 
         let priLatLon = cityData.filter(d=> {
             if(d.id === pri){

@@ -58,36 +58,39 @@ class Top_Traders {
         let yScaler = 21;
         let yOffset = 28;
         let xOffset = 110;
+        let convert = 1000;
 
         // //Deep copy using slice() -- prevents mutation
         // let exportPartners = data.exportPartners.slice();
         // let importPartners = data.importPartners.slice();
         // let totalTradePartners = data.totalTradePartners.slice();
         //
-        // let topExporters = exportPartners.splice(0,20);
-        // let topImporters = importPartners.splice(0,20);
-        console.log(data);
+        let topExporters = data.Exports.splice(0,20);
+        let topImporters = data.Imports.splice(0,20);
+        //console.log(topExporters);
+        //console.log(topImporters);
+
 
 
 
         //Get the maximum values for exports and imports
-        let exportMax = d3.max(topExporters,d=> d.values[0].value["MeanExports"]);
-        let exportMin = d3.min(topExporters,d=> d.values[0].value["MeanExports"]);
-        let importMax = d3.max(topExporters,d=> d.values[0].value["MeanImports"]);
-        let importMin = d3.min(topExporters,d=> d.values[0].value["MeanImports"]);
+        let exportMax = (topExporters[0].Average/convert);
+        let exportMin = (topExporters[topExporters.length-1].Average/convert);
+        let importMax = (topImporters[0].Average/convert);
+        let importMin = (topImporters[topImporters.length-1].Average/convert);
 
         let widthExportAxisScale = d3.scaleLinear()
-            .domain([(exportMin/1000),(exportMax/1000)])
+            .domain([(exportMin),(exportMax)])
             .range([120,0])
             .nice();
 
         let widthExportScale = d3.scaleLinear()
-            .domain([(exportMin/1000),(exportMax/1000)])
+            .domain([(exportMin),(exportMax)])
             .range([5,120])
             .nice();
 
         let widthImportScale = d3.scaleLinear()
-            .domain([importMin/1000,importMax/1000])
+            .domain([importMin,importMax])
             .range([5,120])
             .nice();
 
@@ -111,13 +114,13 @@ class Top_Traders {
             .attr("class", "exports")
             .attr("height", rectHeight)
             .attr("x", (d)=>{
-                return (xOffset-widthExportScale((d.values[0].value["MeanExports"]/1000)));
+                return xOffset - (widthExportScale(d.Average/convert));
             })
             .attr("y", (d,i)=>{
                 return yOffset +(i*yScaler);
             })
             .attr("width", (d)=>{
-                return widthExportScale(d.values[0].value["MeanExports"]/1000);
+                return widthExportScale(d.Average/convert);
             });
 
 
@@ -136,7 +139,8 @@ class Top_Traders {
                 return yOffset + (i*yScaler);
             })
             .attr("width", (d)=>{
-                return widthImportScale(d.values[0].value["MeanImports"]/1000);
+
+                return widthImportScale(d.Average/convert);
             });
 
         //DRAW AXES
@@ -147,119 +151,6 @@ class Top_Traders {
             .call(importAxis);
 
 
-
-
-
-
-
-
-
     }
 
 }
-
-
-    /*//OLD CODE - DO NOT DELETE // BREAK IN CASE OF EMERGENCY
-        let dataImport = [];
-        let dataExport = [];
-        for (let index =0; index<data.length; index++){
-            dataImport.push(this.sortSingleYearImport(data,pri,index).splice(0,50));
-            dataExport.push(this.sortSingleYearExport(data,pri,index).splice(0,50));
-        }
-        console.log(dataImport);
-        //Average the data over the years
-        let topImportData = this.average(dataImport);
-        let topExportData = this.average(dataExport);
-        //console.log(this.totalImports);
-        //console.log(this.totalExports);
-
-    average (sortedArray){
-        console.log(sortedArray);
-        let newAverage = [];
-        for (let c=0; c<sortedArray[0].length; c++){
-            //use the elements in the most recent year as the pivot id
-            let pivot = this.flow1? sortedArray[sortedArray.length-1][c].id2 : sortedArray[0][c].id1;
-            //add all the values from all year arrays for a particular country
-            sortedArray.forEach((year)=>{
-                if (this.flow1){
-                    year.forEach((country)=>{
-                        if (pivot===country.id2) {
-                            //console.log (pivot + " " + country.id2 + " " + country.flow2);
-                            //sum the values for the same country and store in the newAverage array
-                        }
-
-                    })
-
-                }
-
-            })
-        }
-
-    }
-
-    sortSingleYearImport(data, pri, index){
-        let singleYear = [];
-        let localFlow;
-        //index represents the year
-        for (let a=0; a<data[index].length; a++){
-            if (data[index][a].id1 === pri){
-                singleYear.push(data[index][a]);
-                localFlow = this.flow1 = true;
-                //Eliminate any missing data and sum the total imports
-                if (!(data[index][a].flow1==="-9")){
-                    this.totalImports += parseFloat(data[index][a].flow1);
-                }
-            }
-            else if (data[index][a].id2 === pri){
-                singleYear.push(data[index][a]);
-                localFlow = this.flow1 = false;
-                //Eliminate any missing data and sum the total imports
-                if (!data[index][a].flow2==="-9") {
-                    this.totalImports += parseFloat(data[index][a].flow2);
-                }
-            }
-        }
-        //sort data based on imports / exports
-        singleYear.sort(function(a,b){
-            if (localFlow){
-                return b.flow1-a.flow1;
-            }
-            else
-                return b.flow2 - a.flow2;
-        });
-        return singleYear;
-    }
-
-    sortSingleYearExport(data, pri, index){
-        let singleYear = [];
-        let localFlow;
-        for (let a=0; a<data[index].length; a++){
-            if (data[index][a].id1 === pri){
-                singleYear.push(data[index][a]);
-                localFlow = this.flow1 = true;
-                //Eliminate any missing data and sum the total exports
-                if (!(data[index][a].flow2==="-9")){
-                    this.totalExports += parseFloat(data[index][a].flow2);
-                }
-            }
-            else if (data[index][a].id2 === pri){
-                singleYear.push(data[index][a]);
-                localFlow = this.flow1 = false;
-                //Eliminate any missing data and sum the total exports
-                if (!(data[index][a].flow1==="-9")){
-                    this.totalExports += parseFloat(data[index][a].flow1);
-                }
-            }
-        }
-        //sort data based on imports / exports
-        singleYear.sort(function(a,b){
-            if (localFlow){
-                return b.flow2-a.flow2;
-            }
-            else
-                return b.flow1 - a.flow1;
-        });
-        return singleYear;
-    }
-}
-*/
