@@ -54,6 +54,7 @@ class Top_Traders {
 
     update(data, pri, sec, years) {
 
+        let topData = data.slice;
         let rectHeight = 20;
         let yScaler = 21;
         let yOffset = 28;
@@ -65,8 +66,8 @@ class Top_Traders {
         // let importPartners = data.importPartners.slice();
         // let totalTradePartners = data.totalTradePartners.slice();
         //
-        let topExporters = data.Exports.splice(0,20);
-        let topImporters = data.Imports.splice(0,20);
+        let topExporters = topData.Exports.splice(0,20);
+        let topImporters = topData.Imports.splice(0,20);
         //console.log(topExporters);
         //console.log(topImporters);
 
