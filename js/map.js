@@ -51,6 +51,7 @@ class Map {
         this.colorScale = d3.scaleLinear().domain([minTrade, maxTrade]).range(['#C4C4E4',"#3c3ca7"])
 
 
+
         let priLatLon = cityData.filter(d=> {
             if(d.id === pri){
                 return d;
