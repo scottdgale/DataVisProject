@@ -24,26 +24,43 @@ class Balance_Single {
             .append("g")
             .attr("id", "yAxis")
             .attr("class", "axis")
-            .attr("transform", "translate(" + 100 +","+ 50 + ")");
+            .attr("transform", "translate(" + 110 +","+ 50 + ")");
 
 
         let xAxisGroup = d3.select("#svg_balance_single")
             .append("g")
             .attr("id", "xAxis")
             .attr("class", "axis")
-            .attr("transform", "translate("+ 100 + "," + 450 + ")");
+            .attr("transform", "translate("+ 110 + "," + 450 + ")");
+
+        let xAxisLabel = d3.select("#svg_balance_single")
+                            .append('text')
+                            .classed('axis-label', true)
+                            .text("Years")
+                            .style("text-anchor", "middle")
+                            .attr('transform', 'translate('+ 350 + ', '+ 500 + ')');
+        
+        let yAxisLabel = d3.select("#svg_balance_single")
+                            .append('text')
+                            .classed('axis-label', true)
+                            .text("$ Millions in Current US Dollars")
+                            .style("text-anchor", "middle")
+                            .attr('transform', 'translate('+ 20 + ', '+ 250 + ')' + "rotate(270)");
+
 
 
     }
 
     update(data, pri, sec, years) {
-         console.log (data);
-         let that = this;
-
+     
         let balanceData = data.slice();
+        let circleRadius = 5;
+        let rectWidth = 1;
+        let xOffset = 100;
+        let yOffset = 40;
 
-        let filteredForPrimary = [];
         //filter each year for primary country and put in a new array
+        let filteredForPrimary = [];
         for(let j = 0; j < balanceData.length; j++){
             let temp = balanceData[j].filter(d=>{
                 for(let k = 0; k < data[j].length; k++){
@@ -53,223 +70,113 @@ class Balance_Single {
                 }
             });
             filteredForPrimary = filteredForPrimary.concat(temp)
-        }
-      console.log(filteredForPrimary)
+         }
 
-              //Get the maximum values for exports and imports
-              let exportMax = d3.max(filteredForPrimary, function(d){ return +d.exports })
-              //console.log(exportMax)
-              let exportMin = d3.min(filteredForPrimary, function(d){ return +d.exports })
-             // console.log(exportMin)
-              let importMax = d3.max(filteredForPrimary, function(d){ return +d.imports })
-            //  console.log(importMax)
-              let importMin = d3.min(filteredForPrimary, function(d){ return +d.imports })
-            //  console.log(importMin)
-              
-              let max = +exportMax > +importMax ? +exportMax : +importMax;
-
-              console.log(exportMax)
-              console.log(importMax)
-              console.log('---------------------')
-              console.log(max)
-
-              console.log(+years[0])
-              let numYears = +years[1] - +years[0]
-
-              let yScale = d3.scaleLinear().range([400, 0]).domain([0, max]).nice();
-              let xScale = d3.scaleLinear().range([0, 500]).domain([+years[0] - 1, +years[1]]).nice();
-
-              let yAxis = d3.axisLeft().scale(yScale)
-              let xAxis = d3.axisBottom().scale(xScale)
-
-            
-            //Axis stuff
-            let yAx = d3.select("#yAxis").call(yAxis);
-            let xAx = d3.select("#xAxis").call(xAxis.ticks(numYears+1,""))
-
-            //Plot Import Circles
+        //Sort by year
+        filteredForPrimary.sort((a, b) =>{ return b.year - a.year; });
 
 
-            let selection = d3.select("#svg_balance_single")
-            selection.selectAll("circle").remove();
-            selection.selectAll("rect").remove();
-            selection.selectAll('path').remove();
-            let balanceRect = selection.selectAll('.balanceRect')
-                                        .data(filteredForPrimary)
-                    balanceRect.exit().remove()
-                    balanceRect = balanceRect.enter().append('rect').merge(balanceRect)
+        //Get the maximum values for exports and imports
+        let exportMax = d3.max(filteredForPrimary, function(d){ return +d.exports })
+        let exportMin = d3.min(filteredForPrimary, function(d){ return +d.exports })
+        let importMax = d3.max(filteredForPrimary, function(d){ return +d.imports })
+        let importMin = d3.min(filteredForPrimary, function(d){ return +d.imports })
+        let max = +exportMax > +importMax ? +exportMax : +importMax;
+        let numYears = +years[1] - +years[0]
 
-                    balanceRect.attr("height", d =>{ 
-                        return Math.abs(yScale(d.imports) - yScale(d.exports))
-                        })
-                    .attr("width", 1)
-                    .attr("x", d => { return xScale(d.year) -1 })
-                    .attr("y", d => {
-                                return +d.imports > +d.exports ? yScale(d.imports) : yScale(d.exports)
-                    })
-                    .style("fill", d =>{
-                        return 'black'
-                       // return +d.imports > +d.exports ? 'purple' : 'lightblue'
-                    }) 
-                    .attr("transform", "translate("+ 100+ "," + 40 +")");
+        /** Set up xScale and yScale based on the max import/export value and the year range */
+        let yScale = d3.scaleLinear().range([400, 0]).domain([0, max]).nice();
+        let xScale = d3.scaleLinear().range([0, 500]).domain([+years[0] - 1, +years[1]]).nice();
 
-
-            let importPoints = selection.selectAll(".importCircle")
-                            .data(filteredForPrimary)
-            importPoints.exit().remove()
-            importPoints = importPoints.enter().append("circle").merge(importPoints)
-
-            importPoints.attr("cx", function(d,i){
-                //console.log(xScale(d.year))
-                        return xScale(d.year)
-                    })
-                    .attr("cy", function(d,i){
-                      //  console.log(yScale(d.imports))
-                        return yScale(d.imports)
-                    })
-                    .attr("r", function(d,i){
-                       return 5
-                    })
-                    .style("fill", 'purple') 
-                    .attr("transform", "translate("+ 100+ "," + 40 +")");
-
+        /** Create and call x and y axis */
+        let yAxis = d3.axisLeft().scale(yScale)
+        let xAxis = d3.axisBottom().scale(xScale)
         
+        let yAx = d3.select("#yAxis").call(yAxis);
+        let xAx = d3.select("#xAxis").call(xAxis.ticks(numYears+1,""))       
+
+        /** Select our svg and do some clean up */
+        let selection = d3.select("#svg_balance_single")
+        selection.selectAll("circle").remove();
+        selection.selectAll("rect").remove();
+        selection.selectAll('.importPath').remove();
+        selection.selectAll('.exportPath').remove();
+
+          /** Add paths for exports and imports to create line charts  */
+        //Export Line Chart
+        let exportLineGenerator = d3.line()
+                                    .x((d) => xScale(d.year))
+                                    .y((d) => yScale(d.exports));
+
+        let exportLineChart = selection.selectAll('.exportPath')
+                                .data(filteredForPrimary);
+        exportLineChart.exit().remove();
+        exportLineChart = exportLineChart.enter().append("path").classed('exportPath', true).merge(exportLineChart)
+        let exportLineString = exportLineGenerator(filteredForPrimary);
+        exportLineChart.attr("d", exportLineString)
+                .style('fill', 'none')
+                .style('stroke', 'lightblue')
+                .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
+
+        //Import Line Chart
+        let importLineGenerator = d3.line()
+                                .x((d) => xScale(d.year))
+                                .y((d) => yScale(d.imports));
+
+        let importLineChart = selection.selectAll('.importPath')
+                                .data(filteredForPrimary);
+        importLineChart.exit().remove()
+        importLineChart = importLineChart.enter().append("path").classed('importPath', true).merge(importLineChart)       
+        let importLineString = importLineGenerator(filteredForPrimary);
+        importLineChart.attr("d", importLineString)
+                .style('fill', 'none')
+                .style('stroke', 'purple')
+                .attr("transform", "translate("+ xOffset + "," + yOffset +")");
+
+        /** Add delta rectangles to represent trade surplus/deficit */
+        let balanceRect = selection.selectAll('.balanceRect')
+                                    .data(filteredForPrimary)
+        balanceRect.exit().remove()
+        balanceRect = balanceRect.enter().append('rect').merge(balanceRect)
+
+        balanceRect.attr("height", d =>{ 
+                            return Math.abs(yScale(d.imports) - yScale(d.exports));
+                        })
+                  .attr("width", rectWidth)
+                  .attr("x", d => { return xScale(d.year) -1 })
+                  .attr("y", d => {
+                            return +d.imports > +d.exports ? yScale(d.imports) : yScale(d.exports)
+                        })
+                  .style("fill", d =>{
+                            return 'black'
+                            // return +d.imports > +d.exports ? 'purple' : 'lightblue' 
+                            //This can be used to change color based on the larger value
+                        }) 
+                  .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
+
+        /** Add circles to represent IMPORT value  */
+        let importPoints = selection.selectAll(".importCircle")
+                        .data(filteredForPrimary)
+        importPoints.exit().remove()
+        importPoints = importPoints.enter().append("circle").merge(importPoints)
+
+        importPoints.attr("cx", function(d){  return xScale(d.year) })
+                    .attr("cy", function(d){  return yScale(d.imports) })
+                    .attr("r",  function(d){  return circleRadius })
+                    .style("fill", 'purple') 
+                    .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
+   
+        /** Add circles to represent EXPORT value  */
         let exportPoints = selection.selectAll(".exportCircle")
                         .data(filteredForPrimary)
         exportPoints.exit().remove()
         exportPoints = exportPoints.enter().append("circle").merge(exportPoints)
 
-        exportPoints.attr("cx", function(d,i){
-          //  console.log(xScale(d.year))
-                    return xScale(d.year)
-                })
-                .attr("cy", function(d,i){
-                   // console.log(yScale(d.exports))
-                    return yScale(d.exports)
-                })
-                .attr("r", function(d,i){
-                    return 5
-                })
-                .style("fill", 'lightblue') 
-                .attr("transform", "translate("+ 100+ "," + 40 +")");
-
-
-
-
-             
-
-            let exportLineGenerator = d3.line()
-                    .x((d) => xScale(d.year))
-                    .y((d) => yScale(d.exports));
-
-        let exportLineChart = selection.selectAll("path")
-                                .data(filteredForPrimary);
-        exportLineChart.exit()
-                // .transition()
-                // .duration(3000)
-                // .attr("opacity",0)
-                .remove();
-        exportLineChart = exportLineChart.enter().append("path")
-                                    //.attr("opacity", 0)
-                                    .merge(exportLineChart)
-                                    // .transition()
-                                    // .duration(3000)
-                                    // .attr("opacity",1);
-        let exportLineString = exportLineGenerator(filteredForPrimary);
-        console.log(exportLineString)
-        exportLineChart.attr("d", exportLineString).style('fill', 'none').style('stroke', 'black')
-        console.log(exportLineChart)
-
-
-        // TODO: Select and update the 'b' line chart path (create your own generator)
-
-        // let bLineGenerator = d3.line()
-        //     .x((d, i) => iScale(i))
-        //     .y((d) => bScale(d.b));
-
-        // let bLineChart = d3.select("#bLineChart").data(data);
-        // //let aPath = aLineChart.select("path").data(data);
-        // bLineChart.exit()
-        //         .transition()
-        //         .duration(3000)
-        //         .attr("opacity",0)
-        //         .remove();
-        // bLineChart = bLineChart.enter().append("path")
-        //                             .attr("opacity", 0)
-        //                             .merge(bLineChart)
-        //                             .transition()
-        //                             .duration(3000)
-        //                             .attr("opacity",1);
-        // let bLineString = bLineGenerator(data);
-        // bLineChart.attr("d", bLineString);
-
-        
-        
-         
-
-            //Plot Export Circles
-
-            //Plot difference lines
-
-
-        //     delGroup.append("circle")
-        //        .attr("cx", function(d){
-        //             let data = [d.value[1], d.value[2]];
-        //             return that.goalScale(d3.max(data));
-        //        })
-        //        .attr("cy", function(d){
-        //             return that.cell.height/2;
-        //        })
-        //        .attr("r", "5" )
-        //        .style("fill", function(d){
-        //            if(d.type === 'aggregate'){
-        //                 if(d.value[1] === d.value[2]){
-        //                     return "#A9A9A9"
-        //                 }
-        //                 return that.goalColorScale(d.value[2] - d.value[1])
-        //             }
-        //             else{
-        //                 return "white"
-        //             }
-        //        })
-        //        .attr("stroke",  function(d){
-        //             if(d.value[1] === d.value[2]){
-        //                 return "#A9A9A9"
-        //             }
-        //             return that.goalColorScale(d.value[2] - d.value[1])
-        //        })
-        //        .attr("stroke-width", "3px")
-              
-        // delGroup.append("circle")
-        //        .attr("cx", function(d){
-        //              let data = [d.value[1], d.value[2]];
-        //              return that.goalScale(d3.min(data));
-        //        })
-        //        .attr("cy", function(d){
-        //             return that.cell.height/2;
-        //        })
-        //        .attr("r", "5" )
-        //        .style("fill", function(d){
-        //         if(d.type === 'aggregate'){
-        //              if(d.value[1] === d.value[2]){
-        //                  return "#A9A9A9"
-        //              }
-        //              return that.goalColorScale((d.value[2] - d.value[1]) * -1)
-        //          }
-        //          else{
-        //              return "white"
-        //          }
-        //     })
-        //     .attr("stroke",  function(d){
-        //          if(d.value[1] === d.value[2]){
-        //              return "#A9A9A9"
-        //          }
-        //          return that.goalColorScale((d.value[2] - d.value[1]) * -1)
-        //     })
-        //     .attr("stroke-width", "3px")
-
-              
-      
+        exportPoints.attr("cx", function(d){ return xScale(d.year); })
+                    .attr("cy", function(d){  return yScale(d.exports) })
+                    .attr("r",  function(d){  return circleRadius })
+                    .style("fill", 'lightblue') 
+                    .attr("transform", "translate("+ xOffset+ "," + yOffset +")");  
 
     }
 
