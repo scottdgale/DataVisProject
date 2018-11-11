@@ -259,12 +259,12 @@ class DataProcess {
             temp = 0;
         }
 
-        console.log(average);
+        //console.log(average);
 
         //Sort the new array based off calculated average
-        //average.sort(function(a,b){
-            //return b.Average - a.Average;
-        //});
+        average.sort(function(a,b){
+            return b.Average - a.Average;
+        });
 
         //console.log(average);
 
