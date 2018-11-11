@@ -58,13 +58,13 @@ class Balance_Single {
 
               //Get the maximum values for exports and imports
               let exportMax = d3.max(filteredForPrimary, function(d){ return +d.exports })
-              console.log(exportMax)
+              //console.log(exportMax)
               let exportMin = d3.min(filteredForPrimary, function(d){ return +d.exports })
-              console.log(exportMin)
+             // console.log(exportMin)
               let importMax = d3.max(filteredForPrimary, function(d){ return +d.imports })
-              console.log(importMax)
+            //  console.log(importMax)
               let importMin = d3.min(filteredForPrimary, function(d){ return +d.imports })
-              console.log(importMin)
+            //  console.log(importMin)
               
               let max = +exportMax > +importMax ? +exportMax : +importMax;
 
@@ -85,7 +85,6 @@ class Balance_Single {
             
             //Axis stuff
             let yAx = d3.select("#yAxis").call(yAxis);
-
             let xAx = d3.select("#xAxis").call(xAxis.ticks(numYears+1,""))
 
             //Plot Import Circles
@@ -94,6 +93,7 @@ class Balance_Single {
             let selection = d3.select("#svg_balance_single")
             selection.selectAll("circle").remove();
             selection.selectAll("rect").remove();
+            selection.selectAll('path').remove();
             let balanceRect = selection.selectAll('.balanceRect')
                                         .data(filteredForPrimary)
                     balanceRect.exit().remove()
@@ -114,21 +114,17 @@ class Balance_Single {
                     .attr("transform", "translate("+ 100+ "," + 40 +")");
 
 
-
-
-
-
             let importPoints = selection.selectAll(".importCircle")
                             .data(filteredForPrimary)
             importPoints.exit().remove()
             importPoints = importPoints.enter().append("circle").merge(importPoints)
 
             importPoints.attr("cx", function(d,i){
-                console.log(xScale(d.year))
+                //console.log(xScale(d.year))
                         return xScale(d.year)
                     })
                     .attr("cy", function(d,i){
-                        console.log(yScale(d.imports))
+                      //  console.log(yScale(d.imports))
                         return yScale(d.imports)
                     })
                     .attr("r", function(d,i){
@@ -144,11 +140,11 @@ class Balance_Single {
         exportPoints = exportPoints.enter().append("circle").merge(exportPoints)
 
         exportPoints.attr("cx", function(d,i){
-            console.log(xScale(d.year))
+          //  console.log(xScale(d.year))
                     return xScale(d.year)
                 })
                 .attr("cy", function(d,i){
-                    console.log(yScale(d.exports))
+                   // console.log(yScale(d.exports))
                     return yScale(d.exports)
                 })
                 .attr("r", function(d,i){
@@ -156,6 +152,57 @@ class Balance_Single {
                 })
                 .style("fill", 'lightblue') 
                 .attr("transform", "translate("+ 100+ "," + 40 +")");
+
+
+
+
+             
+
+            let exportLineGenerator = d3.line()
+                    .x((d) => xScale(d.year))
+                    .y((d) => yScale(d.exports));
+
+        let exportLineChart = selection.selectAll("path")
+                                .data(filteredForPrimary);
+        exportLineChart.exit()
+                // .transition()
+                // .duration(3000)
+                // .attr("opacity",0)
+                .remove();
+        exportLineChart = exportLineChart.enter().append("path")
+                                    //.attr("opacity", 0)
+                                    .merge(exportLineChart)
+                                    // .transition()
+                                    // .duration(3000)
+                                    // .attr("opacity",1);
+        let exportLineString = exportLineGenerator(filteredForPrimary);
+        console.log(exportLineString)
+        exportLineChart.attr("d", exportLineString).style('fill', 'none').style('stroke', 'black')
+        console.log(exportLineChart)
+
+
+        // TODO: Select and update the 'b' line chart path (create your own generator)
+
+        // let bLineGenerator = d3.line()
+        //     .x((d, i) => iScale(i))
+        //     .y((d) => bScale(d.b));
+
+        // let bLineChart = d3.select("#bLineChart").data(data);
+        // //let aPath = aLineChart.select("path").data(data);
+        // bLineChart.exit()
+        //         .transition()
+        //         .duration(3000)
+        //         .attr("opacity",0)
+        //         .remove();
+        // bLineChart = bLineChart.enter().append("path")
+        //                             .attr("opacity", 0)
+        //                             .merge(bLineChart)
+        //                             .transition()
+        //                             .duration(3000)
+        //                             .attr("opacity",1);
+        // let bLineString = bLineGenerator(data);
+        // bLineChart.attr("d", bLineString);
+
         
         
          
