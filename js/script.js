@@ -71,8 +71,6 @@ function loadDataDyadic (year) {
                 console.log(newDyadicArray);
 
                 topTraders.update(newDyadicArray, primary, secondary, selected_years);
-
-                balanceSingle.update(dyadicArray, primary, secondary, selected_years);
                 balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
                 map.update(newDyadicArray, primary, secondary, selected_years);
             }
@@ -89,6 +87,7 @@ function loadDataNational() {
             nationalArray.push(nationalData);
             if (!count--) {
                 //d3.csv("data/gdp.csv").then(gdpData => {
+                balanceSingle.update(nationalArray, primary, secondary, selected_years)
                 globalBalance.update(nationalArray, gdpDataSet, primary, secondary, selected_years);
             }
         });
