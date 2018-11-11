@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="adbdd4e0-5d78-48f7-932f-420210479b0b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/js/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/top_traders.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/top_traders.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -49,7 +48,7 @@
         <counts>
           <entry key="css" value="378" />
           <entry key="html" value="571" />
-          <entry key="js" value="17592" />
+          <entry key="js" value="17627" />
           <entry key="txt" value="58" />
         </counts>
       </usages-collector>
@@ -57,7 +56,7 @@
         <counts>
           <entry key="CSS" value="378" />
           <entry key="HTML" value="571" />
-          <entry key="JavaScript" value="17592" />
+          <entry key="JavaScript" value="17627" />
           <entry key="PLAIN_TEXT" value="58" />
         </counts>
       </usages-collector>
@@ -77,7 +76,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/script.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="278">
+            <state relative-caret-position="3038">
               <caret line="213" column="11" lean-forward="true" selection-start-line="213" selection-start-column="11" selection-end-line="213" selection-end-column="11" />
             </state>
           </provider>
@@ -86,8 +85,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/top_traders.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="243">
-              <caret line="57" column="25" lean-forward="true" selection-start-line="57" selection-start-column="25" selection-end-line="57" selection-end-column="25" />
+            <state relative-caret-position="223">
+              <caret line="56" column="32" selection-start-line="56" selection-start-column="32" selection-end-line="56" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -156,8 +155,8 @@
       <find>key</find>
       <find>flow1</find>
       <find>getTotal</find>
-      <find>dataTotal</find>
       <find>splice</find>
+      <find>dataTotal</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -279,7 +278,7 @@
       <workItem from="1541476194422" duration="601000" />
       <workItem from="1541622180032" duration="55050000" />
       <workItem from="1541781285464" duration="32901000" />
-      <workItem from="1541878000201" duration="2739000" />
+      <workItem from="1541878000201" duration="3612000" />
     </task>
     <task id="LOCAL-00001" summary="Changes to index.html">
       <created>1541257348067</created>
@@ -292,11 +291,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="108710000" />
+    <option name="totallyTimeSpent" value="109583000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1381" height="885" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.16877323" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -512,15 +510,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/script.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="278">
+        <state relative-caret-position="3038">
           <caret line="213" column="11" lean-forward="true" selection-start-line="213" selection-start-column="11" selection-end-line="213" selection-end-column="11" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/js/top_traders.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="57" column="25" lean-forward="true" selection-start-line="57" selection-start-column="25" selection-end-line="57" selection-end-column="25" />
+        <state relative-caret-position="223">
+          <caret line="56" column="32" selection-start-line="56" selection-start-column="32" selection-end-line="56" selection-end-column="32" />
         </state>
       </provider>
     </entry>
