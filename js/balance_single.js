@@ -148,7 +148,7 @@ class Balance_Single {
                             return +d.imports > +d.exports ? yScale(d.imports) : yScale(d.exports)
                         })
                   .style("fill", d =>{
-                            return 'black'
+                            return '#C7C7C7'
                             // return +d.imports > +d.exports ? 'purple' : 'lightblue' 
                             //This can be used to change color based on the larger value
                         }) 

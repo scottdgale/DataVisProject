@@ -5,7 +5,6 @@ class Map {
      * @param
      */
     
-
     constructor(syncData, mapData, cityData) {
         this.margin = {top: 20, right: 20, bottom: 20, left: 50, spacing: 50};
 
@@ -19,6 +18,8 @@ class Map {
         this.primary;
         this.secondary;
         this.colorScale;
+        this.yearData = [1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014]
+
 
         divMap.append('svg')
               .attr('id', 'svg_label')
@@ -28,15 +29,61 @@ class Map {
               .attr('class', 'primaryLabel')
               .style('font-size', '20px')
         d3.select("#svg_label")
-            .append('text')
-            .attr('class', 'secondaryLabel')
-            .style('font-size', '20px')
+                .append('text')
+                .attr('class', 'secondaryLabel')
+                .style('font-size', '20px')
 
 
         divMap.append("svg")
             .attr("id", "svg_map")
             .attr("height", this.svgHeight)
             .attr("width", this.svgWidth);
+
+        divMap.append('svg')
+              .attr('id', 'years')
+              .attr('height', 50)
+              .attr('width', this.svgWidth)
+
+        this.drawYearBar()
+
+    }
+
+    drawYearBar(){
+        let offset = (this.svgWidth - (this.yearData.length * 50))/2 //Create year bar in the center of the map svg
+        let distanceBetweenYears = 50;
+    
+        let line = d3.line()
+                     .x(function(d,i){ return i*distanceBetweenYears + offset })
+                     .y(20)
+
+        let yearsSvg = d3.select("#years");
+ 
+        yearsSvg.append('path')
+                 .datum(this.yearData)
+                 .attr('class', 'lineChart')
+                 .attr('d', line)
+
+        /** Add ticks and year labels to year bar -- could later be reworked for a different shape */         
+        let tickGroup = yearsSvg.selectAll("g")
+                                .data(this.yearData)
+                            
+        let tickGroupExit = tickGroup.exit().remove();
+        let tickGroupEnter = tickGroup.enter().append("g")
+
+        tickGroupEnter.append("rect")
+                        .attr('x', (d,i) => i * 50 + offset )
+                        .attr('y', 15)
+                        .attr('height', 10)
+                        .attr('width', 2)
+                        .style('fill', 'black')
+
+        tickGroupEnter.append("text")
+                        .attr('class', 'yeartext')
+                        .attr('x', (d,i) => i *50 + offset)
+                        .attr('y', 40)
+                        .text(d => d)
+        tickGroup = tickGroupEnter.merge(tickGroup)
+
     }
 
 
@@ -80,9 +127,7 @@ class Map {
                 return d
             }
         })
-        
-
-        
+          
         primaryName = primary[0].country;
         secondaryName = secondary[0].country
 
