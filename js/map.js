@@ -18,7 +18,11 @@ class Map {
         this.primary;
         this.secondary;
         this.colorScale;
-        this.yearData = [1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014]
+        this.yearData = [1990, 1991, 1992, 1993, 1994, 
+                         1995, 1996, 1997, 1998, 1999, 
+                         2000, 2001, 2002, 2003, 2004, 
+                         2005, 2006, 2007, 2008, 2009, 
+                         2010, 2011, 2012, 2013, 2014]
 
 
         divMap.append('svg')
@@ -51,6 +55,8 @@ class Map {
     drawYearBar(){
         let offset = (this.svgWidth - (this.yearData.length * 50))/2 //Create year bar in the center of the map svg
         let distanceBetweenYears = 50;
+        let tickWidth = 2;
+        let initialBrushPlacement = [10*distanceBetweenYears + offset - tickWidth , 15*distanceBetweenYears + offset + tickWidth]
     
         let line = d3.line()
                      .x(function(d,i){ return i*distanceBetweenYears + offset })
@@ -67,24 +73,49 @@ class Map {
         let tickGroup = yearsSvg.selectAll("g")
                                 .data(this.yearData)
                             
-        let tickGroupExit = tickGroup.exit().remove();
-        let tickGroupEnter = tickGroup.enter().append("g")
+        let tickGroupExit =  tickGroup.exit().remove();
+        let tickGroupEnter = tickGroup.enter()
+                                      .append("g")
+                                      .on('mouseover', (d)=>{ console.log(d)})
+                        tickGroupEnter.append("rect")
+                                      .attr('x', (d,i) => i * distanceBetweenYears + offset )
+                                      .attr('y', 15)
+                                      .attr('height', 10)
+                                      .attr('width', 2)
+                                                    .style('fill', 'black')
 
-        tickGroupEnter.append("rect")
-                        .attr('x', (d,i) => i * 50 + offset )
-                        .attr('y', 15)
-                        .attr('height', 10)
-                        .attr('width', 2)
-                        .style('fill', 'black')
-
-        tickGroupEnter.append("text")
-                        .attr('class', 'yeartext')
-                        .attr('x', (d,i) => i *50 + offset)
-                        .attr('y', 40)
-                        .text(d => d)
+                        tickGroupEnter.append("text")
+                                      .attr('class', 'yeartext')
+                                      .attr('x', (d,i) => i * distanceBetweenYears + offset)
+                                      .attr('y', 50)
+                                      .text(d => d)
+                        
         tickGroup = tickGroupEnter.merge(tickGroup)
 
+        /** Add the years brush to the year bar */
+        let yearBrush = d3.brushX()
+                          .extent([[offset, 10], [(this.yearData.length - 1) * distanceBetweenYears + offset + tickWidth, 30]])
+                          .on("end", this.yearBrushFunction)
+
+        let yearBrushGroup = yearsSvg.append('g')
+                                .classed('brush', true)
+                                .call(yearBrush)
+                                .call(yearBrush.move, initialBrushPlacement );
     }
+
+
+    yearBrushFunction() {
+        if (!d3.event.sourceEvent) return; // Only transition after input.
+        if (!d3.event.selection) return; // Ignore empty selections.
+        let s = d3.event.selection;
+        console.log(s[0])
+        console.log(s[1])
+        
+        //Add logic for year brush selection and updates
+    
+     }
+
+    
 
 
     update(data, pri, sec, years) {
