@@ -145,8 +145,8 @@ class Map {
         let totalTradePartners = data.Total.slice();
 
         //coloring for map set up
-        let maxTrade = totalTradePartners[0].Total
-        let minTrade = totalTradePartners[9].Total
+        let maxTrade = totalTradePartners[0].Total;
+        let minTrade = totalTradePartners[9].Total;
         this.colorScale = d3.scaleQuantize().domain([minTrade, maxTrade]).range(['#d4d4e8','#bebedc', '#a9a9d1','#9393c5','#7e7eba','#6868ae',"#5252a3",'#3d3d97'])
 
         //Using City Data to get primary and secondary information

@@ -66,12 +66,12 @@ function loadDataDyadic (year) {
                 //let newDyadicArray = organizeData(dyadicArray, primary);
 
                 let hopeThisWorks = new DataProcess();
-                let newDyadicArray = hopeThisWorks.processData(dyadicArray,primary);
+                let newDyadicArray = hopeThisWorks.processData(dyadicArray,primary, secondary);
 
-                console.log(newDyadicArray);
+                //console.log(newDyadicArray);
 
                 topTraders.update(newDyadicArray, primary, secondary, selected_years);
-                balanceDouble.update(dyadicArray, gdpDataSet, primary, secondary, selected_years);
+                balanceDouble.update(newDyadicArray.PriSec, gdpDataSet, primary, secondary, selected_years);
                 map.update(newDyadicArray, primary, secondary, selected_years);
             }
         });
@@ -87,7 +87,7 @@ function loadDataNational() {
             nationalArray.push(nationalData);
             if (!count--) {
                 //d3.csv("data/gdp.csv").then(gdpData => {
-                balanceSingle.update(nationalArray, primary, secondary, selected_years)
+                balanceSingle.update(nationalArray, primary, secondary, selected_years);
                 globalBalance.update(nationalArray, gdpDataSet, primary, secondary, selected_years);
             }
         });
@@ -112,7 +112,7 @@ class DataProcess {
         this.totalExports = 0;
     }
 
-    processData(data, pri) {
+    processData(data, pri, sec) {
         let procData = data.slice();
         let dataImport = [];
         let dataExport = [];
@@ -120,6 +120,9 @@ class DataProcess {
         let cleanData = this.cleanData(procData, pri);
 
         //console.log(cleanData);
+
+        let priSecData = this.getPriSecData(cleanData, pri, sec);
+        //console.log (priSecData);
 
         //Second parameter trims the array to the value passed
         dataImport = this.sortImport(cleanData,30);
@@ -140,8 +143,22 @@ class DataProcess {
         return {
             Imports: avgDataImport,
             Exports: avgDataExport,
-            Total: dataTotal
+            Total: dataTotal,
+            PriSec: priSecData
         };
+    }
+
+    getPriSecData(data, pri, sec){
+        let priSec = [];
+        for (let i=0; i<data.length; i++){
+            for (let j=0; j<data[i].length; j++){
+                if (data[i][j].SecondaryId === sec){
+                    priSec.push(data[i][j]);
+                    break;
+                }
+            }
+        }
+        return priSec;
     }
 
     cleanData(data, pri){
@@ -222,7 +239,7 @@ class DataProcess {
         let numYears = avgData.length;
         let numCountries = avgData[0].length;
 
-        console.log(avgData);
+        //console.log(avgData);
 
         for (let country = 0; country < numCountries; country++) {
 
@@ -242,6 +259,8 @@ class DataProcess {
                         else{
                             temp += parseFloat(avgData[year][e].Export);
                         }
+                        //Exit the loop once discovered the matching pivot
+                        break;
                     }
                 }
             }
