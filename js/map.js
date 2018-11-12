@@ -1,3 +1,16 @@
+class CountryData {
+
+    constructor(type, id, properties, geometry, countryName) {
+
+        this.type = type;
+        this.id = id;
+        this.properties = properties;
+        this.geometry = geometry;
+        this.countryName = countryName;
+    }
+}
+
+
 class Map {
     /**
      * Constructor for the Map
@@ -18,6 +31,7 @@ class Map {
         this.primary;
         this.secondary;
         this.colorScale;
+        this.nameArray = cityData.map(d => d.id.toUpperCase());
         this.yearData = [1990, 1991, 1992, 1993, 1994, 
                          1995, 1996, 1997, 1998, 1999, 
                          2000, 2001, 2002, 2003, 2004, 
@@ -105,10 +119,6 @@ class Map {
                  if (!d3.event.selection) return; // Ignore empty selections.
          
                  let s = d3.event.selection;
-                //  console.log(s[0])
-                //  console.log(offset)
-                //  console.log(Math.ceil((s[0] - offset) / distanceBetweenYears).toString());
-                //  console.log(Math.floor((s[1] - offset) / distanceBetweenYears).toString())
                  let firstYear = (Math.ceil((s[0] - offset -tickWidth) / distanceBetweenYears) + 1990).toString();
                  let secondYear = (Math.floor((s[1] - offset + tickWidth) / distanceBetweenYears)+ 1990).toString();
 
@@ -200,7 +210,21 @@ class Map {
         /** Draw the map and append circles and lines to indicate trade relationships */
             //get geojson from topojson
             let geojson = topojson.feature(mapData, mapData.objects.countries);
-            
+
+            // Append the country name to the country data for use in tooltips
+            let countryData = geojson.features.map(country => {     
+                let index = this.nameArray.indexOf(country.id);
+                let countryName = "Unknown";
+
+                if(index > -1){
+                    countryName = this.cityData[index].country;
+                }
+
+                return new CountryData(country.type, country.id, country.properties, country.geometry, countryName);
+            });
+
+            this.countryData = countryData; 
+   
             //set up projection
             let projection = d3.geoRobinson()
                             .scale(150)
@@ -219,7 +243,7 @@ class Map {
 
             //add countrys to map
             let countries = map.selectAll('path')
-                                .data(geojson.features)
+                                .data(countryData)
             countries.exit().remove()
             let enter =  countries.enter()
                                 .append('path')
@@ -227,7 +251,7 @@ class Map {
                                 .attr('id', (d) => d.id)
                                 .classed('countries', true)
                                 .on('mouseover', function(d) {
-                                    d3.select(this).append("title").text(d.id);
+                                    d3.select(this).append("title").text(d.countryName);
                                 })
                                 /** The click even updates all of the other views */
                                 .on("click",function(d){
