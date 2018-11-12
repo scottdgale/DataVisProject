@@ -24,10 +24,9 @@ class Map {
                          2005, 2006, 2007, 2008, 2009, 
                          2010, 2011, 2012, 2013, 2014]
 
-
         divMap.append('svg')
               .attr('id', 'svg_label')
-              .attr('height', 50)
+              .attr('height', 70)
               .attr('width', this.svgWidth)
               .append('text')
               .attr('class', 'primaryLabel')
@@ -36,6 +35,11 @@ class Map {
                 .append('text')
                 .attr('class', 'secondaryLabel')
                 .style('font-size', '20px')
+        d3.select("#svg_label")
+                .append('text')
+                .attr('class', 'yearsLabel')
+                .style('font-size', '20px')
+
 
 
         divMap.append("svg")
@@ -57,6 +61,8 @@ class Map {
         let distanceBetweenYears = 50;
         let tickWidth = 2;
         let initialBrushPlacement = [10*distanceBetweenYears + offset - tickWidth , 15*distanceBetweenYears + offset + tickWidth]
+   
+        let that = this
     
         let line = d3.line()
                      .x(function(d,i){ return i*distanceBetweenYears + offset })
@@ -93,31 +99,36 @@ class Map {
         tickGroup = tickGroupEnter.merge(tickGroup)
 
         /** Add the years brush to the year bar */
+        let yearBrushFunction = function(){
+         
+                 if (!d3.event.sourceEvent) return; // Only transition after input.
+                 if (!d3.event.selection) return; // Ignore empty selections.
+         
+                 let s = d3.event.selection;
+                //  console.log(s[0])
+                //  console.log(offset)
+                //  console.log(Math.ceil((s[0] - offset) / distanceBetweenYears).toString());
+                //  console.log(Math.floor((s[1] - offset) / distanceBetweenYears).toString())
+                 let firstYear = (Math.ceil((s[0] - offset -tickWidth) / distanceBetweenYears) + 1990).toString();
+                 let secondYear = (Math.floor((s[1] - offset + tickWidth) / distanceBetweenYears)+ 1990).toString();
+
+                 let years = [firstYear, secondYear]
+                 that.syncData(that.primary, that.secondary, years)
+           
+        }
+
         let yearBrush = d3.brushX()
                           .extent([[offset, 10], [(this.yearData.length - 1) * distanceBetweenYears + offset + tickWidth, 30]])
-                          .on("end", this.yearBrushFunction)
+                          .on("end", yearBrushFunction)
 
         let yearBrushGroup = yearsSvg.append('g')
                                 .classed('brush', true)
                                 .call(yearBrush)
                                 .call(yearBrush.move, initialBrushPlacement );
+
     }
 
-
-    yearBrushFunction() {
-        if (!d3.event.sourceEvent) return; // Only transition after input.
-        if (!d3.event.selection) return; // Ignore empty selections.
-        let s = d3.event.selection;
-        console.log(s[0])
-        console.log(s[1])
-        
-        //Add logic for year brush selection and updates
     
-     }
-
-    
-
-
     update(data, pri, sec, years) {
 
         let that = this;
@@ -175,9 +186,7 @@ class Map {
                 city = city.concat(temp)
             }
 
-            console.log(city)
-
-                  //Labels
+            //Labels
             let label =  d3.select("#svg_label")
             label.select('.primaryLabel')
                     .attr('x', 20)
@@ -187,6 +196,10 @@ class Map {
                     .attr('x', 20)
                     .attr('y', 40)
                     .text("Secondary Country: " + secondaryName)
+            label.select('.yearsLabel')
+                    .attr('x', 20)
+                    .attr('y', 60)
+                    .text("Year Range: " + years[0] + ' - ' + years[1])
 
         /** Draw the map and append circles and lines to indicate trade relationships */
             //get geojson from topojson
@@ -238,7 +251,7 @@ class Map {
             countries = enter.merge(countries)
 
             this.updateHighlights()
-            this.countryColoring(totalTradePartners)
+            //this.countryColoring(totalTradePartners) --For now until we decide what to do about the coloring
    
             //Draws circles on the captial cities of the top 10 traders of the primary country                    
             map.selectAll("circle").remove();
@@ -294,8 +307,8 @@ class Map {
     //Temporary highlighting function that allows us to see the difference between pri and sec
     updateHighlights() {
             d3.selectAll('.countries').style('fill', '#E0E0E0')
-            d3.select("#" + this.primary).style('stroke-width', '3')
-            d3.select("#" + this.secondary).style('stroke-width', '3')
+            d3.select("#" + this.primary).style('fill', '#6F339B').style('stroke-width', 3)
+            d3.select("#" + this.secondary).style('fill', '#C4ACD6').style('stroke-width', 3)
     }
 
     countryColoring(topTraders){
