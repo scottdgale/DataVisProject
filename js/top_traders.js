@@ -42,13 +42,13 @@ class Top_Traders {
             .append("g")
             .attr("id", "exportAxis")
             .attr("class", "axis")
-            .attr("transform", "translate(-12,5)");
+            .attr("transform", "translate(-12,25)");
 
         let importAxisGroup = d3.select("#importGroup")
             .append("g")
             .attr("id", "importAxis")
             .attr("class", "axis")
-            .attr("transform", "translate(4,5)");
+            .attr("transform", "translate(4,25)");
 
     }
 
@@ -99,11 +99,11 @@ class Top_Traders {
             .nice();
 
 
-        let exportAxis = d3.axisBottom()
+        let exportAxis = d3.axisTop()
             .scale(widthExportAxisScale)
             .ticks(3);
 
-        let importAxis = d3.axisBottom()
+        let importAxis = d3.axisTop()
             .scale(widthImportScale)
             .ticks(3);
 

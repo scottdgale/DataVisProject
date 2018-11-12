@@ -47,8 +47,6 @@ class Balance_Single {
                             .style("text-anchor", "middle")
                             .attr('transform', 'translate('+ 20 + ', '+ 250 + ')' + "rotate(270)");
 
-
-
     }
 
     update(data, pri, sec, years) {

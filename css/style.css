@@ -88,6 +88,32 @@ h3{
     text-anchor: start;
 }
 
+.exportCircle {
+    r: 5;
+    fill: lightblue;
+    stroke: lightblue;
+    stroke-width: 1.5px;
+}
+
+.importCircle {
+    r: 5;
+    fill: purple;
+    stroke: purple;
+    stroke-width: 1.5px;
+}
+
+.exportLine {
+    fill: none;
+    stroke: lightblue;
+    stroke-width: 1.5px;
+}
+
+.importLine {
+    fill: none;
+    stroke: purple;
+    stroke-width: 1.5px;
+}
+
 .axis line {
     fill: none;
     stroke: #000;
@@ -97,8 +123,13 @@ h3{
 .axis-label {
     font-family: sans-serif;
     font-size: 18px;
-   
+}
 
+.connecting_line {
+    fill: none;
+    stroke: #000;
+    stroke-width: 2.0px;
+    shape-rendering: crispEdges;
 }
 
 
