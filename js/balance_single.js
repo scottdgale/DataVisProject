@@ -38,7 +38,7 @@ class Balance_Single {
                             .classed('axis-label', true)
                             .text("Years")
                             .style("text-anchor", "middle")
-                            .attr('transform', 'translate('+ 350 + ', '+ 500 + ')');
+                            .attr('transform', 'translate('+ 350 + ', '+ 530 + ')');
         
         let yAxisLabel = d3.select("#svg_balance_single")
                             .append('text')
@@ -56,7 +56,7 @@ class Balance_Single {
         let balanceData = data.slice();
         let circleRadius = 5;
         let rectWidth = 1;
-        let xOffset = 100;
+        let xOffset = 110;
         let yOffset = 40;
 
         //filter each year for primary country and put in a new array
@@ -86,14 +86,20 @@ class Balance_Single {
 
         /** Set up xScale and yScale based on the max import/export value and the year range */
         let yScale = d3.scaleLinear().range([400, 0]).domain([0, max]).nice();
-        let xScale = d3.scaleLinear().range([0, 500]).domain([+years[0] - 1, +years[1]]).nice();
+        let xScale = d3.scaleLinear().range([0, 700]).domain([+years[0] - 1, +years[1]]).nice();
 
         /** Create and call x and y axis */
         let yAxis = d3.axisLeft().scale(yScale)
         let xAxis = d3.axisBottom().scale(xScale)
         
         let yAx = d3.select("#yAxis").call(yAxis);
-        let xAx = d3.select("#xAxis").call(xAxis.ticks(numYears+1,""))       
+        let xAx = d3.select("#xAxis")
+                    .call(xAxis.ticks(numYears,""))
+                    .selectAll("text")  
+                    .style("text-anchor", "end")
+                    .attr("dx", "-.8em")
+                    .attr("dy", ".15em")
+                    .attr("transform", "rotate(-65)" );   
 
         /** Select our svg and do some clean up */
         let selection = d3.select("#svg_balance_single")

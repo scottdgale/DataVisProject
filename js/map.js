@@ -88,7 +88,7 @@ class Map {
                                       .attr('y', 15)
                                       .attr('height', 10)
                                       .attr('width', 2)
-                                                    .style('fill', 'black')
+                                      .style('fill', 'black')
 
                         tickGroupEnter.append("text")
                                       .attr('class', 'yeartext')
@@ -124,7 +124,7 @@ class Map {
         let yearBrushGroup = yearsSvg.append('g')
                                 .classed('brush', true)
                                 .call(yearBrush)
-                                .call(yearBrush.move, initialBrushPlacement );
+                                .call(yearBrush.move, initialBrushPlacement);
 
     }
 
@@ -139,14 +139,10 @@ class Map {
         let primaryName;
         let secondaryName;
 
-  
-
         //deep copy
         let exportPartners = data.Exports.slice();
         let importPartners = data.Imports.slice();
         let totalTradePartners = data.Total.slice();
-
-
 
         //coloring for map set up
         let maxTrade = totalTradePartners[0].Total
