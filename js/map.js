@@ -31,6 +31,7 @@ class Map {
         this.primary;
         this.secondary;
         this.colorScale;
+        this.years;
         this.nameArray = cityData.map(d => d.id.toUpperCase());
         this.yearData = [1990, 1991, 1992, 1993, 1994, 
                          1995, 1996, 1997, 1998, 1999, 
@@ -119,6 +120,7 @@ class Map {
                  if (!d3.event.selection) return; // Ignore empty selections.
          
                  let s = d3.event.selection;
+
                  let firstYear = (Math.ceil((s[0] - offset -tickWidth) / distanceBetweenYears) + 1990).toString();
                  let secondYear = (Math.floor((s[1] - offset + tickWidth) / distanceBetweenYears)+ 1990).toString();
 
@@ -146,6 +148,7 @@ class Map {
         let mapData = this.mapData
         this.primary = pri;
         this.secondary = sec;
+        this.years = years;
         let primaryName;
         let secondaryName;
 
@@ -265,7 +268,7 @@ class Map {
                                     that.updateHighlights();
                                     
                                     //then sync the data with the other views
-                                    that.syncData(that.primary, that.secondary, years)
+                                    that.syncData(that.primary, that.secondary, that.years)
                                     
                                 })
             countries = enter.merge(countries)
