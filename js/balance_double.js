@@ -22,6 +22,13 @@ class Balance_Double {
             .attr("height", this.svgHeight)
             .attr("width", this.svgWidth);
 
+        let gdpAxisGroup = d3.select("#svg_balance_double")
+            .append("g")
+            .attr("id", "gdpAxis")
+            .attr("class", "axis")
+            .attr("transform", "translate(0,0)");
+
+
         let yAxisGroup = d3.select("#svg_balance_double")
             .append("g")
             .attr("id", "yAxisDouble")
@@ -49,13 +56,25 @@ class Balance_Double {
             .style("text-anchor", "middle")
             .attr('transform', 'translate('+ 20 + ', '+ 250 + ')' + "rotate(270)");
 
+        let lineGroup = d3.select("#svg_balance_double").append("g")
+            .attr("id", "lineGroup");
+        let importCirclesGroup = d3.select("#svg_balance_double").append("g")
+            .attr("id", "importCircleGroup");
+        let exportCirclesGroup = d3.select("#svg_balance_double").append("g")
+            .attr("id", "exportCircleGroup");
+        let importtPathGroup = d3.select("#svg_balance_double").append("g")
+            .attr("id", "importPathGroup");
+        let exportPathGroup = d3.select("#svg_balance_double").append("g")
+            .attr("id", "exportPathGroup");
+
+
     }
 
     update(data, gdp, pri, sec, years) {
-        console.log(data);
+        //console.log(gdp);
         // console.log("Balance_double PRI: " + pri);
         // console.log("Balance_double SEC: " + sec);
-
+        this.getGDPData(gdp, pri, sec, years);
 
         let exportMax = d3.max(data, function (d) {
             return +d.Export
@@ -73,8 +92,11 @@ class Balance_Double {
         let numYears = +years[1] - +years[0];
 
         /** Set up xScale and yScale based on the max import/export value and the year range */
-        let yScale = d3.scaleLinear().range([400, 0]).domain([0, max]).nice();
+        let yScale = d3.scaleLinear().range([400, 150]).domain([0, max]).nice();
         let xScale = d3.scaleLinear().range([0, 500]).domain([+years[0] - 1, +years[1]]).nice();
+        let gdpScale = d3.scaleLinear()
+            .domain([0,0])
+            .range([0,0]);
 
         /** Create and call x and y axis */
         let yAxis = d3.axisLeft().scale(yScale);
@@ -115,7 +137,7 @@ class Balance_Double {
         selection.selectAll(".exportLine").remove();
 
         //---CONNECTING LINES - DRAW FIRST SO THEY ARE BEHIND--------------------------
-        let connectingLines = d3.select("#svg_balance_double").selectAll(".connecting_line")
+        let connectingLines = d3.select("#lineGroup").selectAll(".connecting_line")
             .data(linePoints);
         let newLines = connectingLines.enter().append("line");
         let oldLines = connectingLines.exit().remove();
@@ -136,7 +158,7 @@ class Balance_Double {
 
 
         //---IMPORT CIRCLES-----------------------------------------------------------
-        let importCircles = d3.select("#svg_balance_double").selectAll(".importCircle")
+        let importCircles = d3.select("#importCircleGroup").selectAll(".importCircle")
             .data(importPoints);
         let newImportCircles = importCircles.enter().append("circle");
         let oldImportCircles = importCircles.exit().remove();
@@ -153,7 +175,7 @@ class Balance_Double {
             });
 
         //---EXPORT CIRCLES-----------------------------------------------------------
-        let exportCircles = d3.select("#svg_balance_double").selectAll(".exportCircle")
+        let exportCircles = d3.select("#exportCircleGroup").selectAll(".exportCircle")
             .data(exportPoints);
         let newExportCircles = exportCircles.enter().append("circle");
         let oldExportCircles = exportCircles.exit().remove();
@@ -186,14 +208,14 @@ class Balance_Double {
                 return yScale(d.Export) + this.yOffset
             });
 
-        let importPath = d3.select("#svg_balance_double")
+        let importPath = d3.select("#importPathGroup")
             .append("path")
             .datum(importPoints)
             .attr("class", "importLine")
             .attr("d", importLineGenerator);
 
         //---EXPORT PATH-----------------------------------------------------------
-        let exportPath = d3.select("#svg_balance_double")
+        let exportPath = d3.select("#exportPathGroup")
             .append("path")
             .datum(exportPoints)
             .attr("class", "exportLine")
@@ -201,7 +223,36 @@ class Balance_Double {
 
     }
 
+    getGDPData(data, pri, sec, years){
+        console.log(data);
+        console.log(data[10]);
+        //console.log(data[10][5]);
+        let priCountry = [];
+        let secCountry = [];
+        for (let i=0; i<data.length; i++){
+            if (data[i].id === pri){
+                priCountry.push({
+                    Year: parseInt(years[0])+i,
+                    Country: data[i].COUNTRY,
+                    GDP: data[i].INDEX
+                });
+            }
+            else if (data[i].id === sec){
+                secCountry.push({
+                    Year: parseInt(years[0])+i,
+                    Country: data[i].COUNTRY,
+                    GDP: data[i].INDEX
+                });
 
+            }
+            console.log(priCountry);
+            console.log(secCountry);
+        }
+
+
+
+        return null;
+    }
 
 
 }

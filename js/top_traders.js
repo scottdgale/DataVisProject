@@ -50,12 +50,44 @@ class Top_Traders {
             .attr("class", "axis")
             .attr("transform", "translate(4,25)");
 
+        //for reference: https://github.com/Caged/d3-tip
+        //Use this tool tip element to handle any hover over the chart
+        this.tip = d3.tip().attr('class', 'd3-tip')
+            .direction('s')
+            .offset(function() {
+                return [0,0];
+            });
+
     }
 
+    tooltip_render (tooltip_data) {
+        let text = "<ul>";
+        console.log(tooltip_data.result);
+        tooltip_data.result.forEach((row)=>{
+            console.log(row);
+            text += "<li class = yeartext>"
+                    + row.Country + ":\t\t Exports: $" + row.Exports + " Mil(" + row.Percent + ")" +
+                    "</li>"
+
+        });
+        console.log(text);
+        return text;
+    }
+
+
     update(data, pri, sec, years) {
-        /**
-         * Scott - I did a slice on the inner arrays of data and it seems to work (see below:)
-         */
+
+
+        this.tip.html((d)=> {
+            //populate data in the following format
+            console.log(d);
+            let tooltip_data = {
+                "result":[
+                {"Country": d.SecondaryName, "Exports": d.Average,"Percent": d.Total_Global_Exports}
+            ]};
+            //console.log(tooltip_data);
+            return this.tooltip_render(tooltip_data);
+        });
 
         // let topData = data.slice();
         let rectHeight = 20;
@@ -125,7 +157,10 @@ class Top_Traders {
             })
             .attr("width", (d)=>{
                 return widthExportScale(d.Average/convert);
-            });
+            })
+            .call(this.tip)
+            .on("mouseover", this.tip.show)
+            .on("mouseout", this.tip.hide);
 
 
         //IMPORTS----------------------------------------------------------------
