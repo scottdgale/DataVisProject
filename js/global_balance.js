@@ -12,11 +12,24 @@ class Global_Balance {
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
         this.svgHeight = 600;
 
-
         divGlobalBalance.append("svg")
             .attr("id", "svg_global_balance")
             .attr("height", this.svgHeight)
             .attr("width", this.svgWidth);
+
+        d3.select("#svg_global_balance").append("g")
+            .attr("transform", "translate(100," + -350+")")
+            .append("text")
+            .attr("class", "topTraderText")
+            .text("Global Imports")
+            .attr("transform", "translate(250,380)");
+        d3.select("#svg_global_balance").append("g")
+             .attr("transform", "translate(100," + -350+")")
+             .append("text")
+             .attr("class", "topTraderText")
+             .text("Global Exports")
+             .attr("transform", "translate(1055,380)");
+        
 
         let yAxisGroup = d3.select("#svg_global_balance")
             .append("g")
