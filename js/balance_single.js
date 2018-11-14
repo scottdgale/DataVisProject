@@ -84,7 +84,7 @@ class Balance_Single {
 
         /** Set up xScale and yScale based on the max import/export value and the year range */
         let yScale = d3.scaleLinear().range([400, 0]).domain([0, max]).nice();
-        let xScale = d3.scaleLinear().range([0, 600]).domain([+years[0] - 1, +years[1]]).nice();
+        let xScale = d3.scaleLinear().range([0, 600]).domain([+years[0] - 1, +years[1]+1]).nice();
 
         /** Create and call x and y axis */
         let yAxis = d3.axisLeft().scale(yScale)
