@@ -123,7 +123,7 @@ class Balance_Double {
 
         /** Set up xScale and yScale based on the max import/export value and the year range */
         let yScale = d3.scaleLinear().range([400, 150]).domain([0, max]).nice();
-        let xScale = d3.scaleLinear().range([0, 500]).domain([+years[0] - 1, +years[1]]).nice();
+        let xScale = d3.scaleLinear().range([0, 500]).domain([+years[0] - 1, +years[1]+1]).nice();
         let gdpScale = d3.scaleLinear()
             .domain([gdpMin,gdpMax])
             .range([500,400])

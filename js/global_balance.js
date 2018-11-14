@@ -76,14 +76,14 @@ class Global_Balance {
     }
 
 
-    update(data, gdp, pri, sec, years) {
+    update(data, pri, sec, years) {
 
         let balanceData = data.slice();
-        let circleRadius = 5;
         let rectWidth = 20;
         let xOffset = 110;
         let yOffset = 40;
         console.log(balanceData)
+        console.log(years)
 
         //filter each year for primary country and put in a new array
         let filteredForPrimary = [];
