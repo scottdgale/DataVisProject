@@ -44,10 +44,12 @@ loadMapData().then(data => {
 
     function highlightData(id){
         console.log("highlight data in script.js: " + id);
+        map.highlightCountry(id);
     }
 
     function clearHighlight(id){
         console.log("clear highlight data in script.js: " + id);
+        map.clearHighlight(id);
     }
 
 
