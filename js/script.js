@@ -113,6 +113,8 @@ class DataProcess {
     }
 
     processData(data, pri, sec) {
+        this.totalImports = 0;
+        this.totalExports = 0;
         let procData = data.slice();
         let dataImport = [];
         let dataExport = [];
@@ -135,8 +137,8 @@ class DataProcess {
         let avgDataImport = this.average(dataImport, true);
         let avgDataExport = this.average(dataExport, false);
 
-        //console.log(avgDataImport);
-        //console.log(avgDataExport);
+        console.log(avgDataImport);
+        console.log(avgDataExport);
 
         let dataTotal = this.getTotal(avgDataImport, avgDataExport, pri, numYears);
 
@@ -168,31 +170,36 @@ class DataProcess {
         let cleanAllData = [];
         let temp = [];
         //Loops through all years
-        for (let z = 0; z<workingData.length; z++){
+        for (let year = 0; year<workingData.length; year++){
             //Loops through all countries
-            for (let x = 0; x<workingData[z].length; x++){
+            for (let country = 0; country<workingData[year].length; country++){
                 //This means flow1 = imports
-                if (workingData[z][x].id1===pri){
+                if (workingData[year][country].id1===pri){
                     temp = {
-                        PrimaryId: workingData[z][x].id1,
-                        PrimaryName: workingData[z][x].importer1,
-                        SecondaryId: workingData[z][x].id2,
-                        SecondaryName: workingData[z][x].importer2,
-                        Import: workingData[z][x].flow1,
-                        Export: workingData[z][x].flow2
+                        PrimaryId: workingData[year][country].id1,
+                        PrimaryName: workingData[year][country].importer1,
+                        SecondaryId: workingData[year][country].id2,
+                        SecondaryName: workingData[year][country].importer2,
+                        Import: workingData[year][country].flow1,
+                        Export: workingData[year][country].flow2
                     };
+                    //Total ALL IMPORTS and EXPORTS for the Primary Country
+                    this.totalImports+= parseFloat((workingData[year][country].flow1==="-9")?0:workingData[year][country].flow1);
+                    this.totalExports+= parseFloat((workingData[year][country].flow2==="-9")?0:workingData[year][country].flow2);
                     cleanYearData.push(temp);
                     temp.length = 0;
                 }
-                else if (workingData[z][x].id2===pri){
+                else if (workingData[year][country].id2===pri){
                     temp = {
-                        PrimaryId: workingData[z][x].id2,
-                        PrimaryName: workingData[z][x].importer2,
-                        SecondaryId: workingData[z][x].id1,
-                        SecondaryName: workingData[z][x].importer1,
-                        Import: workingData[z][x].flow2,
-                        Export: workingData[z][x].flow1
+                        PrimaryId: workingData[year][country].id2,
+                        PrimaryName: workingData[year][country].importer2,
+                        SecondaryId: workingData[year][country].id1,
+                        SecondaryName: workingData[year][country].importer1,
+                        Import: workingData[year][country].flow2,
+                        Export: workingData[year][country].flow1
                     };
+                    this.totalImports+= parseFloat((workingData[year][country].flow2==="-9")?0:workingData[year][country].flow2);
+                    this.totalExports+= parseFloat((workingData[year][country].flow1==="-9")?0:workingData[year][country].flow1);
                     cleanYearData.push(temp);
                     temp.length = 0;
                 }
@@ -302,9 +309,9 @@ class DataProcess {
             });
             sortedData.push(sortData[a].slice(0,sliceVal));
             //Eliminate any missing data and sum the total imports
-            for (let b = 0; b<sortData[a].length; b++){
+            /*for (let b = 0; b<sortData[a].length; b++){
                 this.totalImports+= (!(sortData[a][b].Import === "-9")?sortData[a][b].Import:0);
-            }
+            }*/
         }
         return sortedData;
     }
@@ -319,9 +326,9 @@ class DataProcess {
             });
             sortedData.push(sortData[a].slice(0,sliceVal));
             //Eliminate any missing data and sum the total imports
-            for (let b = 0; b<sortData[a].length; b++){
+            /*for (let b = 0; b<sortData[a].length; b++){
                 this.totalExports+= (!(sortData[a][b].Export === "-9")?sortData[a][b].Export:0);
-            }
+            }*/
         }
         return sortedData;
     }

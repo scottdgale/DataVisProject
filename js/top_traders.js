@@ -14,7 +14,7 @@ class Top_Traders {
         let divTopTraders = d3.select("#top_traders").classed("right_quarter", true);
         this.svgBounds = divTopTraders.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
-        this.svgHeight = 600;
+        this.svgHeight = 625;
 
 
         divTopTraders.append("svg")
@@ -28,27 +28,41 @@ class Top_Traders {
             .attr("transform", "translate(0,15)")
             .append("text")
             .attr("transform", "translate(0,0)")
+            .attr("class", "topTraderText")
             .text("Top Exporters($Mil)");
-
-        let importGroup = d3.select("#svg_top_traders")
-            .append("g")
-            .attr("id", "importGroup")
-            .attr("transform", "translate(175,15)")
-            .append("text")
-            .attr("transform", "translate(5,0)")
-            .text("Top Importers($Mil)");
 
         let exportAxisGroup = d3.select("#exportGroup")
             .append("g")
             .attr("id", "exportAxis")
             .attr("class", "axis")
-            .attr("transform", "translate(-12,25)");
+            .attr("transform", "translate(0,30)");
+
+        let exportTextGroup = d3.select("#exportGroup")
+            .append("g")
+            .attr("id", "exportTextGroup")
+            .attr("class", "topTraderText")
+            .attr("transform", "translate(140,0)");
+
+        let importGroup = d3.select("#svg_top_traders")
+            .append("g")
+            .attr("id", "importGroup")
+            .attr("transform", "translate(0,325)")
+            .append("text")
+            .attr("transform", "translate(5,0)")
+            .attr("class", "topTraderText")
+            .text("Top Importers($Mil)");
 
         let importAxisGroup = d3.select("#importGroup")
             .append("g")
             .attr("id", "importAxis")
             .attr("class", "axis")
-            .attr("transform", "translate(4,25)");
+            .attr("transform", "translate(0,30)");
+
+        let importTextGroup = d3.select("#importGroup")
+            .append("g")
+            .attr("id", "importTextGroup")
+            .attr("class", "topTraderText")
+            .attr("transform", "translate(140,0)");
 
         //for reference: https://github.com/Caged/d3-tip
         //Use this tool tip element to handle any hover over the chart
@@ -91,9 +105,11 @@ class Top_Traders {
 
         // let topData = data.slice();
         let rectHeight = 20;
-        let yScaler = 21;
-        let yOffset = 28;
-        let xOffset = 110;
+        let yScaler = 22;
+        let yOffset = 33;
+        let yTextOffset = 48;
+        let xOffset = 140;
+        let xTextOffset = 15;
         let convert = 1000;
 
         // //Deep copy using slice() -- prevents mutation
@@ -101,8 +117,8 @@ class Top_Traders {
         let importPartners = data.Imports.slice();
         // let totalTradePartners = data.totalTradePartners.slice();
         //
-        let topExporters = exportPartners.splice(0,20);
-        let topImporters = importPartners.splice(0,20);
+        let topExporters = exportPartners.splice(0,10);
+        let topImporters = importPartners.splice(0,10);
         //console.log(topExporters);
         //console.log(topImporters);
 
@@ -117,17 +133,22 @@ class Top_Traders {
 
         let widthExportAxisScale = d3.scaleLinear()
             .domain([(exportMin),(exportMax)])
-            .range([120,0])
+            .range([140,0])
             .nice();
 
         let widthExportScale = d3.scaleLinear()
             .domain([(exportMin),(exportMax)])
-            .range([5,120])
+            .range([5,140])
+            .nice();
+
+        let widthImportAxisScale = d3.scaleLinear()
+            .domain([(importMin),(importMax)])
+            .range([140,0])
             .nice();
 
         let widthImportScale = d3.scaleLinear()
             .domain([importMin,importMax])
-            .range([5,120])
+            .range([5,140])
             .nice();
 
 
@@ -136,7 +157,7 @@ class Top_Traders {
             .ticks(3);
 
         let importAxis = d3.axisTop()
-            .scale(widthImportScale)
+            .scale(widthImportAxisScale)
             .ticks(3);
 
         //EXPORTS-------------------------------------------------------------------
@@ -162,6 +183,25 @@ class Top_Traders {
             .on("mouseover", this.tip.show)
             .on("mouseout", this.tip.hide);
 
+        //EXPORT TEXT
+        let textExport = d3.select("#exportTextGroup").selectAll("text")
+            .data(topExporters);
+        let newText =  textExport.enter().append("text");
+        let oldText = textExport.exit().remove();
+        textExport = newText.merge(textExport);
+
+        textExport.attr("id", (d)=>d.key+"_ExportText")
+            .attr("class", "topTraderText")
+            .attr("x", xTextOffset)
+            .attr("y", (d,i)=>{
+                console.log(d);
+                return yTextOffset +(i*yScaler);
+            })
+            .text((d)=>{
+                let percent = parseFloat(d.Total/d.Total_Global_Exports*100).toFixed(1);
+                return d.SecondaryName + ": " + d.Average + "   (" + percent + "%)"
+            });
+
 
         //IMPORTS----------------------------------------------------------------
         let rectImports = d3.select("#importGroup").selectAll("rect")
@@ -173,13 +213,33 @@ class Top_Traders {
         rectImports.attr("id", (d)=> (d.key+"_IM"))
             .attr("class", "imports")
             .attr("height", rectHeight)
-            .attr("x", 10)
+            .attr("x", (d)=>{
+                return xOffset - (widthImportScale(d.Average/convert));
+            })
             .attr("y", (d,i)=>{
                 return yOffset + (i*yScaler);
             })
             .attr("width", (d)=>{
-
                 return widthImportScale(d.Average/convert);
+            });
+
+        //EXPORT TEXT
+        let textImport = d3.select("#importTextGroup").selectAll("text")
+            .data(topImporters);
+        let newImText =  textImport.enter().append("text");
+        let oldImText = textImport.exit().remove();
+        textImport = newImText.merge(textImport);
+
+        textImport.attr("id", (d)=>d.key+"_ImportText")
+            .attr("class", "topTraderText")
+            .attr("x", xTextOffset)
+            .attr("y", (d,i)=>{
+                console.log(d);
+                return yTextOffset +(i*yScaler);
+            })
+            .text((d)=>{
+                let percent = parseFloat(d.Total/d.Total_Global_Imports*100).toFixed(1);
+                return d.SecondaryName + ": " + d.Average + "   (" + percent + "%)"
             });
 
         //DRAW AXES

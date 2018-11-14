@@ -129,9 +129,9 @@ h3{
     shape-rendering: crispEdges;
 }
 
-.axis-label {
+.axis text {
     font-family: sans-serif;
-    font-size: 18px;
+    font-size: 15px;
 }
 
 .connecting_line {
@@ -139,6 +139,13 @@ h3{
     stroke: #000;
     stroke-width: 2.0px;
     shape-rendering: crispEdges;
+}
+
+.topTraderText{
+    text-anchor: start;
+    font-size: 16px;
+    fill: black;
+    stroke-width: 0.5px;
 }
 
 
