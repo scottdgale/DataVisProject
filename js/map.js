@@ -28,8 +28,10 @@ class Map {
         this.mapData = mapData;
         this.cityData = cityData;
         this.syncData = syncData;
-        this.primary;
-        this.secondary;
+        this.primary = 'USA';
+        this.secondary = 'CHN';
+        this.prevPri;
+        this.prevSec;
         this.colorScale;
         this.years;
         this.nameArray = cityData.map(d => d.id.toUpperCase());
@@ -138,6 +140,29 @@ class Map {
                                 .call(yearBrush)
                                 .call(yearBrush.move, initialBrushPlacement);
 
+    }
+
+    
+    highlightCountry(id){
+        // d3.select("#" + id).classed("highlight", true);
+        if(id !== this.secondary){
+             d3.select("#" + id).style('fill', 'yellow').style('stroke-width', 0.5).style('stroke', 'black')
+        }
+        else{
+            d3.select("#" + id).style('stroke-width', 3).style('stroke', 'black')
+        }
+    }
+
+    clearHighlight(id) {
+    
+        //d3.select("#svg_map").selectAll(".highlight").classed("highlight", false);
+        if(id !== this.secondary){
+            d3.select("#" + id).style('fill', '#E0E0E0').style('stroke', 'white')
+       }
+       else{
+           d3.select("#" + id).style('stroke-width', 1.5).style('stroke', 'white')
+       }
+        
     }
 
     
@@ -329,9 +354,10 @@ class Map {
 
     //Temporary highlighting function that allows us to see the difference between pri and sec
     updateHighlights() {
-            d3.selectAll('.countries').style('fill', '#E0E0E0')
-            d3.select("#" + this.primary).style('fill', '#6F339B').style('stroke-width', 3)
-            d3.select("#" + this.secondary).style('fill', '#C4ACD6').style('stroke-width', 3)
+            d3.selectAll('.countries' ).style('fill', '#E0E0E0').style('stroke-width', 1.5);
+           d3.select("#" + this.primary).style('fill', '#6F339B').style('stroke-width', 3)
+           d3.select("#" + this.secondary).style('fill', '#C4ACD6').style('stroke-width', 3)
+         
     }
 
     countryColoring(topTraders){

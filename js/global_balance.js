@@ -49,21 +49,21 @@ class Global_Balance {
             .append("g")
             .attr("id", "yAxisGlobalExport")
             .attr("class", "axis")
-            .attr("transform", "translate(" + 810 +","+ 50 + ")");
+            .attr("transform", "translate(" + 910 +","+ 50 + ")");
 
 
         let xAxisExportGroup = d3.select("#svg_global_balance")
             .append("g")
             .attr("id", "xAxisGlobalExport")
             .attr("class", "axis")
-            .attr("transform", "translate("+ 810 + "," + 450 + ")");
+            .attr("transform", "translate("+ 910 + "," + 450 + ")");
 
         let xAxisExportLabel = d3.select("#svg_global_balance")
                             .append('text')
                             .classed('axis-label', true)
                             .text("Years")
                             .style("text-anchor", "middle")
-                            .attr('transform', 'translate('+ 950 + ', '+ 530 + ')');
+                            .attr('transform', 'translate('+ 1200 + ', '+ 530 + ')');
         
         let yAxisExportLabel = d3.select("#svg_global_balance")
                             .append('text')
@@ -215,7 +215,7 @@ priExportRect.attr("height", d =>{
                     return yScale(0) - yScale(d.exports) + 10;
                 })
           .attr("width", bandScale.bandwidth())
-          .attr("x", d => { return xScale(d.year) - bandScale.bandwidth() + 700})
+          .attr("x", d => { return xScale(d.year) - bandScale.bandwidth() +800})
           .attr("y", d => { return yScale(d.exports)})
           .style("fill", d =>{
                     return '#6F339B'
@@ -235,7 +235,7 @@ let secExportRect = selection.selectAll('.secExportRect')
                     return yScale(0) - yScale(d.exports) + 10;
                 })
             .attr("width", bandScale.bandwidth())
-            .attr("x", d => { return xScale(d.year) + 700})
+            .attr("x", d => { return xScale(d.year) + 800})
             .attr("y", d => { return yScale(d.exports)})
             .style("fill", d =>{
                     return '#C4ACD6'

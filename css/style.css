@@ -55,18 +55,18 @@ h3{
 }
 
 .countries {
-    fill: #CDCDCD;
+    fill: #E0E0E0;
     stroke: white;
 }
 
 .primary {
     stroke-width: 3;
-    fill: #3d3d97;
+    fill: #6F339B;
 }
 
 .secondary {
     stroke-width: 3;
-    fill: #6868ae;
+    fill: #C4ACD6;
 }
 
 
@@ -103,7 +103,7 @@ h3{
     fill: #FCFF33;
     color: #FCFF33;
     stroke: #000;
-    stroke-width: 1.5px;
+    stroke-width: 0.8px;
     text-anchor: start;
 }
 

@@ -48,7 +48,7 @@ class Balance_Double {
             .classed('axis-label', true)
             .text("Years")
             .style("text-anchor", "middle")
-            .attr('transform', 'translate('+ 350 + ', '+ 500 + ')');
+            .attr('transform', 'translate('+ 350 + ', '+ 530 + ')');
 
         let yAxisLabel = d3.select("#svg_balance_double")
             .append('text')
@@ -136,8 +136,15 @@ class Balance_Double {
         let gdpAxis = d3.axisLeft().scale(gdpScale).ticks(4);
 
         let yAx = d3.select("#yAxisDouble").call(yAxis);
-        let xAx = d3.select("#xAxisDouble").call(xAxis.ticks(numYears + 1, ""));
         let gdpAx = d3.select("#gdpAxisDouble").call(gdpAxis);
+        let xAx = d3.select("#xAxisDouble")
+                    .call(xAxis.ticks(numYears + 1, ""))   
+                    .selectAll("text")  
+                    .style("text-anchor", "end")
+                    .attr("dx", "-.8em")
+                    .attr("dy", ".15em")
+                    .attr("transform", "rotate(-65)" );   
+  
 
         //create an two arrays - one for import points / one for export points
         let importPoints = [];
