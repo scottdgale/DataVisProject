@@ -10,7 +10,7 @@ loadMapData().then(data => {
 
     let balanceSingle = new Balance_Single();
 
-    let topTraders = new Top_Traders();
+    let topTraders = new Top_Traders(highlightData, clearHighlight);
 
     let globalBalance = new Global_Balance();
 
@@ -42,8 +42,17 @@ loadMapData().then(data => {
     //SyncData with initial dataset - All objects will call syncData for interaction
     syncData(primary, secondary, selected_years);
 
+    function highlightData(id){
+        console.log("highlight data in script.js: " + id);
+    }
 
-//syncData is the focal point for all interactions and updates
+    function clearHighlight(id){
+        console.log("clear highlight data in script.js: " + id);
+    }
+
+
+
+    //syncData is the focal point for all interactions and updates
 function syncData(priCountry, secCountry, years) {
     primary = priCountry;
     secondary = secCountry;

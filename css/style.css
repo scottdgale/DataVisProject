@@ -97,6 +97,14 @@ h3{
     text-anchor: start;
 }
 
+.highlight {
+    fill: #FCFF33;
+    color: #FCFF33;
+    stroke: #000;
+    stroke-width: 1.5px;
+    text-anchor: start;
+}
+
 .exportCircle {
     r: 5;
     fill: lightblue;

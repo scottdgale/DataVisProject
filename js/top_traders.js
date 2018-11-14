@@ -4,11 +4,12 @@ class Top_Traders {
      *
      * @param
      */
-    constructor() {
+    constructor(highlightData, highlightDataClear) {
 
-        this.totalExports = 0.0;
-        this.totalImports = 0.0;
-        this.isFlow1 = true; //true indicates the primary country is associated with (flow1=import)
+        this.highlightScript = highlightData;
+        this.highlightScriptClear = highlightDataClear;
+
+
         this.margin = {top: 20, right: 20, bottom: 20, left: 50, spacing: 57};
 
         let divTopTraders = d3.select("#top_traders").classed("right_quarter", true);
@@ -86,6 +87,26 @@ class Top_Traders {
         });
         console.log(text);
         return text;
+    }
+
+    highlightRect(id){
+        let exportRect = d3.select("#rectExport" + id)
+            .classed("highlight", true);
+        let importRect = d3.select("#rectImport" + id)
+            .classed("highlight", true);
+        this.highlightScript(id);
+    }
+
+    /**
+     * Called by mouseout event to clear highlighting
+     *
+     * @param
+     */
+    clearHighlight(id){
+        //clear all highlights
+        let rectangles = d3.select("#svg_top_traders").selectAll("rect")
+            .classed("highlight", false);
+        this.highlightScriptClear(id);
     }
 
 
@@ -167,7 +188,7 @@ class Top_Traders {
         let oldRect = rectExport.exit().remove();
         rectExport = newRect.merge(rectExport);
 
-        rectExport.attr("id", (d)=>d.key+"_EX")
+        rectExport.attr("id", (d)=> ("rectExport" + d.SecondaryId))
             .attr("class", "exports")
             .attr("height", rectHeight)
             .attr("x", (d)=>{
@@ -178,10 +199,19 @@ class Top_Traders {
             })
             .attr("width", (d)=>{
                 return widthExportScale(d.Average/convert);
+            });
+
+        rectExport.on("mouseover",(d)=>{
+                this.highlightRect(d.SecondaryId);
             })
-            .call(this.tip)
-            .on("mouseover", this.tip.show)
-            .on("mouseout", this.tip.hide);
+            .on("mouseout", (d)=>{
+                this.clearHighlight(d.SecondaryId);
+            });
+
+
+            //.call(this.tip)
+            //.on("mouseover", this.tip.show)
+            //.on("mouseout", this.tip.hide);
 
         //EXPORT TEXT
         let textExport = d3.select("#exportTextGroup").selectAll("text")
@@ -190,11 +220,10 @@ class Top_Traders {
         let oldText = textExport.exit().remove();
         textExport = newText.merge(textExport);
 
-        textExport.attr("id", (d)=>d.key+"_ExportText")
+        textExport.attr("id", (d)=>("textExport" + d.SecondaryId))
             .attr("class", "topTraderText")
             .attr("x", xTextOffset)
             .attr("y", (d,i)=>{
-                console.log(d);
                 return yTextOffset +(i*yScaler);
             })
             .text((d)=>{
@@ -210,7 +239,7 @@ class Top_Traders {
         let oldInRect = rectImports.exit().remove();
         rectImports = newInRect.merge(rectImports);
 
-        rectImports.attr("id", (d)=> (d.key+"_IM"))
+        rectImports.attr("id", (d)=> ("rectImport"+d.SecondaryId))
             .attr("class", "imports")
             .attr("height", rectHeight)
             .attr("x", (d)=>{
@@ -223,18 +252,24 @@ class Top_Traders {
                 return widthImportScale(d.Average/convert);
             });
 
-        //EXPORT TEXT
+        rectImports.on("mouseover",(d)=>{
+            this.highlightRect(d.SecondaryId);
+        })
+            .on("mouseout", (d)=>{
+                this.clearHighlight(d.SecondaryId);
+            });
+
+        //IMPORT TEXT
         let textImport = d3.select("#importTextGroup").selectAll("text")
             .data(topImporters);
         let newImText =  textImport.enter().append("text");
         let oldImText = textImport.exit().remove();
         textImport = newImText.merge(textImport);
 
-        textImport.attr("id", (d)=>d.key+"_ImportText")
+        textImport.attr("id", (d)=>"textImport" + d.SecondaryId)
             .attr("class", "topTraderText")
             .attr("x", xTextOffset)
             .attr("y", (d,i)=>{
-                console.log(d);
                 return yTextOffset +(i*yScaler);
             })
             .text((d)=>{
