@@ -16,7 +16,7 @@ loadMapData().then(data => {
 
     let balanceDouble = new Balance_Double();
 
-    let selected_years = ["2000", "2005"];
+    let selected_years = ["2000", "2001"];
 
     //Change to use country "id" . . .
     let primary = "USA";
