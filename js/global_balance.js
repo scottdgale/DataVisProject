@@ -125,7 +125,7 @@ class Global_Balance {
         let exportMax = +priExportMax > +secExportMax ? +priExportMax : +secExportMax;
         let importMax = +priImportMax > +secImportMax ? +priImportMax : +secImportMax;
         let max = +exportMax > +importMax ? +exportMax : +importMax;
-        let numYears = +years[1] - +years[0]
+        let numYears = +years[1] - +years[0];
 
         /** Set up xScale and yScale based on the max import/export value and the year range */
         let yScale = d3.scaleLinear().range([400, 0]).domain([0, max]).nice();

@@ -38,6 +38,7 @@ h3{
     width: 45%;
     position: relative;
     padding-right: 2%;
+    padding-top: 3%;
 }
 
 .three_quarter_view {
@@ -50,6 +51,7 @@ h3{
 .full_view {
     display: inline-block;
     width: 100%;
+    padding-bottom: 2%
 }
 
 .countries {
@@ -119,6 +121,20 @@ h3{
     stroke-width: 1.5px;
 }
 
+.primaryCircle{
+     r: 5;
+     fill: #6F339B;
+     stroke: #6F339B;
+     stroke-width: 1.5px;
+ }
+
+.secondaryCircle{
+    r: 5;
+    fill: #C4ACD6;
+    stroke: #C4ACD6;
+    stroke-width: 1.5px;
+}
+
 .exportLine {
     fill: none;
     stroke: lightblue;
@@ -128,6 +144,18 @@ h3{
 .importLine {
     fill: none;
     stroke: purple;
+    stroke-width: 1.5px;
+}
+
+.primaryLine {
+    fill: none;
+    stroke: #6F339B;
+    stroke-width: 1.5px;
+}
+
+.secondaryLine {
+    fill: none;
+    stroke: #C4ACD6;
     stroke-width: 1.5px;
 }
 

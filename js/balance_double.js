@@ -15,6 +15,7 @@ class Balance_Double {
 
         this.xOffset = 110;
         this.yOffset = 50;
+        this.gdpYOffset = -350;
 
 
         divBalanceDouble.append("svg")
@@ -24,9 +25,9 @@ class Balance_Double {
 
         let gdpAxisGroup = d3.select("#svg_balance_double")
             .append("g")
-            .attr("id", "gdpAxis")
+            .attr("id", "gdpAxisDouble")
             .attr("class", "axis")
-            .attr("transform", "translate(0,0)");
+            .attr("transform", "translate(" + this.xOffset + "," + this.gdpYOffset + ")");
 
 
         let yAxisGroup = d3.select("#svg_balance_double")
@@ -66,6 +67,14 @@ class Balance_Double {
             .attr("id", "importPathGroup");
         let exportPathGroup = d3.select("#svg_balance_double").append("g")
             .attr("id", "exportPathGroup");
+        let gdpVisGroup = d3.select("#svg_balance_double").append("g")
+            .attr("id", "gdpVisGroup")
+            .attr("transform", "translate(0," + this.gdpYOffset+")")
+            .append("text")
+            .attr("class", "topTraderText")
+            .text("GDP")
+            .attr("transform", "translate(250,380)");
+
 
 
     }
@@ -74,7 +83,28 @@ class Balance_Double {
         //console.log(gdp);
         // console.log("Balance_double PRI: " + pri);
         // console.log("Balance_double SEC: " + sec);
-        this.getGDPData(gdp, pri, sec, years);
+        let gdpData = this.getGDPData(gdp, pri, sec, years);
+
+        console.log(gdpData);
+
+        let gdpPriMax = d3.max(gdpData.PrimaryGDP, function (d){
+            return +d.GDP;
+        });
+
+        let gdpPriMin = d3.min(gdpData.PrimaryGDP, function (d){
+            return +d.GDP;
+        });
+
+        let gdpSecMax = d3.max(gdpData.SecondaryGDP, function (d){
+            return +d.GDP;
+        });
+
+        let gdpSecMin = d3.min(gdpData.SecondaryGDP, function (d){
+            return +d.GDP;
+        });
+
+        let gdpMax = gdpPriMax>gdpSecMax?gdpPriMax:gdpSecMax;
+        let gdpMin = gdpPriMin>gdpSecMin?gdpSecMin:gdpPriMin;
 
         let exportMax = d3.max(data, function (d) {
             return +d.Export
@@ -95,15 +125,19 @@ class Balance_Double {
         let yScale = d3.scaleLinear().range([400, 150]).domain([0, max]).nice();
         let xScale = d3.scaleLinear().range([0, 500]).domain([+years[0] - 1, +years[1]]).nice();
         let gdpScale = d3.scaleLinear()
-            .domain([0,0])
-            .range([0,0]);
+            .domain([gdpMin,gdpMax])
+            .range([500,400])
+            .nice();
 
-        /** Create and call x and y axis */
+
+        /** Create and call x, y axis, gdp axis */
         let yAxis = d3.axisLeft().scale(yScale);
         let xAxis = d3.axisBottom().scale(xScale);
+        let gdpAxis = d3.axisLeft().scale(gdpScale).ticks(4);
 
         let yAx = d3.select("#yAxisDouble").call(yAxis);
         let xAx = d3.select("#xAxisDouble").call(xAxis.ticks(numYears + 1, ""));
+        let gdpAx = d3.select("#gdpAxisDouble").call(gdpAxis);
 
         //create an two arrays - one for import points / one for export points
         let importPoints = [];
@@ -127,14 +161,17 @@ class Balance_Double {
             )
 
         }
-        console.log(importPoints);
-        console.log(exportPoints);
+        //console.log(importPoints);
+        //console.log(exportPoints);
 
         //---CLEANUP------------------------------------------------------------------
         let selection = d3.select("#svg_balance_double");
         selection.selectAll(".connecting_line").remove();
         selection.selectAll(".importLine").remove();
         selection.selectAll(".exportLine").remove();
+        selection.selectAll(".primaryLine").remove();
+        selection.selectAll(".secondaryLine").remove();
+
 
         //---CONNECTING LINES - DRAW FIRST SO THEY ARE BEHIND--------------------------
         let connectingLines = d3.select("#lineGroup").selectAll(".connecting_line")
@@ -221,38 +258,94 @@ class Balance_Double {
             .attr("class", "exportLine")
             .attr("d", exportLineGenerator);
 
+        //GDP DATA PLOT------------------------------------------------------------
+        let gdpPriCircles = d3.select("#gdpVisGroup").selectAll(".primaryCircle")
+            .data(gdpData.PrimaryGDP);
+        let newGdpPriCircles = gdpPriCircles.enter().append("circle");
+        let oldGdpPriCircles = gdpPriCircles.exit().remove();
+        gdpPriCircles = newGdpPriCircles.merge(gdpPriCircles);
+
+        gdpPriCircles.attr("class", "primaryCircle")
+            .attr("cx", (d)=>{
+                return xScale(d.Year) + this.xOffset;
+            })
+            .attr("cy", (d)=>{
+                return gdpScale(d.GDP);
+            });
+
+        let gdpSecCircles = d3.select("#gdpVisGroup").selectAll(".secondaryCircle")
+            .data(gdpData.SecondaryGDP);
+        let newGdpSecCircles = gdpSecCircles.enter().append("circle");
+        let oldGdpSecCircles = gdpSecCircles.exit().remove();
+        gdpSecCircles = newGdpSecCircles.merge(gdpSecCircles);
+
+        gdpSecCircles.attr("class", "secondaryCircle")
+            .attr("cx", (d)=>{
+                return xScale(d.Year) + this.xOffset;
+            })
+            .attr("cy", (d)=>{
+                return gdpScale(d.GDP);
+            });
+
+        let gdpLineGenerator = d3.line()
+            .x((d) => {
+                return xScale(d.Year) + this.xOffset;
+            })
+            .y((d) => {
+                return gdpScale(d.GDP);
+            });
+
+        let priPath = d3.select("#gdpVisGroup")
+            .append("path")
+            .datum(gdpData.PrimaryGDP)
+            .attr("class", "primaryLine")
+            .attr("d", gdpLineGenerator);
+
+        let secPath = d3.select("#gdpVisGroup")
+            .append("path")
+            .datum(gdpData.SecondaryGDP)
+            .attr("class", "secondaryLine")
+            .attr("d", gdpLineGenerator);
+
     }
 
     getGDPData(data, pri, sec, years){
-        console.log(data);
-        console.log(data[10]);
-        //console.log(data[10][5]);
+        //console.log(data);
+        let startYear = parseInt(years[0]);
+        let endYear = parseInt(years[1]);
         let priCountry = [];
         let secCountry = [];
-        for (let i=0; i<data.length; i++){
-            if (data[i].id === pri){
-                priCountry.push({
-                    Year: parseInt(years[0])+i,
-                    Country: data[i].COUNTRY,
-                    GDP: data[i].INDEX
-                });
+        let priIndex = 0;
+        let secIndex = 0;
+        //Find the index of the primary and secondary country in the GDP data
+        for (let i=0; i<data.length; i++) {
+            if (data[i].id === pri) {
+                priIndex = i;
             }
-            else if (data[i].id === sec){
-                secCountry.push({
-                    Year: parseInt(years[0])+i,
-                    Country: data[i].COUNTRY,
-                    GDP: data[i].INDEX
-                });
-
+            if (data[i].id === sec) {
+                secIndex = i;
             }
-            console.log(priCountry);
-            console.log(secCountry);
+        }
+        let yearsLoop = parseInt(years[1]-years[0])+1;
+        for (let y = startYear; y <= endYear; y++) {
+            priCountry.push({
+                Year: parseInt(y),
+                Country: data[priIndex].COUNTRY,
+                GDP: data[priIndex][y]
+            });
+            secCountry.push({
+                Year: parseInt(y),
+                Country: data[secIndex].COUNTRY,
+                GDP: data[secIndex][y]
+            });
         }
 
+        //console.log(priCountry);
+        //console.log(secCountry);
 
-
-        return null;
+        return {
+            PrimaryGDP: priCountry,
+            SecondaryGDP: secCountry
+        };
     }
-
-
 }

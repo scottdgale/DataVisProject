@@ -23,7 +23,6 @@ loadMapData().then(data => {
 
     let secondary = "CHN";
 
-    let gdpDataSet = d3.csv("data/gdp.csv");
 
     //UPDATE WITH DIFFERENT COLORS - Domain definition for global color scale
     let domain = [-60, -50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50, 60];
@@ -71,17 +70,17 @@ function loadDataDyadic (year) {
             dyadicArray.push(d);
             //Once all years are loaded - call the appropriate .update functions.
             if (!count--) {
-                //Organize Data - Insert function call here //
-                //let newDyadicArray = organizeData(dyadicArray, primary);
+               //Load GDP Data
+                d3.csv("data/gdp.csv").then(gdpData => {
+                    let process = new DataProcess();
+                    let newDyadicArray = process.processData(dyadicArray, primary, secondary);
 
-                let hopeThisWorks = new DataProcess();
-                let newDyadicArray = hopeThisWorks.processData(dyadicArray,primary, secondary);
+                    //console.log(newDyadicArray);
 
-                //console.log(newDyadicArray);
-
-                topTraders.update(newDyadicArray, primary, secondary, selected_years);
-                balanceDouble.update(newDyadicArray.PriSec, gdpDataSet, primary, secondary, selected_years);
-                map.update(newDyadicArray, primary, secondary, selected_years);
+                    topTraders.update(newDyadicArray, primary, secondary, selected_years);
+                    balanceDouble.update(newDyadicArray.PriSec, gdpData, primary, secondary, selected_years);
+                    map.update(newDyadicArray, primary, secondary, selected_years);
+                });
             }
         });
     }
@@ -97,7 +96,7 @@ function loadDataNational() {
             if (!count--) {
                 //d3.csv("data/gdp.csv").then(gdpData => {
                 balanceSingle.update(nationalArray, primary, secondary, selected_years);
-                globalBalance.update(nationalArray, gdpDataSet, primary, secondary, selected_years);
+                globalBalance.update(nationalArray, primary, secondary, selected_years);
             }
         });
     }
@@ -146,8 +145,8 @@ class DataProcess {
         let avgDataImport = this.average(dataImport, true);
         let avgDataExport = this.average(dataExport, false);
 
-        console.log(avgDataImport);
-        console.log(avgDataExport);
+        //console.log(avgDataImport);
+        //console.log(avgDataExport);
 
         let dataTotal = this.getTotal(avgDataImport, avgDataExport, pri, numYears);
 
