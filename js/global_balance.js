@@ -227,7 +227,7 @@ priExportRect.attr("height", d =>{
           //Sudie is awesome
 
 let secExportRect = selection.selectAll('.secExportRect')
-                            .data(filteredForSecondary)c
+                            .data(filteredForSecondary)
             secExportRect.exit().remove()
             secExportRect = secExportRect.enter().append('rect').merge(secExportRect)
 
