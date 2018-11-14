@@ -224,8 +224,10 @@ priExportRect.attr("height", d =>{
                 }) 
           .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
 
+          //Sudie is awesome
+
 let secExportRect = selection.selectAll('.secExportRect')
-                            .data(filteredForSecondary)
+                            .data(filteredForSecondary)c
             secExportRect.exit().remove()
             secExportRect = secExportRect.enter().append('rect').merge(secExportRect)
 
