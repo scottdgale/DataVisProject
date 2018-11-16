@@ -16,7 +16,7 @@ loadMapData().then(data => {
 
     let balanceDouble = new Balance_Double();
 
-    let selected_years = ["2000", "2005"];
+    let selected_years = ["2010", "2014"];
 
     //Change to use country "id" . . .
     let primary = "USA";
@@ -76,7 +76,7 @@ function loadDataDyadic () {
                     let process = new DataProcess();
                     let newDyadicArray = process.processData(dyadicArray, primary, secondary);
 
-                    //console.log(newDyadicArray);
+                    console.log(newDyadicArray);
 
                     topTraders.update(newDyadicArray, primary, secondary, selected_years);
                     balanceDouble.update(newDyadicArray.PriSec, gdpData, primary, secondary, selected_years);
@@ -131,7 +131,8 @@ class DataProcess {
 
 
 
-        let priSecData = this.getPriSecData(newData, pri, sec);
+        let priSecData = this.getBalanceDouble(newData, pri, sec);
+
 
         //console.log (priSecData);
 
@@ -159,7 +160,7 @@ class DataProcess {
         };
     }
 
-    getPriSecData(data, pri, sec){
+    getBalanceDouble(data, pri, sec){
         let priSec = [];
         for (let i=0; i<data.length; i++){
             for (let j=0; j<data[i].length; j++){
@@ -248,14 +249,10 @@ class DataProcess {
             temp = 0;
         }
 
-        //console.log(average);
-
         //Sort the new array based off calculated average
         average.sort(function(a,b){
             return b.Average - a.Average;
         });
-
-        //console.log(average);
 
         return average;
     }
