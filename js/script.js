@@ -1,12 +1,9 @@
 loadMapData().then(data => {
 
-    //let mapData = data[0];
-    //let cityData = data[1];
+    let mapData = data[0];
+    let cityData = data[1];
 
-    //console.log(mapData);
-
-    //Create instances of objects here
-    //let map = new Map(syncData, mapData, cityData);
+    let map = new Map(syncData, mapData, cityData);
 
     let balanceSingle = new Balance_Single();
 
@@ -31,6 +28,16 @@ loadMapData().then(data => {
     //SyncData with initial dataset - All objects will call syncData for interaction
     syncData(primary, secondary, selected_years);
 
+    //syncData is the focal point for all interactions and updates
+    function syncData(priCountry, secCountry, years) {
+        primary = priCountry;
+        secondary = secCountry;
+        selected_years = years;
+
+        loadDataDyadic();
+        loadDataNational();
+    }
+
     function highlightData(id){
         console.log("highlight data in script.js: " + id);
         map.highlightCountry(id);
@@ -41,15 +48,7 @@ loadMapData().then(data => {
         map.clearHighlight(id);
     }
 
-    //syncData is the focal point for all interactions and updates
-function syncData(priCountry, secCountry, years) {
-    primary = priCountry;
-    secondary = secCountry;
-    selected_years = years;
 
-    loadDataDyadic();
-    loadDataNational();
-}
 
 //Dyadic
 function loadDataDyadic () {
@@ -61,7 +60,7 @@ function loadDataDyadic () {
             //Once all years are loaded - call the appropriate .update functions.
             if (!count--) {
                //Load GDP Data
-                d3.csv("data/gdp.csv").then(gdpData => {
+                d3.csv("Data/gdp.csv").then(gdpData => {
                     //console.log(dyadicArray);
                     let process = new DataProcess();
                     let newDyadicArray = process.processData(dyadicArray, primary, secondary);
@@ -70,7 +69,7 @@ function loadDataDyadic () {
 
                     topTraders.update(newDyadicArray, primary, secondary, selected_years);
                     balanceDouble.update(newDyadicArray.PriSec, gdpData, primary, secondary, selected_years);
-                    //map.update(newDyadicArray, primary, secondary, selected_years);
+                    map.update(newDyadicArray, primary, secondary, selected_years);
                 });
             }
         });
@@ -82,7 +81,7 @@ function loadDataNational() {
     let nationalArray = [];
     let count = selected_years[1] - selected_years[0];
     for (let year = selected_years[0]; year <= (selected_years[1]); year++) {
-        d3.csv("data/National/National_" + year + ".csv").then(nationalData => {
+        d3.csv("Data/National/National_" + year + ".csv").then(nationalData => {
             nationalArray.push(nationalData);
             if (!count--) {
                 //d3.csv("data/gdp.csv").then(gdpData => {
@@ -96,13 +95,12 @@ function loadDataNational() {
 }); //Closes loadMapData() at the top of the file
 
 async function loadMapData() {
-    /*let mapData = await d3.json('Data/world.json');
+    let mapData = await d3.json('Data/world.json');
     let cityData = await d3.csv('Data/capital_cities.csv');
     let arr = [];
     arr.push(mapData);
     arr.push(cityData);
-    return arr;*/
-    return null;
+    return arr;
 }
 
 class DataProcess {
