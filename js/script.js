@@ -1,12 +1,12 @@
 loadMapData().then(data => {
 
-    let mapData = data[0];
-    let cityData = data[1];
+    //let mapData = data[0];
+    //let cityData = data[1];
 
     //console.log(mapData);
 
     //Create instances of objects here
-    let map = new Map(syncData, mapData, cityData);
+    //let map = new Map(syncData, mapData, cityData);
 
     let balanceSingle = new Balance_Single();
 
@@ -22,16 +22,6 @@ loadMapData().then(data => {
     let primary = "USA";
 
     let secondary = "CHN";
-
-
-    //UPDATE WITH DIFFERENT COLORS - Domain definition for global color scale
-    let domain = [-60, -50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50, 60];
-    //Color range for global color scale
-    let range = ["#063e78", "#08519c", "#3182bd", "#6baed6", "#9ecae1", "#c6dbef", "#fcbba1", "#fc9272", "#fb6a4a", "#de2d26", "#a50f15", "#860308"];
-    //ColorScale be used consistently by all the charts
-    let colorScale = d3.scaleQuantile()
-        .domain(domain)
-        .range(range);
 
     let cities = [];
     d3.csv('Data/capital_cities.csv').then(capitalCityData => {
@@ -80,7 +70,7 @@ function loadDataDyadic () {
 
                     topTraders.update(newDyadicArray, primary, secondary, selected_years);
                     balanceDouble.update(newDyadicArray.PriSec, gdpData, primary, secondary, selected_years);
-                    map.update(newDyadicArray, primary, secondary, selected_years);
+                    //map.update(newDyadicArray, primary, secondary, selected_years);
                 });
             }
         });
@@ -106,12 +96,13 @@ function loadDataNational() {
 }); //Closes loadMapData() at the top of the file
 
 async function loadMapData() {
-    let mapData = await d3.json('Data/world.json');
+    /*let mapData = await d3.json('Data/world.json');
     let cityData = await d3.csv('Data/capital_cities.csv');
     let arr = [];
     arr.push(mapData);
     arr.push(cityData);
-    return arr;
+    return arr;*/
+    return null;
 }
 
 class DataProcess {
@@ -129,10 +120,7 @@ class DataProcess {
         let dataExport = [];
         let numYears = newData.length;
 
-
-
         let priSecData = this.getBalanceDouble(newData, pri, sec);
-
 
         //console.log (priSecData);
 
