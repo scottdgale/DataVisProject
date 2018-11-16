@@ -16,7 +16,7 @@ loadMapData().then(data => {
 
     let balanceDouble = new Balance_Double();
 
-    let selected_years = ["2005", "2010"];
+    let selected_years = ["2000", "2005"];
 
     //Change to use country "id" . . .
     let primary = "USA";
@@ -51,8 +51,6 @@ loadMapData().then(data => {
         map.clearHighlight(id);
     }
 
-
-
     //syncData is the focal point for all interactions and updates
 function syncData(priCountry, secCountry, years) {
     primary = priCountry;
@@ -64,16 +62,17 @@ function syncData(priCountry, secCountry, years) {
 }
 
 //Dyadic
-function loadDataDyadic (year) {
+function loadDataDyadic () {
     let dyadicArray = [];
     let count = selected_years[1] - selected_years[0];
     for (let year = selected_years[0]; year <= selected_years[1]; year++) {
-        d3.csv("data/Dyadic/Dyadic_" + year + ".csv").then(d => {
+        d3.csv("newStuff/" + year + "/" + primary+"_Dyadic_" + year + ".csv").then(d => {
             dyadicArray.push(d);
             //Once all years are loaded - call the appropriate .update functions.
             if (!count--) {
                //Load GDP Data
                 d3.csv("data/gdp.csv").then(gdpData => {
+                    //console.log(dyadicArray);
                     let process = new DataProcess();
                     let newDyadicArray = process.processData(dyadicArray, primary, secondary);
 
@@ -116,6 +115,195 @@ async function loadMapData() {
 }
 
 class DataProcess {
+
+    constructor() {
+        this.totalImports = 0;
+        this.totalExports = 0;
+    }
+
+    processData(data, pri, sec) {
+        this.totalImports = 0.0;
+        this.totalExports = 0.0;
+        let newData = data.slice();
+        let dataImport = [];
+        let dataExport = [];
+        let numYears = newData.length;
+
+
+
+        let priSecData = this.getPriSecData(newData, pri, sec);
+
+        //console.log (priSecData);
+
+        //Second parameter trims the array to the value passed
+        dataImport = this.sortImport(newData,30);
+        dataExport = this.sortExport(newData,30);
+
+        //console.log(dataImport);
+        //console.log(dataExport);
+
+        //Call function to calculate the average
+        let avgDataImport = this.average(dataImport, true);
+        let avgDataExport = this.average(dataExport, false);
+
+        //console.log(avgDataImport);
+        //console.log(avgDataExport);
+
+        let dataTotal = this.getTotal(avgDataImport, avgDataExport, pri, numYears);
+
+        return {
+            Imports: avgDataImport,
+            Exports: avgDataExport,
+            Total: dataTotal,
+            PriSec: priSecData
+        };
+    }
+
+    getPriSecData(data, pri, sec){
+        let priSec = [];
+        for (let i=0; i<data.length; i++){
+            for (let j=0; j<data[i].length; j++){
+                if (data[i][j].SecondaryId === sec){
+                    priSec.push(data[i][j]);
+                    break;
+                }
+            }
+        }
+        return priSec;
+    }
+
+
+    getTotal(importData, exportData, pri, years){
+        let imData = importData.slice();
+        let exData = exportData.slice();
+        let tempTotal=0;
+        let total = [];
+        for (let f=0; f<imData.length; f++) {
+            for (let g = 0; g < exData.length; g++) {
+                if (imData[f].SecondaryId === exData[g].SecondaryId) {
+                    tempTotal += imData[f].Total + exData[g].Total;
+                }
+            }
+            total.push({
+                PrimaryId: imData[0].PrimaryId,
+                PrimaryName: imData[0].PrimaryName,
+                SecondaryId: imData[f].SecondaryId,
+                SecondaryName: imData[f].SecondaryName,
+                Total: parseFloat(tempTotal).toFixed(),
+                Average: parseFloat(tempTotal / years).toFixed(2),
+                Total_Global_Imports: parseFloat(this.totalImports).toFixed(2),
+                Total_Global_Exports: parseFloat(this.totalExports).toFixed(2)
+            });
+            tempTotal = 0;
+        }
+        total.sort(function(a,b){
+            return b.Total - a.Total
+        });
+        return total.splice(0,10);
+    }
+
+    average(data, isImport) {
+        let avgData = data.slice();
+        let average = [];
+        let temp=0;
+        let numYears = avgData.length;
+        let numCountries = avgData[0].length;
+
+        //console.log(avgData);
+
+        for (let country = 0; country < numCountries; country++) {
+
+            //Use the countries in the most recent year as the pivot
+            let pivot = avgData[numYears-1][country].SecondaryId;
+            let pivotName = avgData[numYears-1][country].SecondaryName;
+
+            //Cycle through each year and find the pivot country in that year
+            for (let year=0; year<numYears; year++){
+                //Cycle through each country in this specific year and find the pivot country
+                for (let e = 0; e < numCountries; e++) {
+                    if (pivot === avgData[year][e].SecondaryId) {
+                        //sum the values for the same country and store in the newAverage array
+                        if (isImport){
+                            temp += parseFloat(avgData[year][e].Imports);
+                        }
+                        else{
+                            temp += parseFloat(avgData[year][e].Exports);
+                        }
+                        //Exit the loop once discovered the matching pivot
+                        break;
+                    }
+                }
+            }
+            //Average the data, push data to average array, reset temp
+            average.push({
+                PrimaryId: avgData[0][0].PrimaryId,
+                PrimaryName: avgData[0][0].PrimaryId,
+                SecondaryId: pivot,
+                SecondaryName: pivotName,
+                Total: temp.toFixed(2),
+                Average: parseFloat(temp/numYears).toFixed(2),
+                Total_Global_Imports: parseFloat(this.totalImports).toFixed(2),
+                Total_Global_Exports: parseFloat(this.totalExports).toFixed(2)
+            });
+            temp = 0;
+        }
+
+        //console.log(average);
+
+        //Sort the new array based off calculated average
+        average.sort(function(a,b){
+            return b.Average - a.Average;
+        });
+
+        //console.log(average);
+
+        return average;
+    }
+
+
+    sortImport(data, sliceVal) {
+        let sortData = data.slice();
+        let sortedData = [];
+
+        //console.log(sortData[0]);
+
+        //Loop through the array and sort each year based on imports
+        for (let a = 0; a < sortData.length; a++) {
+            sortData[a].sort(function (a, b) {
+                return b.Imports - a.Imports;
+            });
+
+            //Eliminate any missing data and sum the total imports
+            for (let b = 0; b<sortData[a].length; b++){
+                this.totalImports+= (!(sortData[a][b].Imports === "-9")?parseFloat(sortData[a][b].Imports):0);
+            }
+            sortedData.push(sortData[a].slice(0,sliceVal));
+        }
+        return sortedData;
+    }
+
+    sortExport(data, sliceVal) {
+        let sortData = data.slice();
+        let sortedData = [];
+        //Loop through the array and sort each year based on imports
+        for (let a = 0; a < sortData.length; a++) {
+            sortData[a].sort(function (a, b) {
+                return b.Exports - a.Exports;
+            });
+
+            //Eliminate any missing data and sum the total imports
+            for (let b = 0; b<sortData[a].length; b++){
+                this.totalExports+= (!(sortData[a][b].Exports === "-9")?parseFloat(sortData[a][b].Exports):0);
+            }
+            sortedData.push(sortData[a].slice(0,sliceVal));
+        }
+        return sortedData;
+    }
+
+}   //close DataProcess class
+
+//Old code - use for reference
+/*class DataProcess {
 
     constructor() {
         this.totalImports = 0;
@@ -214,6 +402,7 @@ class DataProcess {
                     temp.length = 0;
                 }
             }
+
             cleanAllData.push(cleanYearData.slice());
             cleanYearData.length = 0;
         }
@@ -319,9 +508,9 @@ class DataProcess {
             });
             sortedData.push(sortData[a].slice(0,sliceVal));
             //Eliminate any missing data and sum the total imports
-            /*for (let b = 0; b<sortData[a].length; b++){
+            /!*for (let b = 0; b<sortData[a].length; b++){
                 this.totalImports+= (!(sortData[a][b].Import === "-9")?sortData[a][b].Import:0);
-            }*/
+            }*!/
         }
         return sortedData;
     }
@@ -336,14 +525,14 @@ class DataProcess {
             });
             sortedData.push(sortData[a].slice(0,sliceVal));
             //Eliminate any missing data and sum the total imports
-            /*for (let b = 0; b<sortData[a].length; b++){
+            /!*for (let b = 0; b<sortData[a].length; b++){
                 this.totalExports+= (!(sortData[a][b].Export === "-9")?sortData[a][b].Export:0);
-            }*/
+            }*!/
         }
         return sortedData;
     }
 
-}   //close DataProcess class
+}   //close DataProcess class*/
 
 // Backup Data Processing
 
