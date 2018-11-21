@@ -80,7 +80,7 @@ class Balance_Double {
     }
 
     update(data, gdp, pri, sec, years) {
-        console.log(data);
+        //console.log(data);
 
         let gdpData = this.getGDPData(gdp, pri, sec, years);
 

@@ -39,23 +39,23 @@ class Map {
                          1995, 1996, 1997, 1998, 1999, 
                          2000, 2001, 2002, 2003, 2004, 
                          2005, 2006, 2007, 2008, 2009, 
-                         2010, 2011, 2012, 2013, 2014]
+                         2010, 2011, 2012, 2013, 2014];
 
         divMap.append('svg')
-              .attr('id', 'svg_label')
-              .attr('height', 70)
-              .attr('width', this.svgWidth)
-              .append('text')
-              .attr('class', 'primaryLabel')
-              .style('font-size', '20px')
+            .attr('id', 'svg_label')
+            .attr('height', 70)
+            .attr('width', this.svgWidth)
+            .append('text')
+            .attr('class', 'viewLabels')
+            .attr("id", "primaryMapLabel");
         d3.select("#svg_label")
-                .append('text')
-                .attr('class', 'secondaryLabel')
-                .style('font-size', '20px')
+            .append('text')
+            .attr('class', 'viewLabels')
+            .attr("id", "secondaryMapLabel");
         d3.select("#svg_label")
-                .append('text')
-                .attr('class', 'yearsLabel')
-                .style('font-size', '20px')
+            .append('text')
+            .attr('class', 'viewLabels')
+            .attr("id", "yearMapLabel");
 
 
 
@@ -169,8 +169,8 @@ class Map {
     update(data, pri, sec, years) {
 
         let that = this;
-        let cityData = this.cityData
-        let mapData = this.mapData
+        let cityData = this.cityData;
+        let mapData = this.mapData;
         this.primary = pri;
         this.secondary = sec;
         this.years = years;
@@ -205,7 +205,7 @@ class Map {
         })
           
         primaryName = primary[0].country;
-        secondaryName = secondary[0].country
+        secondaryName = secondary[0].country;
 
         //filter the city data based on top 10 traders
            let city = [];
@@ -220,18 +220,20 @@ class Map {
                 city = city.concat(temp)
             }
 
+
+
             //Labels
             let label =  d3.select("#svg_label")
-            label.select('.primaryLabel')
-                    .attr('x', 20)
+            label.select('#primaryMapLabel')
+                    .attr('x', 5)
                     .attr('y', 20)
                     .text("Primary Country: " + primaryName)
-            label.select('.secondaryLabel')
-                    .attr('x', 20)
+            label.select('#secondaryMapLabel')
+                    .attr('x', 5)
                     .attr('y', 40)
                     .text("Secondary Country: " + secondaryName)
-            label.select('.yearsLabel')
-                    .attr('x', 20)
+            label.select('#yearMapLabel')
+                    .attr('x', 5)
                     .attr('y', 60)
                     .text("Year Range: " + years[0] + ' - ' + years[1])
 
@@ -285,7 +287,7 @@ class Map {
                                 .on("click",function(d){
                                     //if sec is the clicked country, toggle current pri and sec
                                     //if a new country is clicked, set previous sec to pri and set new country to sec.    
-                                    let temp = that.primary
+                                    let temp = that.primary;
                                     that.primary = that.secondary;
                                     that.secondary = that.secondary === d.id ? temp : d.id;
 

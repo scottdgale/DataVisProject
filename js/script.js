@@ -65,7 +65,7 @@ function loadDataDyadic () {
                     let process = new DataProcess();
                     let newDyadicArray = process.processData(dyadicArray, primary, secondary);
 
-                    console.log(newDyadicArray);
+                    //console.log(newDyadicArray);
 
                     topTraders.update(newDyadicArray, primary, secondary, selected_years);
                     balanceDouble.update(newDyadicArray.PriSec, gdpData, primary, secondary, selected_years);
