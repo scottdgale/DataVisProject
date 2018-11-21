@@ -5,7 +5,7 @@ body {
 
 h1 {
     text-align: center;
-    font-family: 'Ubuntu Condensed', sans-serif;
+    font-family: Helvetica;
     font-size:35px;
     color: #464646;
     margin: 0px;
@@ -14,21 +14,21 @@ h1 {
 }
 
 h2{
-    font-family: 'Assistant:200';
+    font-family: Helvetica;
     text-align: left;
     -webkit-margin-before: 5px;
     -webkit-margin-after:  5px;
 }
 
 h3 {
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: Helvetica, sans-serif;
     text-align: center;
     text-anchor:middle;
     font-size: 18px;
 }
 
 .viewLabels {
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: Helvetica, sans-serif;
     text-align: left;
     font-size: 18px;
 }
@@ -181,7 +181,12 @@ h3 {
 }
 
 .axis text {
-    font-family: sans-serif;
+    font-family: Helvetica;
+    font-size: 15px;
+}
+
+.axis-label {
+    font-family: Helvetica;
     font-size: 15px;
 }
 
@@ -193,6 +198,7 @@ h3 {
 }
 
 .topTraderText{
+    font-family: Helvetica;
     text-anchor: start;
     font-size: 16px;
     fill: black;
@@ -213,6 +219,7 @@ h3 {
 }
 
 .yeartext, .tilestext, .brushtext{
+    font-family: Helvetica;
     text-anchor: middle;
     font-size: 16px;
     fill: #565656;
