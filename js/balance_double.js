@@ -111,11 +111,16 @@ class Balance_Double {
                 "To: " + data.Secondary + "<br>" +
                 "Value: " + data.Value + "</p>";
         }
-        else{
+        else if (data.Type ==="Import"){
             myText += data.Year + " Imports<br>" +
                 "From: " + data.Secondary + "<br>" +
                 "To: " + data.Primary + "<br>" +
                 "Value: " + data.Value + "</p>";
+        }
+        else{
+            myText += data.Year + "  " +
+                data.Country + "<br>" +
+                "GDP: " + data.Value + "</p>";
         }
 
         //console.log(myText);
@@ -126,6 +131,7 @@ class Balance_Double {
         //console.log(data);
 
         this.tip.html((d)=> {
+            console.log(d);
             let toolTipData = {};
             //populate data in the following format
             if (d.Type === "Import"){
@@ -136,13 +142,19 @@ class Balance_Double {
                     Year: d.Year,
                     Value: d.Import };
             }
-            else{
+            else if (d.Type === "Export"){
                 toolTipData = {
                     Type: d.Type,
                     Primary: d.Primary,
                     Secondary: d.Secondary,
                     Year: d.Year,
                     Value: d.Export };
+            }
+            else { //GDP Data
+                toolTipData = {
+                    Country: d.Country,
+                    Year: d.Year,
+                    Value: d.GDP };
             }
 
             //console.log(toolTipData);
@@ -204,12 +216,12 @@ class Balance_Double {
         let yAx = d3.select("#yAxisDouble").call(yAxis);
         let gdpAx = d3.select("#gdpAxisDouble").call(gdpAxis);
         let xAx = d3.select("#xAxisDouble")
-                    .call(xAxis.ticks(numYears + 1, ""))   
-                    .selectAll("text")  
-                    .style("text-anchor", "end")
-                    .attr("dx", "-.8em")
-                    .attr("dy", ".15em")
-                    .attr("transform", "rotate(-65)" );   
+            .call(xAxis.ticks(numYears + 1, ""))
+            .selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-65)" );
   
 
         //create an two arrays - one for import points / one for export points
@@ -356,7 +368,10 @@ class Balance_Double {
             })
             .attr("cy", (d)=>{
                 return gdpScale(d.GDP);
-            });
+            })
+            .call(this.tip)
+            .on("mouseover", this.tip.show)
+            .on("mouseout", this.tip.hide);
 
         let gdpSecCircles = d3.select("#gdpVisGroup").selectAll(".secondaryCircle")
             .data(gdpData.SecondaryGDP);
@@ -370,7 +385,10 @@ class Balance_Double {
             })
             .attr("cy", (d)=>{
                 return gdpScale(d.GDP);
-            });
+            })
+            .call(this.tip)
+            .on("mouseover", this.tip.show)
+            .on("mouseout", this.tip.hide);
 
         let gdpLineGenerator = d3.line()
             .x((d) => {
