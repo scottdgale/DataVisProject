@@ -38,9 +38,6 @@ class Balance_Single {
             .scale(colorScale);
 
         legend.call(legendOrdinal);
-
-
-
             
         let yAxisGroup = d3.select("#svg_balance_single")
             .append("g")

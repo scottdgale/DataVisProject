@@ -10,7 +10,7 @@ class Global_Balance {
         let divGlobalBalance = d3.select("#global_balance").classed("half_view", true);
         this.svgBounds = divGlobalBalance.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
-        this.svgHeight = 600;
+        this.svgHeight = 500;
 
         divGlobalBalance.append("svg")
             .attr("id", "svg_global_balance")
@@ -40,21 +40,21 @@ class Global_Balance {
             .attr("transform", "translate(100," + -350+")")
             .append("text")
             .attr("class", "viewLabels")
-            .text("Total Global Imports")
-            .attr("transform", "translate(250,380)");
+            // .text("Total Global Imports")
+            // .attr("transform", "translate(250,380)");
 
         let yAxisGroup = d3.select("#svg_global_balance")
             .append("g")
             .attr("id", "yAxisGlobal")
             .attr("class", "axis")
-            .attr("transform", "translate(" + 110 +","+ 50 + ")");
+            .attr("transform", "translate(" + 100 +","+ 50 + ")");
 
 
         let xAxisGroup = d3.select("#svg_global_balance")
             .append("g")
             .attr("id", "xAxisGlobal")
             .attr("class", "axis")
-            .attr("transform", "translate("+ 110 + "," + 450 + ")");
+            .attr("transform", "translate("+ 100 + "," + 450 + ")");
 
         let xAxisLabel = d3.select("#svg_global_balance")
                             .append('text')
@@ -78,7 +78,7 @@ class Global_Balance {
 
         let balanceData = data.slice();
         let rectWidth = 20;
-        let xOffset = 110;
+        let xOffset = 100;
         let yOffset = 40;
 
         //filter each year for primary country and put in a new array
@@ -123,11 +123,11 @@ class Global_Balance {
 
         /** Set up xScale and yScale based on the max import/export value and the year range */
         let yScale = d3.scaleLinear().range([400, 0]).domain([0, max]).nice();
-        let xScale = d3.scaleLinear().range([0, 500]).domain([+years[0] - 1, +years[1]+1]).nice();
+        let xScale = d3.scaleLinear().range([0, 400]).domain([+years[0] - 1, +years[1]+1]).nice();
 
         let bandScale = d3.scaleBand()
                 .domain(d3.range(filteredForPrimary.length + filteredForSecondary.length))
-                .range([0,350])
+                .range([0,250])
                 .round(true)
 
         /** Create and call x and y axis */
