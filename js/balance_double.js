@@ -101,26 +101,27 @@ class Balance_Double {
     }
 
     toolTipRender (data) {
-        //let text = "<ul>";
+        let fullValue = data.Value;
+        let formatValue = new Intl.NumberFormat('en', { maximumSignificantDigits: 6, style: 'currency', currency: 'USD' }).format(fullValue);
         let myText = "<p>";
         //console.log(data);
 
         if (data.Type ==="Export"){
-            myText += data.Year + " Exports<br>" +
-                "From: " + data.Primary + "<br>" +
-                "To: " + data.Secondary + "<br>" +
-                "Value: " + data.Value + "</p>";
+            myText += data.Year + " Exports<br>"
+                + "From: " + data.Primary + "<br>"
+                + "To: " + data.Secondary + "<br>"
+                + "Value: " + formatValue + "</p>";
         }
         else if (data.Type ==="Import"){
-            myText += data.Year + " Imports<br>" +
-                "From: " + data.Secondary + "<br>" +
-                "To: " + data.Primary + "<br>" +
-                "Value: " + data.Value + "</p>";
+            myText += data.Year + " Imports<br>"
+                + "From: " + data.Secondary + "<br>"
+                + "To: " + data.Primary + "<br>"
+                + "Value: " + formatValue + "</p>";
         }
         else{
-            myText += data.Year + "  " +
-                data.Country + "<br>" +
-                "GDP: " + data.Value + "</p>";
+            myText += data.Year + "  "
+                + data.Country + "<br>"
+                + "GDP: " + formatValue + "</p>";
         }
 
         //console.log(myText);
