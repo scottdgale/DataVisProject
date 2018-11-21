@@ -71,7 +71,7 @@ class Balance_Double {
             .attr("id", "gdpVisGroup")
             .attr("transform", "translate(0," + this.gdpYOffset+")")
             .append("text")
-            .attr("class", "topTraderText")
+            .attr("class", "viewLabels")
             .text("GDP")
             .attr("transform", "translate(250,380)");
 
@@ -80,11 +80,11 @@ class Balance_Double {
     }
 
     update(data, gdp, pri, sec, years) {
-        //console.log(gdp);
-        // console.log("Balance_double PRI: " + pri);
-        // console.log("Balance_double SEC: " + sec);
+        //console.log(data);
+
         let gdpData = this.getGDPData(gdp, pri, sec, years);
 
+        //console.log(gdpData);
 
         let gdpPriMax = d3.max(gdpData.PrimaryGDP, function (d){
             return +d.GDP;
@@ -106,16 +106,16 @@ class Balance_Double {
         let gdpMin = gdpPriMin>gdpSecMin?gdpSecMin:gdpPriMin;
 
         let exportMax = d3.max(data, function (d) {
-            return +d.Export
+            return +d.Exports
         });
         let exportMin = d3.min(data, function (d) {
-            return +d.Export
+            return +d.Exports
         });
         let importMax = d3.max(data, function (d) {
-            return +d.Import
+            return +d.Imports
         });
         let importMin = d3.min(data, function (d) {
-            return +d.Import
+            return +d.Imports
         });
         let max = +exportMax > +importMax ? +exportMax : +importMax;
         let numYears = +years[1] - +years[0];
@@ -153,16 +153,16 @@ class Balance_Double {
         for (let k = 0; k < data.length; k++) {
             importPoints.push({
                 Year: (+years[0] + k),
-                Import: data[k].Import
+                Import: data[k].Imports
             });
             exportPoints.push({
                 Year: (+years[0] + k),
-                Export: data[k].Export
+                Export: data[k].Exports
             });
             linePoints.push({
                 Year: (+years[0] + k),
-                Import: data[k].Import,
-                Export: data[k].Export
+                Import: data[k].Imports,
+                Export: data[k].Exports
                 }
             )
 

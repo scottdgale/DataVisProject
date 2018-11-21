@@ -20,14 +20,14 @@ class Global_Balance {
         d3.select("#svg_global_balance").append("g")
             .attr("transform", "translate(100," + -350+")")
             .append("text")
-            .attr("class", "topTraderText")
-            .text("Global Imports")
+            .attr("class", "viewLabels")
+            .text("Total Global Imports")
             .attr("transform", "translate(250,380)");
         d3.select("#svg_global_balance").append("g")
              .attr("transform", "translate(100," + -350+")")
              .append("text")
-             .attr("class", "topTraderText")
-             .text("Global Exports")
+             .attr("class", "viewLabels")
+             .text("Total Global Exports")
              .attr("transform", "translate(1055,380)");
         
 
