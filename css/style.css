@@ -26,6 +26,7 @@ h3 {
     text-align: center;
     text-anchor:middle;
     font-size: 18px;
+    color: #777;
 }
 
 p {
@@ -235,7 +236,63 @@ hr{
 
 /*----Old styling from previous projects------------------*/
 /*----Everything above this line is being used in our project*/
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #e7e7e7;
+    background-color: #f3f3f3;
+}
 
+li {
+    float: left;
+    font-family: helvetica;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+li a {
+    display: block;
+    color: #464646;
+    text-align: center;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #ddd;
+}
+
+li a.active {
+    color: white;
+    background-color: #777;
+}
+ 
+/* ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    font-family: Helvetica;
+    text-align: center;
+    padding: 10px 11px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #111;
+} */
 
 .info{
     margin-left: 20px;
