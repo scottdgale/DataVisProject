@@ -16,6 +16,25 @@ class Global_Balance_Export {
             .attr("id", "svg_global_balance_export")
             .attr("height", this.svgHeight)
             .attr("width", this.svgWidth);
+            
+        let svg = d3.select("#svg_global_balance_export")
+
+        //Legend
+        let legend = svg.append("g")
+            .attr("id", "legend")
+            .style("font-family", "Helvetica")
+            .style("font-size", "10px")
+            .attr("transform", "translate(10, 10)")
+
+        let colorScale = d3.scaleOrdinal()
+                .domain(["Primary Country", "Secondary Country"])
+                .range(["#007374", "#66b2b3"])
+        let legendOrdinal = d3.legendColor()
+            .shape("path", d3.symbol().type(d3.symbolSquare).size(42)())
+            .shapePadding(4)
+            .scale(colorScale);
+
+        legend.call(legendOrdinal);
 
         d3.select("#svg_global_balance_export").append("g")
             .attr("transform", "translate(100," + -350+")")

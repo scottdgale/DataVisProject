@@ -17,13 +17,32 @@ class Global_Balance {
             .attr("height", this.svgHeight)
             .attr("width", this.svgWidth);
 
+        let svg = d3.select("#svg_global_balance")
+
+        //Legend
+        let legend = svg.append("g")
+            .attr("id", "legend")
+            .style("font-family", "Helvetica")
+            .style("font-size", "10px")
+            .attr("transform", "translate(10, 10)")
+
+        let colorScale = d3.scaleOrdinal()
+            .domain(["Primary Country", "Secondary Country"])
+            .range(["#007374", "#66b2b3"])
+        let legendOrdinal = d3.legendColor()
+            .shape("path", d3.symbol().type(d3.symbolSquare).size(42)())
+            .shapePadding(4)
+            .scale(colorScale);
+
+        legend.call(legendOrdinal);
+
         d3.select("#svg_global_balance").append("g")
             .attr("transform", "translate(100," + -350+")")
             .append("text")
             .attr("class", "viewLabels")
             .text("Total Global Imports")
             .attr("transform", "translate(250,380)");
-            
+
         let yAxisGroup = d3.select("#svg_global_balance")
             .append("g")
             .attr("id", "yAxisGlobal")

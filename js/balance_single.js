@@ -19,6 +19,27 @@ class Balance_Single {
             .attr("id", "svg_balance_single")
             .attr("height", this.svgHeight)
             .attr("width", this.svgWidth);
+        
+        let svg = d3.select("#svg_balance_single")
+
+        //Legend
+        let legend = svg.append("g")
+            .attr("id", "legend")
+            .style("font-family", "Helvetica")
+            .style("font-size", "10px")
+            .attr("transform", "translate(10, 10)")
+
+        let colorScale = d3.scaleOrdinal()
+            .domain(["Imports", "Exports"])
+            .range(["#663165", "lightsteelblue"])
+        let legendOrdinal = d3.legendColor()
+            .shape("path", d3.symbol().type(d3.symbolSquare).size(42)())
+            .shapePadding(4)
+            .scale(colorScale);
+
+        legend.call(legendOrdinal);
+
+
 
             
         let yAxisGroup = d3.select("#svg_balance_single")
@@ -102,6 +123,8 @@ class Balance_Single {
             //console.log(toolTipData);
             return this.toolTipRender(toolTipData);
         });
+
+        
      
 
         let balanceData = data.slice();

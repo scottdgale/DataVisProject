@@ -23,6 +23,24 @@ class Balance_Double {
             .attr("height", this.svgHeight)
             .attr("width", this.svgWidth);
 
+            //Legend
+        let svg = d3.select("#svg_balance_double")
+        let legend = svg.append("g")
+            .attr("id", "legend")
+            .style("font-family", "Helvetica")
+            .style("font-size", "10px")
+            .attr("transform", "translate(10, 3)")
+
+        let colorScale = d3.scaleOrdinal()
+            .domain(["Primary Country", "Secondary Country","Imports", "Exports"])
+            .range(["#007374", "#66b2b3", "#663165", "lightsteelblue"])
+        let legendOrdinal = d3.legendColor()
+            .shape("path", d3.symbol().type(d3.symbolSquare).size(42)())
+            .shapePadding(4)
+            .scale(colorScale);
+
+        legend.call(legendOrdinal);
+
         let gdpAxisGroup = d3.select("#svg_balance_double")
             .append("g")
             .attr("id", "gdpAxisDouble")
