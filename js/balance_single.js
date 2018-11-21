@@ -12,6 +12,7 @@ class Balance_Single {
         this.svgBounds = divBalanceSingle.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
         this.svgHeight = 500;
+        let xOff = 100;
 
 
         divBalanceSingle.append("svg")
@@ -24,14 +25,14 @@ class Balance_Single {
             .append("g")
             .attr("id", "yAxis")
             .attr("class", "axis")
-            .attr("transform", "translate(" + 110 +","+ 50 + ")");
+            .attr("transform", "translate(" + xOff +","+ 50 + ")");
 
 
         let xAxisGroup = d3.select("#svg_balance_single")
             .append("g")
             .attr("id", "xAxis")
             .attr("class", "axis")
-            .attr("transform", "translate("+ 110 + "," + 450 + ")");
+            .attr("transform", "translate("+ xOff + "," + 450 + ")");
 
         let xAxisLabel = d3.select("#svg_balance_single")
                             .append('text')
@@ -45,7 +46,7 @@ class Balance_Single {
                             .classed('axis-label', true)
                             .text("$ Millions in Current US Dollars")
                             .style("text-anchor", "middle")
-                            .attr('transform', 'translate('+ 20 + ', '+ 250 + ')' + "rotate(270)");
+                            .attr('transform', 'translate('+ 15 + ', '+ 250 + ')' + "rotate(270)");
 
         //for reference: https://github.com/Caged/d3-tip
         //Use this tool tip element to handle any hover over the chart
@@ -136,7 +137,7 @@ class Balance_Single {
 
         /** Set up xScale and yScale based on the max import/export value and the year range */
         let yScale = d3.scaleLinear().range([400, 0]).domain([0, max]).nice();
-        let xScale = d3.scaleLinear().range([0, 500]).domain([+years[0] - 1, +years[1]+1]).nice();
+        let xScale = d3.scaleLinear().range([0, 400]).domain([+years[0] - 1, +years[1]+1]).nice();
 
         /** Create and call x and y axis */
         let yAxis = d3.axisLeft().scale(yScale);

@@ -13,7 +13,7 @@ class Balance_Double {
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
         this.svgHeight = 500;
 
-        this.xOffset = 110;
+        this.xOffset = 100;
         this.yOffset = 50;
         this.gdpYOffset = -350;
 
@@ -55,7 +55,7 @@ class Balance_Double {
             .classed('axis-label', true)
             .text("$ Millions in Current US Dollars")
             .style("text-anchor", "middle")
-            .attr('transform', 'translate('+ 20 + ', '+ 250 + ')' + "rotate(270)");
+            .attr('transform', 'translate('+ 15 + ', '+ 250 + ')' + "rotate(270)");
 
         let lineGroup = d3.select("#svg_balance_double").append("g")
             .attr("id", "lineGroup");
@@ -171,7 +171,7 @@ class Balance_Double {
 
         /** Set up xScale and yScale based on the max import/export value and the year range */
         let yScale = d3.scaleLinear().range([400, 150]).domain([0, max]).nice();
-        let xScale = d3.scaleLinear().range([0, 500]).domain([+years[0] - 1, +years[1]+1]).nice();
+        let xScale = d3.scaleLinear().range([0, 400]).domain([+years[0] - 1, +years[1]+1]).nice();
         let gdpScale = d3.scaleLinear()
             .domain([gdpMin,gdpMax])
             .range([500,400])
