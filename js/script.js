@@ -2,8 +2,10 @@ loadMapData().then(data => {
 
     let mapData = data[0];
     let cityData = data[1];
+    
+    let selected_years = ["2010", "2014"];
 
-    let map = new Map(syncData, mapData, cityData);
+    let map = new Map(syncData, mapData, cityData, selected_years);
 
     let balanceSingle = new Balance_Single();
 
@@ -14,7 +16,6 @@ loadMapData().then(data => {
 
     let balanceDouble = new Balance_Double();
 
-    let selected_years = ["2010", "2014"];
 
     //Change to use country "id" . . .
     let primary = "USA";
