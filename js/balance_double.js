@@ -95,8 +95,8 @@ class Balance_Double {
         }
         else{
             myText += data.Year + " Imports<br>" +
-                "From: " + data.Primary + "<br>" +
-                "To: " + data.Secondary + "<br>" +
+                "From: " + data.Secondary + "<br>" +
+                "To: " + data.Primary + "<br>" +
                 "Value: " + data.Value + "</p>";
         }
 
