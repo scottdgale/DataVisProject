@@ -77,23 +77,19 @@ class Balance_Single {
     }
 
     toolTipRender (data) {
-        //let text = "<ul>";
-        let myText = "<p>";
-        //console.log(data);
-        myText += data.Country + "</p>";
-        myText += "<p>" + data.Year + " ";
+        let fullValue = data.Value;
+        let formatValue = new Intl.NumberFormat('en', { maximumSignificantDigits: 6, style: 'currency', currency: 'USD' }).format(fullValue);
+        let myText = "<p>" + data.Country + "<br>";
+            + data.Year + " ";
         if (data.Type ==="Export"){
-            myText += "Exports: " + data.Value + "</p>";
+            myText += "Exports: " + formatValue + "</p>";
         }
         else{
-            myText += "Imports: " + data.Value + "</p>";
+            myText += "Imports: " + formatValue + "</p>";
         }
-
         //console.log(myText);
         return myText;
     }
-
-
 
 
     update(data, pri, sec, years) {
@@ -116,13 +112,10 @@ class Balance_Single {
                     Year: d.year,
                     Value: d.exports };
             }
-
             //console.log(toolTipData);
             return this.toolTipRender(toolTipData);
         });
 
-        
-     
 
         let balanceData = data.slice();
         let circleRadius = 5;

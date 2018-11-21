@@ -30,7 +30,7 @@ class Top_Traders {
             .append("text")
             .attr("transform", "translate(0,0)")
             .attr("class", "topTraderText")
-            .text("Top Exporters($Mil)");
+            .text("Top Exporters($ Millons of US Dollars)");
 
         let exportAxisGroup = d3.select("#exportGroup")
             .append("g")
@@ -51,7 +51,7 @@ class Top_Traders {
             .append("text")
             .attr("transform", "translate(5,0)")
             .attr("class", "topTraderText")
-            .text("Top Importers($Mil)");
+            .text("Top Importers($ Millons of US Dollars)");
 
         let importAxisGroup = d3.select("#importGroup")
             .append("g")
@@ -227,8 +227,9 @@ class Top_Traders {
                 return yTextOffset +(i*yScaler);
             })
             .text((d)=>{
+                let formatValue = new Intl.NumberFormat('en', { maximumSignificantDigits: 6, style: 'currency', currency: 'USD' }).format(d.Average);
                 let percent = parseFloat(d.Total/d.Total_Global_Exports*100).toFixed(1);
-                return d.SecondaryName + ": " + d.Average + "   (" + percent + "%)"
+                return d.SecondaryName + ": " + formatValue + "   (" + percent + "%)"
             });
 
 
@@ -273,8 +274,9 @@ class Top_Traders {
                 return yTextOffset +(i*yScaler);
             })
             .text((d)=>{
+                let formatValue = new Intl.NumberFormat('en', { maximumSignificantDigits: 6, style: 'currency', currency: 'USD' }).format(d.Average);
                 let percent = parseFloat(d.Total/d.Total_Global_Imports*100).toFixed(1);
-                return d.SecondaryName + ": " + d.Average + "   (" + percent + "%)"
+                return d.SecondaryName + ": " + formatValue + "   (" + percent + "%)"
             });
 
         //DRAW AXES
