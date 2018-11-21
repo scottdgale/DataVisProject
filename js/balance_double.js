@@ -75,12 +75,61 @@ class Balance_Double {
             .text("GDP")
             .attr("transform", "translate(250,380)");
 
+        this.tip = d3.tip().attr('class', 'd3-tip')
+            .direction('s')
+            .offset(function() {
+                return [0,0];
+            });
+    }
 
+    toolTipRender (data) {
+        //let text = "<ul>";
+        let myText = "<p>";
+        //console.log(data);
 
+        if (data.Type ==="Export"){
+            myText += data.Year + " Exports<br>" +
+                "From: " + data.Primary + "<br>" +
+                "To: " + data.Secondary + "<br>" +
+                "Value: " + data.Value + "</p>";
+        }
+        else{
+            myText += data.Year + " Imports<br>" +
+                "From: " + data.Primary + "<br>" +
+                "To: " + data.Secondary + "<br>" +
+                "Value: " + data.Value + "</p>";
+        }
+
+        //console.log(myText);
+        return myText;
     }
 
     update(data, gdp, pri, sec, years) {
         //console.log(data);
+
+        this.tip.html((d)=> {
+            let toolTipData = {};
+            //populate data in the following format
+            if (d.Type === "Import"){
+                toolTipData = {
+                    Type: d.Type,
+                    Primary: d.Primary,
+                    Secondary: d.Secondary,
+                    Year: d.Year,
+                    Value: d.Import };
+            }
+            else{
+                toolTipData = {
+                    Type: d.Type,
+                    Primary: d.Primary,
+                    Secondary: d.Secondary,
+                    Year: d.Year,
+                    Value: d.Export };
+            }
+
+            //console.log(toolTipData);
+            return this.toolTipRender(toolTipData);
+        });
 
         let gdpData = this.getGDPData(gdp, pri, sec, years);
 
@@ -152,10 +201,16 @@ class Balance_Double {
 
         for (let k = 0; k < data.length; k++) {
             importPoints.push({
+                Type: "Import",
+                Primary: data[k].PrimaryName,
+                Secondary: data[k].SecondaryName,
                 Year: (+years[0] + k),
                 Import: data[k].Imports
             });
             exportPoints.push({
+                Type: "Export",
+                Primary: data[k].PrimaryName,
+                Secondary: data[k].SecondaryName,
                 Year: (+years[0] + k),
                 Export: data[k].Exports
             });
@@ -215,7 +270,10 @@ class Balance_Double {
             })
             .attr("cy", (d) => {
                 return yScale(d.Import) + this.yOffset;
-            });
+            })
+            .call(this.tip)
+            .on("mouseover", this.tip.show)
+            .on("mouseout", this.tip.hide);
 
         //---EXPORT CIRCLES-----------------------------------------------------------
         let exportCircles = d3.select("#exportCircleGroup").selectAll(".exportCircle")
@@ -232,7 +290,10 @@ class Balance_Double {
             })
             .attr("cy", (d) => {
                 return yScale(d.Export) + this.yOffset;
-            });
+            })
+            .call(this.tip)
+            .on("mouseover", this.tip.show)
+            .on("mouseout", this.tip.hide);
 
         //---IMPORT PATH-----------------------------------------------------------
         let importLineGenerator = d3.line()
