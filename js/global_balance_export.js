@@ -17,18 +17,18 @@ class Global_Balance_Export {
             .attr("height", this.svgHeight)
             .attr("width", this.svgWidth);
             
-        let svg = d3.select("#svg_global_balance_export")
+        let svg = d3.select("#svg_global_balance_export");
 
         //Legend
         let legend = svg.append("g")
             .attr("id", "legend")
             .style("font-family", "Helvetica")
             .style("font-size", "10px")
-            .attr("transform", "translate(10, 10)")
+            .attr("transform", "translate(10, 10)");
 
         let colorScale = d3.scaleOrdinal()
                 .domain(["Primary Country", "Secondary Country"])
-                .range(["#007374", "#66b2b3"])
+                .range(["#007374", "#66b2b3"]);
         let legendOrdinal = d3.legendColor()
             .shape("path", d3.symbol().type(d3.symbolSquare).size(42)())
             .shapePadding(4)
@@ -39,7 +39,7 @@ class Global_Balance_Export {
         d3.select("#svg_global_balance_export").append("g")
             .attr("transform", "translate(100," + -350+")")
             .append("text")
-            .attr("class", "viewLabels")
+            .attr("class", "viewLabels");
             // .text("Total Global Exports")
             // .attr("transform", "translate(250,380)");
        
@@ -70,10 +70,41 @@ class Global_Balance_Export {
                             .style("text-anchor", "middle")
                             .attr('transform', 'translate('+ 20 + ', '+ 250 + ')' + "rotate(270)");
 
+        //for reference: https://github.com/Caged/d3-tip
+        //Use this tool tip element to handle any hover over the chart
+        this.tip = d3.tip().attr('class', 'd3-tip')
+            .direction('n')
+            .offset(function() {
+                return [0,0];
+            });
+
+    }
+
+    toolTipRender (data) {
+        //console.log(data);
+        let fullValue = data.Value;
+        let formatExport = new Intl.NumberFormat('en', { maximumSignificantDigits: 6, style: 'currency', currency: 'USD' }).format(fullValue);
+        let myText = "<p>" + data.Country + "<br>"
+            + data.Year
+            + " Total Exports: "
+            + formatExport
+            + "</p>";
+        //console.log(myText);
+        return myText;
     }
 
 
     update(data, pri, sec, years) {
+
+        this.tip.html((d)=> {
+            //populate data in the following format
+            let toolTipData = {
+                Country: d.country,
+                Year: d.year,
+                Value: d.exports };
+
+            return this.toolTipRender(toolTipData);
+        });
 
         let balanceData = data.slice();
         let xOffset = 100;
@@ -110,10 +141,10 @@ class Global_Balance_Export {
 
 
         //Get the maximum values for exports and imports
-        let priExportMax = d3.max(filteredForPrimary, function(d){ return +d.exports })
-        let priImportMax = d3.max(filteredForPrimary, function(d){ return +d.imports })
-        let secExportMax = d3.max(filteredForSecondary, function(d){ return +d.exports })
-        let secImportMax = d3.max(filteredForSecondary, function(d){ return +d.imports })
+        let priExportMax = d3.max(filteredForPrimary, function(d){ return +d.exports });
+        let priImportMax = d3.max(filteredForPrimary, function(d){ return +d.imports });
+        let secExportMax = d3.max(filteredForSecondary, function(d){ return +d.exports });
+        let secImportMax = d3.max(filteredForSecondary, function(d){ return +d.imports });
         let exportMax = +priExportMax > +secExportMax ? +priExportMax : +secExportMax;
         let importMax = +priImportMax > +secImportMax ? +priImportMax : +secImportMax;
         let max = +exportMax > +importMax ? +exportMax : +importMax;
@@ -126,11 +157,11 @@ class Global_Balance_Export {
         let bandScale = d3.scaleBand()
                 .domain(d3.range(filteredForPrimary.length + filteredForSecondary.length))
                 .range([0,250])
-                .round(true)
+                .round(true);
 
         /** Create and call x and y axis */
-        let yAxis = d3.axisLeft().scale(yScale)
-        let xAxis = d3.axisBottom().scale(xScale)
+        let yAxis = d3.axisLeft().scale(yScale);
+        let xAxis = d3.axisBottom().scale(xScale);
         
         let yAx = d3.select("#yAxisGlobalExport").call(yAxis);
         let xAx = d3.select("#xAxisGlobalExport")
@@ -142,41 +173,40 @@ class Global_Balance_Export {
                     .attr("transform", "rotate(-65)" );   
 
         /** Select our svg and do some clean up */
-        let selection = d3.select("#svg_global_balance_export")
+        let selection = d3.select("#svg_global_balance_export");
         selection.selectAll("circle").remove();
         selection.selectAll("rect").remove();
 
         /** Add export rectangles --- for primary and secondary*/
         let priExportRect = selection.selectAll('.priExportRect')
-                                    .data(filteredForPrimary)
-        priExportRect.exit().remove()
-        priExportRect = priExportRect.enter().append('rect').merge(priExportRect)
+                                    .data(filteredForPrimary);
+        priExportRect.exit().remove();
+        priExportRect = priExportRect.enter().append('rect').merge(priExportRect);
 
-        priExportRect.attr("height", d =>{ 
-                            return yScale(0) - yScale(d.exports) + 10;
-                        })
-                .attr("width", bandScale.bandwidth())
-                .attr("x", d => { return xScale(d.year) - bandScale.bandwidth()})
-                .attr("y", d => { return yScale(d.exports)})
-                .classed("priRect",true)
-                .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
+        priExportRect.attr("height", d => yScale(0) - yScale(d.exports) + 10)
+            .attr("width", bandScale.bandwidth())
+            .attr("x", d => { return xScale(d.year) - bandScale.bandwidth()})
+            .attr("y", d => { return yScale(d.exports)})
+            .classed("priRect",true)
+            .attr("transform", "translate("+ xOffset+ "," + yOffset +")")
+            .call(this.tip)
+            .on("mouseover", this.tip.show)
+            .on("mouseout", this.tip.hide);
 
         let secExportRect = selection.selectAll('.secExportRect')
-                                    .data(filteredForSecondary)
-                    secExportRect.exit().remove()
-                    secExportRect = secExportRect.enter().append('rect').merge(secExportRect)
+            .data(filteredForSecondary);
+        secExportRect.exit().remove();
+        secExportRect = secExportRect.enter().append('rect').merge(secExportRect);
 
-                    secExportRect.attr("height", d =>{ 
-                            return yScale(0) - yScale(d.exports) + 10;
-                        })
-                    .attr("width", bandScale.bandwidth())
-                    .attr("x", d => { return xScale(d.year)})
-                    .attr("y", d => { return yScale(d.exports)})
-                    .classed("secRect",true)
-                    .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
-
-
-  
+        secExportRect.attr("height", d => yScale(0) - yScale(d.exports) + 10)
+            .attr("width", bandScale.bandwidth())
+            .attr("x", d => { return xScale(d.year)})
+            .attr("y", d => { return yScale(d.exports)})
+            .classed("secRect",true)
+            .attr("transform", "translate("+ xOffset+ "," + yOffset +")")
+            .call(this.tip)
+            .on("mouseover", this.tip.show)
+            .on("mouseout", this.tip.hide);
     }
 
 }

@@ -94,8 +94,6 @@ class Balance_Single {
     }
 
 
-
-
     update(data, pri, sec, years) {
 
         this.tip.html((d)=> {
@@ -116,13 +114,10 @@ class Balance_Single {
                     Year: d.year,
                     Value: d.exports };
             }
-
             //console.log(toolTipData);
             return this.toolTipRender(toolTipData);
         });
 
-        
-     
 
         let balanceData = data.slice();
         let circleRadius = 5;

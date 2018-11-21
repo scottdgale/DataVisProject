@@ -131,7 +131,7 @@ class Balance_Double {
         //console.log(data);
 
         this.tip.html((d)=> {
-            console.log(d);
+            //console.log(d);
             let toolTipData = {};
             //populate data in the following format
             if (d.Type === "Import"){
