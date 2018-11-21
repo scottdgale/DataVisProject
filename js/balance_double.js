@@ -71,7 +71,7 @@ class Balance_Double {
             .attr("id", "gdpVisGroup")
             .attr("transform", "translate(0," + this.gdpYOffset+")")
             .append("text")
-            .attr("class", "topTraderText")
+            .attr("class", "viewLabels")
             .text("GDP")
             .attr("transform", "translate(250,380)");
 
