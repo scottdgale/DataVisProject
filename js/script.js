@@ -3,10 +3,6 @@ loadMapData().then(data => {
     let mapData = data[0];
     let cityData = data[1];
 
-<<<<<<< HEAD
-    //Create instances of objects here
-=======
->>>>>>> 8c91b1278e61df73d554c2c8b3a071491519b601
     let map = new Map(syncData, mapData, cityData);
 
     let balanceSingle = new Balance_Single();
