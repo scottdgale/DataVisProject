@@ -75,6 +75,7 @@ class Map {
               .attr('height', 50)
               .attr('width', this.svgWidth)
 
+
               this.drawMap();
               this.drawYearBar();
 
@@ -152,7 +153,7 @@ class Map {
     highlightCountry(id){
         // d3.select("#" + id).classed("highlight", true);
         if(id !== this.secondary){
-             d3.select("#" + id).style('fill', 'yellow').style('stroke-width', 0.5).style('stroke', 'black')
+             d3.select("#" + id).style('fill', '#f7de34').style('stroke-width', 0.5).style('stroke', '#f7de34')
         }
         else{
             d3.select("#" + id).style('stroke-width', 3).style('stroke', 'black')
@@ -366,8 +367,8 @@ class Map {
     //Temporary highlighting function that allows us to see the difference between pri and sec
     updateHighlights() {
             d3.selectAll('.countries' ).style('fill', '#E0E0E0').style('stroke-width', 1.5); //grey
-           d3.select("#" + this.primary).style('fill', '#007374').style('stroke-width', 3);  //dark teal
-           d3.select("#" + this.secondary).style('fill', '#66b2b3').style('stroke-width', 3) //lighter teal
+            d3.select("#" + this.primary).style('fill', '#007374').style('stroke-width', 3);  //dark teal
+            d3.select("#" + this.secondary).style('fill', '#66b2b3').style('stroke-width', 3) //lighter teal
          
     }
 
