@@ -2,18 +2,20 @@ loadMapData().then(data => {
 
     let mapData = data[0];
     let cityData = data[1];
+    
+    let selected_years = ["2010", "2014"];
 
-    let map = new Map(syncData, mapData, cityData);
+    let map = new Map(syncData, mapData, cityData, selected_years);
 
     let balanceSingle = new Balance_Single();
 
     let topTraders = new Top_Traders(highlightData, clearHighlight);
 
     let globalBalance = new Global_Balance();
+    let globalBalanceExport = new Global_Balance_Export();
 
     let balanceDouble = new Balance_Double();
 
-    let selected_years = ["2010", "2014"];
 
     //Change to use country "id" . . .
     let primary = "USA";
@@ -87,6 +89,7 @@ function loadDataNational() {
                 //d3.csv("data/gdp.csv").then(gdpData => {
                 balanceSingle.update(nationalArray, primary, secondary, selected_years);
                 globalBalance.update(nationalArray, primary, secondary, selected_years);
+                globalBalanceExport.update(nationalArray, primary, secondary, selected_years);
             }
         });
     }

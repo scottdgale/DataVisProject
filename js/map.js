@@ -18,7 +18,7 @@ class Map {
      * @param
      */
     
-    constructor(syncData, mapData, cityData) {
+    constructor(syncData, mapData, cityData, years) {
         this.margin = {top: 20, right: 20, bottom: 20, left: 50, spacing: 50};
 
         let divMap = d3.select("#map").classed("three_quarter_view", true);
@@ -33,7 +33,7 @@ class Map {
         this.prevPri;
         this.prevSec;
         this.colorScale;
-        this.years;
+        this.years = years;
         this.nameArray = cityData.map(d => d.id.toUpperCase());
         this.yearData = [1990, 1991, 1992, 1993, 1994, 
                          1995, 1996, 1997, 1998, 1999, 
@@ -47,6 +47,8 @@ class Map {
         
         
 
+        divMap.append('h2').append('text')
+              .attr('id', 'map_header')
         divMap.append('svg')
             .attr('id', 'svg_label')
             .attr('height', 70)
@@ -75,6 +77,7 @@ class Map {
               .attr('height', 50)
               .attr('width', this.svgWidth)
 
+
               this.drawMap();
               this.drawYearBar();
 
@@ -84,7 +87,7 @@ class Map {
         let offset = (this.svgWidth - (this.yearData.length * 35))/2 +10//Create year bar in the center of the map svg
         let distanceBetweenYears = 35;
         let tickWidth = 2;
-        let initialBrushPlacement = [10*distanceBetweenYears + offset - tickWidth , 15*distanceBetweenYears + offset + tickWidth]
+        let initialBrushPlacement = [(this.years[0]-1990)*distanceBetweenYears + offset - tickWidth , (this.years[1]-1990)*distanceBetweenYears + offset + tickWidth]
    
         let that = this
     
@@ -152,7 +155,7 @@ class Map {
     highlightCountry(id){
         // d3.select("#" + id).classed("highlight", true);
         if(id !== this.secondary){
-             d3.select("#" + id).style('fill', 'yellow').style('stroke-width', 0.5).style('stroke', 'black')
+             d3.select("#" + id).style('fill', '#f7de34').style('stroke-width', 0.5).style('stroke', '#f7de34')
         }
         else{
             d3.select("#" + id).style('stroke-width', 3).style('stroke', 'black')
@@ -297,6 +300,8 @@ class Map {
 
 
             //Labels
+            // let mapheader = d3.select("#map_header")
+            //                   .text("Top 10 Trade Partners of " + primaryName + " from " + years[0] + ' to ' + years[1])
             let label =  d3.select("#svg_label")
             label.select('#primaryMapLabel')
                     .attr('x', 5)
@@ -366,8 +371,8 @@ class Map {
     //Temporary highlighting function that allows us to see the difference between pri and sec
     updateHighlights() {
             d3.selectAll('.countries' ).style('fill', '#E0E0E0').style('stroke-width', 1.5); //grey
-           d3.select("#" + this.primary).style('fill', '#007374').style('stroke-width', 3);  //dark teal
-           d3.select("#" + this.secondary).style('fill', '#66b2b3').style('stroke-width', 3) //lighter teal
+            d3.select("#" + this.primary).style('fill', '#007374').style('stroke-width', 3);  //dark teal
+            d3.select("#" + this.secondary).style('fill', '#66b2b3').style('stroke-width', 3) //lighter teal
          
     }
 

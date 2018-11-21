@@ -11,7 +11,7 @@ class Balance_Single {
         let divBalanceSingle = d3.select("#balance_single").classed("half_view", true);
         this.svgBounds = divBalanceSingle.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
-        this.svgHeight = 600;
+        this.svgHeight = 500;
 
 
         divBalanceSingle.append("svg")

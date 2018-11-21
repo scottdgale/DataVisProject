@@ -16,7 +16,7 @@ h1 {
 h2{
     font-family: Helvetica;
     text-align: left;
-    -webkit-margin-before: 5px;
+    -webkit-margin-before: 0px;
     -webkit-margin-after:  5px;
 }
 
@@ -37,6 +37,13 @@ p {
 
 }
 
+hr{  
+    width: 80%;
+    border: 0;
+    height: 2px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), 	rgb(224,224,224), rgba(0, 0, 0, 0));
+}
+
 .viewLabels {
     font-family: Helvetica, sans-serif;
     text-align: left;
@@ -51,9 +58,10 @@ p {
 
 .half_view {
     display: inline-block;
-    width: 45%;
+    width: 40%;
     position: relative;
-    padding-right: 2%;
+    padding-right: 0%;
+    padding-left: 5%;
     padding-top: 3%;
 }
 
@@ -116,8 +124,8 @@ p {
 }
 
 .highlight {
-    fill: #FCFF33;
-    color: #FCFF33;
+    fill: #f7de34;
+    color: #f7de34;
     stroke: #000;
     stroke-width: 0.8px;
     text-anchor: start;
@@ -215,6 +223,14 @@ p {
     stroke-width: 0.5px;
 }
 
+.yeartext, .tilestext, .brushtext{
+    font-family: Helvetica;
+    text-anchor: middle;
+    font-size: 12px;
+    fill: black;
+    stroke-width: 0.1px;
+}
+
 
 /*----Old styling from previous projects------------------*/
 /*----Everything above this line is being used in our project*/
@@ -228,13 +244,7 @@ p {
     stroke-width: 4;
 }
 
-.yeartext, .tilestext, .brushtext{
-    font-family: Helvetica;
-    text-anchor: middle;
-    font-size: 16px;
-    fill: #565656;
-    stroke-width: 0.1px;
-}
+
 
 
 .electoralVotesNote, .votesPercentageNote{
