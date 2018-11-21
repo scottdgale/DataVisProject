@@ -205,6 +205,14 @@ h3 {
     stroke-width: 0.5px;
 }
 
+.yeartext, .tilestext, .brushtext{
+    font-family: Helvetica;
+    text-anchor: middle;
+    font-size: 12px;
+    fill: black;
+    stroke-width: 0.1px;
+}
+
 
 /*----Old styling from previous projects------------------*/
 /*----Everything above this line is being used in our project*/
@@ -218,13 +226,7 @@ h3 {
     stroke-width: 4;
 }
 
-.yeartext, .tilestext, .brushtext{
-    font-family: Helvetica;
-    text-anchor: middle;
-    font-size: 16px;
-    fill: #565656;
-    stroke-width: 0.1px;
-}
+
 
 
 .electoralVotesNote, .votesPercentageNote{
