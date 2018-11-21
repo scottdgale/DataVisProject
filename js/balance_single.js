@@ -84,7 +84,7 @@ class Balance_Single {
 
         /** Set up xScale and yScale based on the max import/export value and the year range */
         let yScale = d3.scaleLinear().range([400, 0]).domain([0, max]).nice();
-        let xScale = d3.scaleLinear().range([0, 600]).domain([+years[0] - 1, +years[1]+1]).nice();
+        let xScale = d3.scaleLinear().range([0, 500]).domain([+years[0] - 1, +years[1]+1]).nice();
 
         /** Create and call x and y axis */
         let yAxis = d3.axisLeft().scale(yScale)
@@ -92,7 +92,7 @@ class Balance_Single {
         
         let yAx = d3.select("#yAxis").call(yAxis);
         let xAx = d3.select("#xAxis")
-                    .call(xAxis.ticks(numYears,""))
+                    .call(xAxis.ticks(numYears +1,""))
                     .selectAll("text")  
                     .style("text-anchor", "end")
                     .attr("dx", "-.8em")
@@ -119,7 +119,7 @@ class Balance_Single {
         let exportLineString = exportLineGenerator(filteredForPrimary);
         exportLineChart.attr("d", exportLineString)
                 .style('fill', 'none')
-                .style('stroke', 'lightblue')
+                .classed('exportLine', true)
                 .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
 
         //Import Line Chart
@@ -134,7 +134,7 @@ class Balance_Single {
         let importLineString = importLineGenerator(filteredForPrimary);
         importLineChart.attr("d", importLineString)
                 .style('fill', 'none')
-                .style('stroke', 'purple')
+                .classed('importLine',true)
                 .attr("transform", "translate("+ xOffset + "," + yOffset +")");
 
         /** Add delta rectangles to represent trade surplus/deficit */
@@ -151,11 +151,7 @@ class Balance_Single {
                   .attr("y", d => {
                             return +d.imports > +d.exports ? yScale(d.imports) : yScale(d.exports)
                         })
-                  .style("fill", d =>{
-                            return '#C7C7C7'
-                            // return +d.imports > +d.exports ? 'purple' : 'lightblue' 
-                            //This can be used to change color based on the larger value
-                        }) 
+                  .classed("connectingLine", true)
                   .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
 
         /** Add circles to represent IMPORT value  */
@@ -167,7 +163,7 @@ class Balance_Single {
         importPoints.attr("cx", function(d){  return xScale(d.year) })
                     .attr("cy", function(d){  return yScale(d.imports) })
                     .attr("r",  function(d){  return circleRadius })
-                    .style("fill", 'purple') 
+                    .style("fill", '#663165') 
                     .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
    
         /** Add circles to represent EXPORT value  */
@@ -179,7 +175,7 @@ class Balance_Single {
         exportPoints.attr("cx", function(d){ return xScale(d.year); })
                     .attr("cy", function(d){  return yScale(d.exports) })
                     .attr("r",  function(d){  return circleRadius })
-                    .style("fill", 'lightblue') 
+                    .style("fill", 'lightsteelblue') 
                     .attr("transform", "translate("+ xOffset+ "," + yOffset +")");  
 
     }

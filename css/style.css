@@ -29,7 +29,7 @@ h3{
 
 .right_quarter {
     display: inline-block;
-    width: 25%;
+    width: 35%;
     float:right;
 }
 
@@ -43,7 +43,7 @@ h3{
 
 .three_quarter_view {
     display: inline-block;
-    width: 73%;
+    width: 63%;
     position: relative;
     padding-right: 2%;
 }
@@ -61,12 +61,12 @@ h3{
 
 .primary {
     stroke-width: 3;
-    fill: #6F339B;
+    fill: #007374;
 }
 
 .secondary {
     stroke-width: 3;
-    fill: #C4ACD6;
+    fill: #66b2b3;
 }
 
 
@@ -88,14 +88,14 @@ h3{
 }
 
 .imports {
-    fill: purple;
-    color: purple;
+    fill: #663165 ;
+    color: #663165 ;
     text-anchor: start;
 }
 
 .exports {
-    fill: lightblue;
-    color: lightblue;
+    fill: lightsteelblue ;
+    color: lightsteelblue ;
     text-anchor: start;
 }
 
@@ -109,53 +109,62 @@ h3{
 
 .exportCircle {
     r: 5;
-    fill: lightblue;
-    stroke: lightblue;
+    fill: lightsteelblue;
+    stroke: lightsteelblue;
     stroke-width: 1.5px;
 }
 
 .importCircle {
     r: 5;
-    fill: purple;
-    stroke: purple;
+    fill: #663165;
+    stroke: #663165;
     stroke-width: 1.5px;
 }
 
 .primaryCircle{
      r: 5;
-     fill: #6F339B;
-     stroke: #6F339B;
+     fill: #007374;
+     stroke: #007374;
      stroke-width: 1.5px;
  }
 
 .secondaryCircle{
     r: 5;
-    fill: #C4ACD6;
-    stroke: #C4ACD6;
+    fill: #66b2b3;
+    stroke: #66b2b3;
     stroke-width: 1.5px;
+}
+
+.priRect{
+    fill:#007374;
+    color:#007374; 
+}
+.secRect{
+    fill:#66b2b3;
+    color:#66b2b3; 
 }
 
 .exportLine {
     fill: none;
-    stroke: lightblue;
-    stroke-width: 1.5px;
+    stroke: lightsteelblue;
+    stroke-width: 1px;
 }
 
 .importLine {
     fill: none;
-    stroke: purple;
-    stroke-width: 1.5px;
+    stroke: #663165;
+    stroke-width: 1px;
 }
 
 .primaryLine {
     fill: none;
-    stroke: #6F339B;
+    stroke: #007374;
     stroke-width: 1.5px;
 }
 
 .secondaryLine {
     fill: none;
-    stroke: #C4ACD6;
+    stroke: #66b2b3;
     stroke-width: 1.5px;
 }
 
@@ -172,7 +181,7 @@ h3{
 
 .connecting_line {
     fill: none;
-    stroke: #000;
+    stroke: black;
     stroke-width: 2.0px;
     shape-rendering: crispEdges;
 }

@@ -3,8 +3,6 @@ loadMapData().then(data => {
     let mapData = data[0];
     let cityData = data[1];
 
-    //console.log(mapData);
-
     //Create instances of objects here
     let map = new Map(syncData, mapData, cityData);
 
@@ -42,12 +40,12 @@ loadMapData().then(data => {
     syncData(primary, secondary, selected_years);
 
     function highlightData(id){
-        console.log("highlight data in script.js: " + id);
+        //console.log("highlight data in script.js: " + id);
         map.highlightCountry(id);
     }
 
     function clearHighlight(id){
-        console.log("clear highlight data in script.js: " + id);
+        //console.log("clear highlight data in script.js: " + id);
         map.clearHighlight(id);
     }
 
@@ -131,7 +129,7 @@ class DataProcess {
         let numYears = procData.length;
         let cleanData = this.cleanData(procData, pri);
 
-        //console.log(cleanData);
+
 
         let priSecData = this.getPriSecData(cleanData, pri, sec);
         //console.log (priSecData);

@@ -40,6 +40,12 @@ class Map {
                          2000, 2001, 2002, 2003, 2004, 
                          2005, 2006, 2007, 2008, 2009, 
                          2010, 2011, 2012, 2013, 2014]
+                   //set up projection
+        this.projection = d3.geoRobinson()
+                   .scale(120)
+                   .translate([this.svgWidth/2, this.svgHeight / 2])
+        
+        
 
         divMap.append('svg')
               .attr('id', 'svg_label')
@@ -69,13 +75,14 @@ class Map {
               .attr('height', 50)
               .attr('width', this.svgWidth)
 
-        this.drawYearBar()
+              this.drawMap();
+              this.drawYearBar();
 
     }
 
     drawYearBar(){
-        let offset = (this.svgWidth - (this.yearData.length * 50))/2 //Create year bar in the center of the map svg
-        let distanceBetweenYears = 50;
+        let offset = (this.svgWidth - (this.yearData.length * 40))/2 //Create year bar in the center of the map svg
+        let distanceBetweenYears = 40;
         let tickWidth = 2;
         let initialBrushPlacement = [10*distanceBetweenYears + offset - tickWidth , 15*distanceBetweenYears + offset + tickWidth]
    
@@ -99,7 +106,6 @@ class Map {
         let tickGroupExit =  tickGroup.exit().remove();
         let tickGroupEnter = tickGroup.enter()
                                       .append("g")
-                                      .on('mouseover', (d)=>{ console.log(d)})
                         tickGroupEnter.append("rect")
                                       .attr('x', (d,i) => i * distanceBetweenYears + offset )
                                       .attr('y', 15)
@@ -165,6 +171,75 @@ class Map {
         
     }
 
+    drawMap(){
+          /** Draw the map and append circles and lines to indicate trade relationships */
+          let mapData = this.mapData;
+          let that = this;
+            //get geojson from topojson
+            let geojson = topojson.feature(mapData, mapData.objects.countries);
+
+            // Append the country name to the country data for use in tooltips
+            let countryData = geojson.features.map(country => {     
+                let index = this.nameArray.indexOf(country.id);
+                let countryName = "Unknown";
+
+                if(index > -1){
+                    countryName = this.cityData[index].country;
+                }
+
+                return new CountryData(country.type, country.id, country.properties, country.geometry, countryName);
+            });
+
+            this.countryData = countryData; 
+   
+            // //set up projection
+            // let projection = d3.geoRobinson()
+            //                 .scale(120)
+            //                 .translate([this.svgWidth / 2, this.svgHeight / 2])
+                    
+            let path = d3.geoPath()
+                        .projection(this.projection)
+
+            //select svg that holds the map
+            let map =  d3.select('#svg_map')
+
+            //append the graticule
+            let graticule = d3.geoGraticule();
+            map.append('path').datum(graticule).attr('class', "graticule").attr('d', path).attr('fill', 'none');
+            map.append('path').datum(graticule.outline).attr('class', "graticule-outline").attr('d', path).attr('fill', 'none').style('stroke', '#C7C7C7')
+
+            //add countrys to map
+            let countries = map.selectAll('path')
+                                .data(countryData)
+            countries.exit().remove()
+            let enter =  countries.enter()
+                                .append('path')
+                                .attr('d', path)
+                                .attr('id', (d) => d.id)
+                                .classed('countries', true)
+                                .on('mouseover', function(d) {
+                                    d3.select(this).append("title").text(d.countryName);
+                                })
+                                /** The click even updates all of the other views */
+                                .on("click",function(d){
+                                    //if sec is the clicked country, toggle current pri and sec
+                                    //if a new country is clicked, set previous sec to pri and set new country to sec.    
+                                    let temp = that.primary
+                                    that.primary = that.secondary;
+                                    that.secondary = that.secondary === d.id ? temp : d.id;
+
+                                    //highlight the primary and secondary country for testing right now
+                                    that.updateHighlights();
+                                    
+                                    //then sync the data with the other views
+                                    that.syncData(that.primary, that.secondary, that.years)
+                                    
+                                })
+            countries = enter.merge(countries)
+
+            this.updateHighlights()
+    }
+
     
     update(data, pri, sec, years) {
 
@@ -182,10 +257,9 @@ class Map {
         let importPartners = data.Imports.slice();
         let totalTradePartners = data.Total.slice();
 
-        //coloring for map set up
-        let maxTrade = totalTradePartners[0].Total;
-        let minTrade = totalTradePartners[9].Total;
-        this.colorScale = d3.scaleQuantize().domain([minTrade, maxTrade]).range(['#d4d4e8','#bebedc', '#a9a9d1','#9393c5','#7e7eba','#6868ae',"#5252a3",'#3d3d97'])
+        let map =  d3.select('#svg_map')
+        map.selectAll("circle").remove();
+        map.selectAll('.line').remove();
 
         //Using City Data to get primary and secondary information
         let priLatLon = cityData.filter(d=> {
@@ -235,84 +309,22 @@ class Map {
                     .attr('y', 60)
                     .text("Year Range: " + years[0] + ' - ' + years[1])
 
-        /** Draw the map and append circles and lines to indicate trade relationships */
-            //get geojson from topojson
-            let geojson = topojson.feature(mapData, mapData.objects.countries);
+      
+       
 
-            // Append the country name to the country data for use in tooltips
-            let countryData = geojson.features.map(country => {     
-                let index = this.nameArray.indexOf(country.id);
-                let countryName = "Unknown";
-
-                if(index > -1){
-                    countryName = this.cityData[index].country;
-                }
-
-                return new CountryData(country.type, country.id, country.properties, country.geometry, countryName);
-            });
-
-            this.countryData = countryData; 
-   
-            //set up projection
-            let projection = d3.geoRobinson()
-                            .scale(150)
-                            .translate([this.svgWidth / 2, this.svgHeight / 2])
-                    
-            let path = d3.geoPath()
-                        .projection(projection)
-
-            //select svg that holds the map
-            let map =  d3.select('#svg_map')
-
-            //append the graticule
-            let graticule = d3.geoGraticule();
-            map.append('path').datum(graticule).attr('class', "graticule").attr('d', path).attr('fill', 'none');
-            map.append('path').datum(graticule.outline).attr('class', "graticule-outline").attr('d', path).attr('fill', 'none').style('stroke', '#C7C7C7')
-
-            //add countrys to map
-            let countries = map.selectAll('path')
-                                .data(countryData)
-            countries.exit().remove()
-            let enter =  countries.enter()
-                                .append('path')
-                                .attr('d', path)
-                                .attr('id', (d) => d.id)
-                                .classed('countries', true)
-                                .on('mouseover', function(d) {
-                                    d3.select(this).append("title").text(d.countryName);
-                                })
-                                /** The click even updates all of the other views */
-                                .on("click",function(d){
-                                    //if sec is the clicked country, toggle current pri and sec
-                                    //if a new country is clicked, set previous sec to pri and set new country to sec.    
-                                    let temp = that.primary
-                                    that.primary = that.secondary;
-                                    that.secondary = that.secondary === d.id ? temp : d.id;
-
-                                    //highlight the primary and secondary country for testing right now
-                                    that.updateHighlights();
-                                    
-                                    //then sync the data with the other views
-                                    that.syncData(that.primary, that.secondary, that.years)
-                                    
-                                })
-            countries = enter.merge(countries)
-
-            this.updateHighlights()
-            //this.countryColoring(totalTradePartners) --For now until we decide what to do about the coloring
    
             //Draws circles on the captial cities of the top 10 traders of the primary country                    
-            map.selectAll("circle").remove();
+          
             let capitals = map.selectAll("circle")
                                 .data(city)
             let capitalsExit =  capitals.exit().remove()
             let capitalsEnter = capitals.enter()
                                 .append("circle")
                                 .attr("cx", function (d) {
-                                    return projection([d.longitude, d.latitude])[0];
+                                    return that.projection([d.longitude, d.latitude])[0];
                                 })
                                 .attr("cy", function (d) {
-                                    return projection([d.longitude, d.latitude])[1];
+                                    return that.projection([d.longitude, d.latitude])[1];
                                 })
                                 .attr("r", function (d) {
                                     return 3;
@@ -326,10 +338,10 @@ class Map {
 
             //create an array to hold the lat/long of each city + the primary country's city
              let dataArr = [];
-             dataArr.push( projection([priLatLon[0].longitude, priLatLon[0].latitude])); //first element is primary
+             dataArr.push( this.projection([priLatLon[0].longitude, priLatLon[0].latitude])); //first element is primary
 
             for(let i = 0; i < city.length; i++){
-                dataArr.push(projection([city[i].longitude, city[i].latitude]))
+                dataArr.push(this.projection([city[i].longitude, city[i].latitude]))
             }
         
             //Use a lineGenerator to create pathStrings from the primary country to it's trade partners 
@@ -354,18 +366,10 @@ class Map {
 
     //Temporary highlighting function that allows us to see the difference between pri and sec
     updateHighlights() {
-            d3.selectAll('.countries' ).style('fill', '#E0E0E0').style('stroke-width', 1.5);
-           d3.select("#" + this.primary).style('fill', '#6F339B').style('stroke-width', 3)
-           d3.select("#" + this.secondary).style('fill', '#C4ACD6').style('stroke-width', 3)
+            d3.selectAll('.countries' ).style('fill', '#E0E0E0').style('stroke-width', 1.5); //grey
+           d3.select("#" + this.primary).style('fill', '#007374').style('stroke-width', 3);  //dark teal
+           d3.select("#" + this.secondary).style('fill', '#66b2b3').style('stroke-width', 3) //lighter teal
          
-    }
-
-    countryColoring(topTraders){
-        let that = this;
-        topTraders.forEach(element => {
-            d3.select('#' + element.SecondaryId).style('fill', that.colorScale(element.Total))
-          });
-
     }
 
 }

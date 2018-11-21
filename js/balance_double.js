@@ -85,7 +85,6 @@ class Balance_Double {
         // console.log("Balance_double SEC: " + sec);
         let gdpData = this.getGDPData(gdp, pri, sec, years);
 
-        console.log(gdpData);
 
         let gdpPriMax = d3.max(gdpData.PrimaryGDP, function (d){
             return +d.GDP;

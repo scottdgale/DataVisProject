@@ -95,8 +95,6 @@ class Global_Balance {
         let rectWidth = 20;
         let xOffset = 110;
         let yOffset = 40;
-        console.log(balanceData)
-        console.log(years)
 
         //filter each year for primary country and put in a new array
         let filteredForPrimary = [];
@@ -111,7 +109,6 @@ class Global_Balance {
             filteredForPrimary = filteredForPrimary.concat(temp)
          }
 
-         console.log(balanceData);
          let filteredForSecondary = [];
          for(let j = 0; j < balanceData.length; j++){
              let temp = balanceData[j].filter(d=>{
@@ -126,7 +123,6 @@ class Global_Balance {
 
         //Sort by year
         filteredForPrimary.sort((a, b) =>{ return b.year - a.year; });
-        console.log(filteredForPrimary)
         filteredForSecondary.sort((a, b) =>{ return b.year - a.year; });
 
 
@@ -142,7 +138,7 @@ class Global_Balance {
 
         /** Set up xScale and yScale based on the max import/export value and the year range */
         let yScale = d3.scaleLinear().range([400, 0]).domain([0, max]).nice();
-        let xScale = d3.scaleLinear().range([0, 600]).domain([+years[0] - 1, +years[1]+1]).nice();
+        let xScale = d3.scaleLinear().range([0, 500]).domain([+years[0] - 1, +years[1]+1]).nice();
 
         let bandScale = d3.scaleBand()
                 .domain(d3.range(filteredForPrimary.length + filteredForSecondary.length))
@@ -155,7 +151,7 @@ class Global_Balance {
         
         let yAx = d3.select("#yAxisGlobal").call(yAxis);
         let xAx = d3.select("#xAxisGlobal")
-                    .call(xAxis.ticks(numYears,""))
+                    .call(xAxis.ticks(numYears+1,""))
                     .selectAll("text")  
                     .style("text-anchor", "end")
                     .attr("dx", "-.8em")
@@ -181,11 +177,7 @@ class Global_Balance {
                   .attr("width", bandScale.bandwidth())
                   .attr("x", d => { return xScale(d.year) - bandScale.bandwidth()})
                   .attr("y", d => { return yScale(d.imports)})
-                  .style("fill", d =>{
-                            return '#6F339B'
-                            // return +d.imports > +d.exports ? 'purple' : 'lightblue' 
-                            //This can be used to change color based on the larger value
-                        }) 
+                  .classed("priRect",true)
                   .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
         
         let secImportRect = selection.selectAll('.secImportRect')
@@ -199,9 +191,7 @@ class Global_Balance {
                     .attr("width", bandScale.bandwidth())
                     .attr("x", d => { return xScale(d.year)})
                     .attr("y", d => { return yScale(d.imports)})
-                    .style("fill", d =>{
-                            return '#C4ACD6'
-                        }) 
+                    .classed("secRect",true)
                     .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
 
 
@@ -211,7 +201,7 @@ class Global_Balance {
 /**---------------------------------------------------------------------------------------------------------- */
  d3.select("#yAxisGlobalExport").call(yAxis);
  d3.select("#xAxisGlobalExport")
-            .call(xAxis.ticks(numYears,""))
+            .call(xAxis.ticks(numYears+1,""))
             .selectAll("text")  
             .style("text-anchor", "end")
             .attr("dx", "-.8em")
@@ -230,14 +220,8 @@ priExportRect.attr("height", d =>{
           .attr("width", bandScale.bandwidth())
           .attr("x", d => { return xScale(d.year) - bandScale.bandwidth() +800})
           .attr("y", d => { return yScale(d.exports)})
-          .style("fill", d =>{
-                    return '#6F339B'
-                    // return +d.imports > +d.exports ? 'purple' : 'lightblue' 
-                    //This can be used to change color based on the larger value
-                }) 
+          .classed("priRect",true)
           .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
-
-          //Sudie is awesome
 
 let secExportRect = selection.selectAll('.secExportRect')
                             .data(filteredForSecondary)
@@ -250,9 +234,7 @@ let secExportRect = selection.selectAll('.secExportRect')
             .attr("width", bandScale.bandwidth())
             .attr("x", d => { return xScale(d.year) + 800})
             .attr("y", d => { return yScale(d.exports)})
-            .style("fill", d =>{
-                    return '#C4ACD6'
-                }) 
+            .classed("secRect",true)
             .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
 
 
