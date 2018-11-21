@@ -81,8 +81,8 @@ class Map {
     }
 
     drawYearBar(){
-        let offset = (this.svgWidth - (this.yearData.length * 20))/2 //Create year bar in the center of the map svg
-        let distanceBetweenYears = 20;
+        let offset = (this.svgWidth - (this.yearData.length * 30))/2 //Create year bar in the center of the map svg
+        let distanceBetweenYears = 30;
         let tickWidth = 2;
         let initialBrushPlacement = [10*distanceBetweenYears + offset - tickWidth , 15*distanceBetweenYears + offset + tickWidth]
    
