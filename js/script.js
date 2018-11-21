@@ -10,6 +10,7 @@ loadMapData().then(data => {
     let topTraders = new Top_Traders(highlightData, clearHighlight);
 
     let globalBalance = new Global_Balance();
+    let globalBalanceExport = new Global_Balance_Export();
 
     let balanceDouble = new Balance_Double();
 
@@ -87,6 +88,7 @@ function loadDataNational() {
                 //d3.csv("data/gdp.csv").then(gdpData => {
                 balanceSingle.update(nationalArray, primary, secondary, selected_years);
                 globalBalance.update(nationalArray, primary, secondary, selected_years);
+                globalBalanceExport.update(nationalArray, primary, secondary, selected_years);
             }
         });
     }

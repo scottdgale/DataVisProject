@@ -6,7 +6,7 @@ body {
 h1 {
     text-align: center;
     font-family: Helvetica;
-    font-size:35px;
+    font-size:40px;
     color: #464646;
     margin: 0px;
     padding: 0px;
@@ -16,7 +16,7 @@ h1 {
 h2{
     font-family: Helvetica;
     text-align: left;
-    -webkit-margin-before: 5px;
+    -webkit-margin-before: 0px;
     -webkit-margin-after:  5px;
 }
 
@@ -41,9 +41,10 @@ h3 {
 
 .half_view {
     display: inline-block;
-    width: 45%;
+    width: 40%;
     position: relative;
-    padding-right: 2%;
+    padding-right: 0%;
+    padding-left: 5%;
     padding-top: 3%;
 }
 

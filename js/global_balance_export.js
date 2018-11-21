@@ -1,4 +1,4 @@
-class Global_Balance {
+class Global_Balance_Export {
     /**
      * Constructor for Global_Balance
      *
@@ -7,50 +7,56 @@ class Global_Balance {
     constructor() {
         this.margin = {top: 20, right: 20, bottom: 20, left: 50, spacing: 57};
 
-        let divGlobalBalance = d3.select("#global_balance").classed("half_view", true);
+        let divGlobalBalance = d3.select("#global_balance_export").classed("half_view", true);
         this.svgBounds = divGlobalBalance.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
         this.svgHeight = 600;
 
         divGlobalBalance.append("svg")
-            .attr("id", "svg_global_balance")
+            .attr("id", "svg_global_balance_export")
             .attr("height", this.svgHeight)
             .attr("width", this.svgWidth);
 
-        d3.select("#svg_global_balance").append("g")
+        d3.select("#svg_global_balance_export").append("g")
             .attr("transform", "translate(100," + -350+")")
             .append("text")
             .attr("class", "viewLabels")
-            .text("Total Global Imports")
+            .text("Total Global Exports")
             .attr("transform", "translate(250,380)");
-            
-        let yAxisGroup = d3.select("#svg_global_balance")
+        // d3.select("#svg_global_balance_export").append("g")
+        //      .attr("transform", "translate(100," + -350+")")
+        //      .append("text")
+        //      .attr("class", "viewLabels")
+        //      .text("Total Global Exports")
+        //      .attr("transform", "translate(1055,380)");
+        
+
+        let yAxisGroup = d3.select("#svg_global_balance_export")
             .append("g")
-            .attr("id", "yAxisGlobal")
+            .attr("id", "yAxisGlobalExport")
             .attr("class", "axis")
             .attr("transform", "translate(" + 110 +","+ 50 + ")");
 
 
-        let xAxisGroup = d3.select("#svg_global_balance")
+        let xAxisGroup = d3.select("#svg_global_balance_export")
             .append("g")
-            .attr("id", "xAxisGlobal")
+            .attr("id", "xAxisGlobalExport")
             .attr("class", "axis")
             .attr("transform", "translate("+ 110 + "," + 450 + ")");
 
-        let xAxisLabel = d3.select("#svg_global_balance")
+        let xAxisLabel = d3.select("#svg_global_balance_export")
                             .append('text')
                             .classed('axis-label', true)
                             .text("Years")
                             .style("text-anchor", "middle")
                             .attr('transform', 'translate('+ 350 + ', '+ 530 + ')');
         
-        let yAxisLabel = d3.select("#svg_global_balance")
+        let yAxisLabel = d3.select("#svg_global_balance_export")
                             .append('text')
                             .classed('axis-label', true)
                             .text("$ Millions in Current US Dollars")
                             .style("text-anchor", "middle")
                             .attr('transform', 'translate('+ 20 + ', '+ 250 + ')' + "rotate(270)");
-
 
     }
 
@@ -58,7 +64,6 @@ class Global_Balance {
     update(data, pri, sec, years) {
 
         let balanceData = data.slice();
-        let rectWidth = 20;
         let xOffset = 110;
         let yOffset = 40;
 
@@ -115,8 +120,8 @@ class Global_Balance {
         let yAxis = d3.axisLeft().scale(yScale)
         let xAxis = d3.axisBottom().scale(xScale)
         
-        let yAx = d3.select("#yAxisGlobal").call(yAxis);
-        let xAx = d3.select("#xAxisGlobal")
+        let yAx = d3.select("#yAxisGlobalExport").call(yAxis);
+        let xAx = d3.select("#xAxisGlobalExport")
                     .call(xAxis.ticks(numYears+1,""))
                     .selectAll("text")  
                     .style("text-anchor", "end")
@@ -125,40 +130,40 @@ class Global_Balance {
                     .attr("transform", "rotate(-65)" );   
 
         /** Select our svg and do some clean up */
-        let selection = d3.select("#svg_global_balance")
+        let selection = d3.select("#svg_global_balance_export")
         selection.selectAll("circle").remove();
         selection.selectAll("rect").remove();
-        selection.selectAll('.importPath').remove();
-        selection.selectAll('.exportPath').remove();
 
-        /** Add import rectangles --- for primary and secondary*/
-        let priImportRect = selection.selectAll('.priImportRect')
+        /** Add export rectangles --- for primary and secondary*/
+        let priExportRect = selection.selectAll('.priExportRect')
                                     .data(filteredForPrimary)
-        priImportRect.exit().remove()
-        priImportRect = priImportRect.enter().append('rect').merge(priImportRect)
+        priExportRect.exit().remove()
+        priExportRect = priExportRect.enter().append('rect').merge(priExportRect)
 
-        priImportRect.attr("height", d =>{ 
-                            return yScale(0) - yScale(d.imports) + 10;
+        priExportRect.attr("height", d =>{ 
+                            return yScale(0) - yScale(d.exports) + 10;
                         })
-                  .attr("width", bandScale.bandwidth())
-                  .attr("x", d => { return xScale(d.year) - bandScale.bandwidth()})
-                  .attr("y", d => { return yScale(d.imports)})
-                  .classed("priRect",true)
-                  .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
-        
-        let secImportRect = selection.selectAll('.secImportRect')
-                                    .data(filteredForSecondary)
-                    secImportRect.exit().remove()
-                    secImportRect = secImportRect.enter().append('rect').merge(secImportRect)
+                .attr("width", bandScale.bandwidth())
+                .attr("x", d => { return xScale(d.year) - bandScale.bandwidth()})
+                .attr("y", d => { return yScale(d.exports)})
+                .classed("priRect",true)
+                .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
 
-                    secImportRect.attr("height", d =>{ 
-                            return yScale(0) - yScale(d.imports) + 10;
+        let secExportRect = selection.selectAll('.secExportRect')
+                                    .data(filteredForSecondary)
+                    secExportRect.exit().remove()
+                    secExportRect = secExportRect.enter().append('rect').merge(secExportRect)
+
+                    secExportRect.attr("height", d =>{ 
+                            return yScale(0) - yScale(d.exports) + 10;
                         })
                     .attr("width", bandScale.bandwidth())
                     .attr("x", d => { return xScale(d.year)})
-                    .attr("y", d => { return yScale(d.imports)})
+                    .attr("y", d => { return yScale(d.exports)})
                     .classed("secRect",true)
                     .attr("transform", "translate("+ xOffset+ "," + yOffset +")");
+
+
   
     }
 

@@ -11,7 +11,7 @@ class Balance_Double {
         let divBalanceDouble = d3.select("#balance_double").classed("half_view", true);
         this.svgBounds = divBalanceDouble.node().getBoundingClientRect();
         this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
-        this.svgHeight = 600;
+        this.svgHeight = 500;
 
         this.xOffset = 110;
         this.yOffset = 50;
