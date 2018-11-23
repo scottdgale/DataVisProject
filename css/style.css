@@ -52,6 +52,12 @@ hr{
     font-size: 18px;
 }
 
+.smallPrint {
+    font-family: Helvetica, sans-serif;
+    text-align: left;
+    font-size: 12px;
+}
+
 .right_quarter {
     display: inline-block;
     width: 35%;

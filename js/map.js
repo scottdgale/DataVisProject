@@ -51,7 +51,7 @@ class Map {
               .attr('id', 'map_header');
         divMap.append('svg')
             .attr('id', 'svg_label')
-            .attr('height', 70)
+            .attr('height', 90)
             .attr('width', this.svgWidth)
             .append('text')
             .attr('class', 'viewLabels')
@@ -64,8 +64,10 @@ class Map {
             .append('text')
             .attr('class', 'viewLabels')
             .attr("id", "yearMapLabel");
-
-
+        d3.select("#svg_label")
+            .append('text')
+            .attr('class', 'smallPrint')
+            .attr("id", "instructions");
 
         divMap.append("svg")
             .attr("id", "svg_map")
@@ -218,11 +220,21 @@ class Map {
                 .classed("defaultMap", true)
                 /** The click even updates all of the other views */
                 .on("click",function(d){
-                    //if sec is the clicked country, toggle current pri and sec
-                    //if a new country is clicked, set previous sec to pri and set new country to sec.
-                    let temp = that.primary;
-                    that.primary = that.secondary;
-                    that.secondary = that.secondary === d.id ? temp : d.id;
+                    //if pri/sec is the clicked, toggle pri and sec
+                    //if a new country is clicked, set that as the secondary
+                    if (d.id===that.primary){
+                        let temp = that.primary;
+                        that.primary = that.secondary;
+                        that.secondary = temp;
+                    }
+                    else if (d.id===that.secondary){
+                        let temp = that.primary;
+                        that.primary = that.secondary;
+                        that.secondary = temp;
+                    }
+                    else{
+                       that.secondary = d.id;
+                    }
 
                     that.syncData(that.primary, that.secondary, that.years)
 
@@ -306,6 +318,10 @@ class Map {
                     .attr('x', 5)
                     .attr('y', 60)
                     .text("Year Range: " + years[0] + ' - ' + years[1]);
+            label.select("#instructions")
+                .attr('x', 5)
+                .attr('y', 75)
+                .text("*Clicking on the primary/secondary country will toggle, otherwise a new secondary country will be selected");
 
 
             //Draws circles on the captial cities of the top 10 traders of the primary country
