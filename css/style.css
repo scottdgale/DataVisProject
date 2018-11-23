@@ -80,11 +80,6 @@ hr{
     padding-bottom: 2%
 }
 
-.countries {
-    fill: #E0E0E0;
-    stroke: white;
-}
-
 .primary {
     stroke-width: 3;
     fill: #007374;
@@ -103,6 +98,7 @@ hr{
     stroke-opacity: .2;
     pointer-events: none;
 }
+
 .graticule-outline{
     stroke:white;
     stroke-width: 1.0px;
@@ -129,8 +125,28 @@ hr{
     fill: #f7de34;
     color: #f7de34;
     stroke: #000;
-    stroke-width: 0.8px;
-    text-anchor: start;
+    stroke-width: 1;
+}
+
+.highlightMap{
+    fill: #f7de34;
+    stroke-width: 1;
+}
+
+.primaryMap{
+    fill: #007374;
+    stroke-width: 3;
+}
+
+.secondaryMap{
+    fill: #66b2b3;
+    stroke-width: 3;
+}
+
+.defaultMap {
+    fill: lightgray;
+    stroke: white;
+    stroke-width: 1.5px;
 }
 
 .exportCircle {
@@ -159,6 +175,14 @@ hr{
     fill: #66b2b3;
     stroke: #66b2b3;
     stroke-width: 1.5px;
+}
+
+.capitalCircle{
+    r: 3;
+    stroke: black;
+    stroke-width: 1px;
+    fill:  #777;
+    opacity: 0.8;
 }
 
 .priRect{

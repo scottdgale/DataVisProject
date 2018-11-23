@@ -4,10 +4,11 @@ class Top_Traders {
      *
      * @param
      */
-    constructor(highlightData, highlightDataClear) {
+    constructor(highlightData, highlightDataClear, syncData) {
 
         this.highlightScript = highlightData;
         this.highlightScriptClear = highlightDataClear;
+        this.sync = syncData;
 
 
         this.margin = {top: 20, right: 20, bottom: 20, left: 50, spacing: 57};
@@ -30,7 +31,7 @@ class Top_Traders {
             .append("text")
             .attr("transform", "translate(0,0)")
             .attr("class", "topTraderText")
-            .text("Top Exporters($ Millons of US Dollars)");
+            .text("Top Exporters($ Millions of US Dollars)");
 
         let exportAxisGroup = d3.select("#exportGroup")
             .append("g")
@@ -51,7 +52,7 @@ class Top_Traders {
             .append("text")
             .attr("transform", "translate(5,0)")
             .attr("class", "topTraderText")
-            .text("Top Importers($ Millons of US Dollars)");
+            .text("Top Importers($ Millions of US Dollars)");
 
         let importAxisGroup = d3.select("#importGroup")
             .append("g")
@@ -201,17 +202,10 @@ class Top_Traders {
                 return widthExportScale(d.Average/convert);
             });
 
-        rectExport.on("mouseover",(d)=>{
-                this.highlightRect(d.SecondaryId);
-            })
-            .on("mouseout", (d)=>{
-                this.clearHighlight(d.SecondaryId);
-            });
+        rectExport.on("mouseover",(d)=> this.highlightRect(d.SecondaryId))
+            .on("mouseout", (d)=> this.clearHighlight(d.SecondaryId))
+            .on("click", (d)=> this.sync(pri, d.SecondaryId, years));
 
-
-            //.call(this.tip)
-            //.on("mouseover", this.tip.show)
-            //.on("mouseout", this.tip.hide);
 
         //EXPORT TEXT
         let textExport = d3.select("#exportTextGroup").selectAll("text")
@@ -253,12 +247,9 @@ class Top_Traders {
                 return widthImportScale(d.Average/convert);
             });
 
-        rectImports.on("mouseover",(d)=>{
-            this.highlightRect(d.SecondaryId);
-        })
-            .on("mouseout", (d)=>{
-                this.clearHighlight(d.SecondaryId);
-            });
+        rectImports.on("mouseover",(d)=> this.highlightRect(d.SecondaryId))
+            .on("mouseout", (d)=> this.clearHighlight(d.SecondaryId))
+            .on("click", (d)=> this.sync(pri, d.SecondaryId, years));
 
         //IMPORT TEXT
         let textImport = d3.select("#importTextGroup").selectAll("text")

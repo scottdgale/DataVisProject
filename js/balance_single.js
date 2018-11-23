@@ -20,18 +20,18 @@ class Balance_Single {
             .attr("height", this.svgHeight)
             .attr("width", this.svgWidth);
         
-        let svg = d3.select("#svg_balance_single")
+        let svg = d3.select("#svg_balance_single");
 
         //Legend
         let legend = svg.append("g")
             .attr("id", "legend")
             .style("font-family", "Helvetica")
             .style("font-size", "10px")
-            .attr("transform", "translate(10, 10)")
+            .attr("transform", "translate(10, 10)");
 
         let colorScale = d3.scaleOrdinal()
             .domain(["Imports", "Exports"])
-            .range(["#663165", "lightsteelblue"])
+            .range(["#663165", "lightsteelblue"]);
         let legendOrdinal = d3.legendColor()
             .shape("path", d3.symbol().type(d3.symbolSquare).size(42)())
             .shapePadding(4)
@@ -53,18 +53,18 @@ class Balance_Single {
             .attr("transform", "translate("+ xOff + "," + 450 + ")");
 
         let xAxisLabel = d3.select("#svg_balance_single")
-                            .append('text')
-                            .classed('axis-label', true)
-                            .text("Years")
-                            .style("text-anchor", "middle")
-                            .attr('transform', 'translate('+ 350 + ', '+ 530 + ')');
+            .append('text')
+            .classed('axis-label', true)
+            .text("Years")
+            .style("text-anchor", "middle")
+            .attr('transform', 'translate('+ 350 + ', '+ 530 + ')');
         
         let yAxisLabel = d3.select("#svg_balance_single")
-                            .append('text')
-                            .classed('axis-label', true)
-                            .text("$ Millions in Current US Dollars")
-                            .style("text-anchor", "middle")
-                            .attr('transform', 'translate('+ 15 + ', '+ 250 + ')' + "rotate(270)");
+            .append('text')
+            .classed('axis-label', true)
+            .text("$ Millions in Current US Dollars")
+            .style("text-anchor", "middle")
+            .attr('transform', 'translate('+ 15 + ', '+ 250 + ')' + "rotate(270)");
 
         //for reference: https://github.com/Caged/d3-tip
         //Use this tool tip element to handle any hover over the chart

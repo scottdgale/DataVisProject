@@ -9,7 +9,7 @@ loadMapData().then(data => {
 
     let balanceSingle = new Balance_Single();
 
-    let topTraders = new Top_Traders(highlightData, clearHighlight);
+    let topTraders = new Top_Traders(highlightData, clearHighlight, syncData);
 
     let globalBalance = new Global_Balance();
     let globalBalanceExport = new Global_Balance_Export();
