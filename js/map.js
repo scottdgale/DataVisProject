@@ -77,24 +77,9 @@ class Map {
               .attr('height', 50)
               .attr('width', this.svgWidth);
 
-        //for reference: https://github.com/Caged/d3-tip
-        //Use this tool tip element to handle any hover over the chart
-        this.tip = d3.tip().attr('class', 'd3-tip')
-            .direction('s')
-            .offset(function() {
-                return [0,0];
-            });
-
         this.drawMap();
         this.drawYearBar();
 
-
-
-    }
-
-    toolTipRender (countryName) {
-        let myText = "<p>" + countryName + "</p>";
-        return myText;
     }
 
     drawYearBar(){
@@ -184,12 +169,6 @@ class Map {
     }
 
     drawMap(){
-
-        this.tip.html((d)=> {
-           return this.toolTipRender(d.countryName);
-        });
-
-
           /** Draw the map and append circles and lines to indicate trade relationships */
           let mapData = this.mapData;
           let that = this;
@@ -248,8 +227,11 @@ class Map {
                     that.syncData(that.primary, that.secondary, that.years)
 
                 })
-                .on("mouseover", this.tip.show)
-                .on("mouseout", this.tip.hide);
+                .append("title")
+                .text((d)=>d.countryName);
+
+
+
     }
 
 
