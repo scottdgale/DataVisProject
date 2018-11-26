@@ -15,7 +15,7 @@ class Top_Traders {
 
         let divTopTraders = d3.select("#top_traders").classed("right_quarter", true);
         this.svgBounds = divTopTraders.node().getBoundingClientRect();
-        this.svgWidth = this.svgBounds.width - this.margin.left - this.margin.right;
+        this.svgWidth = this.svgBounds.width - this.margin.left; //- this.margin.right;
         this.svgHeight = 625;
 
 
@@ -27,7 +27,7 @@ class Top_Traders {
         let exportGroup = d3.select("#svg_top_traders")
             .append("g")
             .attr("id", "exportGroup")
-            .attr("transform", "translate(0,15)")
+            .attr("transform", "translate(10,15)")
             .append("text")
             .attr("transform", "translate(0,0)")
             .attr("class", "topTraderText")
@@ -37,18 +37,18 @@ class Top_Traders {
             .append("g")
             .attr("id", "exportAxis")
             .attr("class", "axis")
-            .attr("transform", "translate(0,30)");
+            .attr("transform", "translate(10,30)");
 
         let exportTextGroup = d3.select("#exportGroup")
             .append("g")
             .attr("id", "exportTextGroup")
             .attr("class", "topTraderText")
-            .attr("transform", "translate(140,0)");
+            .attr("transform", "translate(150,0)");
 
         let importGroup = d3.select("#svg_top_traders")
             .append("g")
             .attr("id", "importGroup")
-            .attr("transform", "translate(0,325)")
+            .attr("transform", "translate(10,325)")
             .append("text")
             .attr("transform", "translate(5,0)")
             .attr("class", "topTraderText")
@@ -58,13 +58,13 @@ class Top_Traders {
             .append("g")
             .attr("id", "importAxis")
             .attr("class", "axis")
-            .attr("transform", "translate(0,30)");
+            .attr("transform", "translate(10,30)");
 
         let importTextGroup = d3.select("#importGroup")
             .append("g")
             .attr("id", "importTextGroup")
             .attr("class", "topTraderText")
-            .attr("transform", "translate(140,0)");
+            .attr("transform", "translate(150,0)");
 
         //for reference: https://github.com/Caged/d3-tip
         //Use this tool tip element to handle any hover over the chart
@@ -130,7 +130,7 @@ class Top_Traders {
         let yScaler = 22;
         let yOffset = 33;
         let yTextOffset = 48;
-        let xOffset = 140;
+        let xOffset = 150;
         let xTextOffset = 15;
         let convert = 1000;
 
