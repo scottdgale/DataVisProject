@@ -73,7 +73,7 @@ class Balance_Double {
             .classed('axis-label', true)
             .text("$ Millions in Current US Dollars")
             .style("text-anchor", "middle")
-            .attr('transform', 'translate('+ 15 + ', '+ 250 + ')' + "rotate(270)");
+            .attr('transform', 'translate('+ 15 + ', '+ 310 + ')' + "rotate(270)");
 
         let lineGroup = d3.select("#svg_balance_double").append("g")
             .attr("id", "lineGroup");
