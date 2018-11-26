@@ -90,7 +90,7 @@ class Balance_Double {
             .attr("transform", "translate(0," + this.gdpYOffset+")")
             .append("text")
             .attr("class", "viewLabels")
-            .text("GDP")
+            .text("GDP PER CAPITA")
             .attr("transform", "translate(250,380)");
 
         this.tip = d3.tip().attr('class', 'd3-tip')
