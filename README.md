@@ -15,6 +15,8 @@ We hope you will enjoy our interactive presentation.
 </ul>
 
 <h2>Links:</h2>
-The project can be viewed at: https://scottdgale.github.io/DataVisProject/
-The screencast can be found at: https://youtu.be/QkltkT_TtJY
+<ul>
+<li>The project can be viewed at: https://scottdgale.github.io/DataVisProject/</li>
+  <li>The screencast can be found at: https://youtu.be/QkltkT_TtJY</li>
+  </ul>
 
