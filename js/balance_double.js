@@ -73,7 +73,7 @@ class Balance_Double {
             .classed('axis-label', true)
             .text("$ Millions in Current US Dollars")
             .style("text-anchor", "middle")
-            .attr('transform', 'translate('+ 15 + ', '+ 250 + ')' + "rotate(270)");
+            .attr('transform', 'translate('+ 15 + ', '+ 310 + ')' + "rotate(270)");
 
         let lineGroup = d3.select("#svg_balance_double").append("g")
             .attr("id", "lineGroup");
@@ -90,7 +90,7 @@ class Balance_Double {
             .attr("transform", "translate(0," + this.gdpYOffset+")")
             .append("text")
             .attr("class", "viewLabels")
-            .text("GDP")
+            .text("GDP PER CAPITA")
             .attr("transform", "translate(250,380)");
 
         this.tip = d3.tip().attr('class', 'd3-tip')
