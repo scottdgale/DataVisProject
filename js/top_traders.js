@@ -15,7 +15,7 @@ class Top_Traders {
 
         let divTopTraders = d3.select("#top_traders").classed("right_quarter", true);
         this.svgBounds = divTopTraders.node().getBoundingClientRect();
-        this.svgWidth = this.svgBounds.width - this.margin.left; //- this.margin.right;
+        this.svgWidth = this.svgBounds.width - this.margin.left;
         this.svgHeight = 625;
 
 
@@ -121,11 +121,10 @@ class Top_Traders {
                 "result":[
                 {"Country": d.SecondaryName, "Exports": d.Average,"Percent": d.Total_Global_Exports}
             ]};
-            //console.log(tooltip_data);
+           
             return this.tooltip_render(tooltip_data);
         });
 
-        // let topData = data.slice();
         let rectHeight = 20;
         let yScaler = 22;
         let yOffset = 33;
@@ -137,15 +136,8 @@ class Top_Traders {
         // //Deep copy using slice() -- prevents mutation
         let exportPartners = data.Exports.slice();
         let importPartners = data.Imports.slice();
-        // let totalTradePartners = data.totalTradePartners.slice();
-        //
         let topExporters = exportPartners.splice(0,10);
         let topImporters = importPartners.splice(0,10);
-        //console.log(topExporters);
-        //console.log(topImporters);
-
-
-
 
         //Get the maximum values for exports and imports
         let exportMax = (topExporters[0].Average/convert);

@@ -104,7 +104,7 @@ class Balance_Double {
         let fullValue = data.Value;
         let formatValue = new Intl.NumberFormat('en', { maximumSignificantDigits: 6, style: 'currency', currency: 'USD' }).format(fullValue);
         let myText = "<p>";
-        //console.log(data);
+
 
         if (data.Type ==="Export"){
             myText += data.Year + " Exports<br>"
@@ -124,15 +124,15 @@ class Balance_Double {
                 + "GDP: " + formatValue + "</p>";
         }
 
-        //console.log(myText);
+     
         return myText;
     }
 
     update(data, gdp, pri, sec, years) {
-        //console.log(data);
+    
 
         this.tip.html((d)=> {
-            //console.log(d);
+            
             let toolTipData = {};
             //populate data in the following format
             if (d.Type === "Import"){
@@ -158,13 +158,11 @@ class Balance_Double {
                     Value: d.GDP };
             }
 
-            //console.log(toolTipData);
+     
             return this.toolTipRender(toolTipData);
         });
 
         let gdpData = this.getGDPData(gdp, pri, sec, years);
-
-        //console.log(gdpData);
 
         let gdpPriMax = d3.max(gdpData.PrimaryGDP, function (d){
             return +d.GDP;
@@ -253,8 +251,7 @@ class Balance_Double {
             )
 
         }
-        //console.log(importPoints);
-        //console.log(exportPoints);
+
 
         //---CLEANUP------------------------------------------------------------------
         let selection = d3.select("#svg_balance_double");
@@ -414,7 +411,7 @@ class Balance_Double {
     }
 
     getGDPData(data, pri, sec, years){
-        //console.log(data);
+   
         let startYear = parseInt(years[0]);
         let endYear = parseInt(years[1]);
         let priCountry = [];
@@ -443,9 +440,6 @@ class Balance_Double {
                 GDP: data[secIndex][y]
             });
         }
-
-        //console.log(priCountry);
-        //console.log(secCountry);
 
         return {
             PrimaryGDP: priCountry,

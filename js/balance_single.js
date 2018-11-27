@@ -87,7 +87,7 @@ class Balance_Single {
         else{
             myText += "Imports: " + formatValue + "</p>";
         }
-        //console.log(myText);
+     
         return myText;
     }
 
@@ -97,7 +97,7 @@ class Balance_Single {
         this.tip.html((d)=> {
             let toolTipData = {};
             //populate data in the following format
-            //console.log(d);
+
             if (d.type === "Import"){
                 toolTipData = {
                     Type: d.type,
@@ -112,7 +112,7 @@ class Balance_Single {
                     Year: d.year,
                     Value: d.exports };
             }
-            //console.log(toolTipData);
+            
             return this.toolTipRender(toolTipData);
         });
 

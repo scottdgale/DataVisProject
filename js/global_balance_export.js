@@ -40,8 +40,6 @@ class Global_Balance_Export {
             .attr("transform", "translate(100," + -350+")")
             .append("text")
             .attr("class", "viewLabels");
-            // .text("Total Global Exports")
-            // .attr("transform", "translate(250,380)");
        
         let yAxisGroup = d3.select("#svg_global_balance_export")
             .append("g")
@@ -81,7 +79,7 @@ class Global_Balance_Export {
     }
 
     toolTipRender (data) {
-        //console.log(data);
+        
         let fullValue = data.Value;
         let formatExport = new Intl.NumberFormat('en', { maximumSignificantDigits: 6, style: 'currency', currency: 'USD' }).format(fullValue);
         let myText = "<p>" + data.Country + "<br>"
@@ -89,7 +87,7 @@ class Global_Balance_Export {
             + " Total Exports: "
             + formatExport
             + "</p>";
-        //console.log(myText);
+       
         return myText;
     }
 

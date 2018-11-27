@@ -40,7 +40,7 @@ class Map {
                          2000, 2001, 2002, 2003, 2004,
                          2005, 2006, 2007, 2008, 2009,
                          2010, 2011, 2012, 2013, 2014];
-                   //set up projection
+               
         this.projection = d3.geoRobinson()
                    .scale(120)
                    .translate([this.svgWidth/2, this.svgHeight / 2]);
@@ -160,13 +160,11 @@ class Map {
     }
 
     clearHighlight(id) {
-        //d3.select("#svg_map").selectAll(".highlight").classed("highlight", false);
         if(id !== this.secondary){
             let country = d3.select("#" + id)
                 .classed("highlightMap", false)
                 .classed("defaultMap", true);
-            //country.classed("defaultMap", true);
-            //.style('fill', '#E0E0E0').style('stroke', 'white')
+
        }
     }
 
@@ -190,11 +188,6 @@ class Map {
             });
 
             this.countryData = countryData;
-
-            // //set up projection
-            // let projection = d3.geoRobinson()
-            //                 .scale(120)
-            //                 .translate([this.svgWidth / 2, this.svgHeight / 2])
 
             let path = d3.geoPath()
                 .projection(this.projection);
@@ -302,9 +295,7 @@ class Map {
 
 
 
-            //Labels
-            // let mapheader = d3.select("#map_header")
-            //                   .text("Top 10 Trade Partners of " + primaryName + " from " + years[0] + ' to ' + years[1])
+            //Labels for InfoBox
             let label =  d3.select("#svg_label");
             label.select('#primaryMapLabel')
                     .attr('x', 5)

@@ -296,31 +296,6 @@ li a.active {
     color: white;
     background-color: #777;
 }
- 
-/* ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-}
-
-li {
-    float: left;
-}
-
-li a {
-    display: block;
-    color: white;
-    font-family: Helvetica;
-    text-align: center;
-    padding: 10px 11px;
-    text-decoration: none;
-}
-
-li a:hover {
-    background-color: #111;
-} */
 
 .info{
     margin-left: 20px;
@@ -341,7 +316,6 @@ li a:hover {
 .electoralVoteText, .votesPercentageText{
     font-size: 18px;
     text-anchor: middle;
-    /* position: absolute; */
 }
 .end{
     text-anchor:end;
@@ -373,7 +347,7 @@ li a:hover {
 
 .lineChart{
     stroke:#000;
-    /*stroke-dasharray: 4;*/
+
 }
 .republican{
     fill: #de2d26;

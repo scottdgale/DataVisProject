@@ -40,8 +40,6 @@ class Global_Balance {
             .attr("transform", "translate(100," + -350+")")
             .append("text")
             .attr("class", "viewLabels");
-            // .text("Total Global Imports")
-            // .attr("transform", "translate(250,380)");
 
         let yAxisGroup = d3.select("#svg_global_balance")
             .append("g")
@@ -80,29 +78,25 @@ class Global_Balance {
     }
 
     toolTipRender (data) {
-        //console.log(data);
         let fullValue = data.Value;
         let formatExport = new Intl.NumberFormat('en', { maximumSignificantDigits: 6, style: 'currency', currency: 'USD' }).format(fullValue);
         let myText = "<p>" + data.Country + "<br>"
             + data.Year
             + " Total Imports: " + formatExport + "</p>";
 
-        //console.log(myText);
         return myText;
     }
 
     update(data, pri, sec, years) {
 
         this.tip.html((d)=> {
-            //console.log(d);
             //populate data in the following format
 
             let toolTipData = {
                 Country: d.country,
                 Year: d.year,
                 Value: d.imports };
-
-            //console.log(toolTipData);
+                
             return this.toolTipRender(toolTipData);
         });
 
